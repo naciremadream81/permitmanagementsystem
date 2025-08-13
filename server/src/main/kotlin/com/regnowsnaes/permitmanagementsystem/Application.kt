@@ -178,12 +178,12 @@ fun Application.module() {
         // Health check endpoints (must be first for load balancers)
         healthRoutes()
         
-        // Basic health check endpoint
-                        get("/") {
+                        // Basic health check endpoint
+                get("/") {
                     try {
                         call.respondText(
                             contentType = ContentType.Text.Html,
-                            text = File("simple-working-app.html").readText()
+                            text = File("web-interface.html").readText()
                         )
                     } catch (e: Exception) {
                         call.respondText(

@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Permit Management System</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-50">
+    <div class="min-h-screen">
+        <!-- Navigation -->
+        <nav class="bg-blue-600 text-white shadow-lg">
+            <div class="max-w-7xl mx-auto px-4 py-4">
+                <h1 class="text-2xl font-bold">🏛️ Permit Management System</h1>
+            </div>
+        </nav>
+
+        <!-- Main Content -->
+        <div class="max-w-7xl mx-auto px-4 py-8">
+            <!-- Dashboard -->
+            <div class="bg-white shadow rounded-lg p-6 mb-8">
+                <h2 class="text-2xl font-bold text-gray-800 mb-4">Dashboard</h2>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div class="bg-blue-100 p-4 rounded-lg">
+                        <h3 class="font-semibold text-blue-800">API Status</h3>
+                        <p id="apiStatus" class="text-lg font-bold text-blue-600">Checking...</p>
+                    </div>
+                    <div class="bg-green-100 p-4 rounded-lg">
+                        <h3 class="font-semibold text-green-800">Database</h3>
+                        <p id="dbStatus" class="text-lg font-bold text-green-600">Checking...</p>
+                    </div>
+                    <div class="bg-purple-100 p-4 rounded-lg">
+                        <h3 class="font-semibold text-purple-800">Documents</h3>
+                        <p id="docStatus" class="text-lg font-bold text-purple-600">Checking...</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- API Testing -->
+            <div class="bg-white shadow rounded-lg p-6 mb-8">
+                <h3 class="text-lg font-semibold text-gray-800 mb-4">API Endpoints</h3>
+                <div class="space-y-4">
+                    <div>
+                        <button onclick="testAPI()" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded">Test API Health</button>
+                        <span id="apiResult" class="ml-4 text-sm"></span>
+                    </div>
+                    <div>
+                        <button onclick="testCounties()" class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded">Test Counties</button>
+                        <span id="countiesResult" class="ml-4 text-sm"></span>
+                    </div>
+                    <div>
+                        <button onclick="testDocuments()" class="bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded">Test Documents</button>
+                        <span id="documentsResult" class="ml-4 text-sm"></span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Results Display -->
+            <div class="bg-white shadow rounded-lg p-6">
+                <h3 class="text-lg font-semibold text-gray-800 mb-4">API Response</h3>
+                <pre id="apiResponse" class="bg-gray-100 p-4 rounded text-sm overflow-x-auto">Click a test button above to see results...</pre>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Test API health
+        async function testAPI() {
+            try {
+                const response = await fetch('http://localhost:8081/api');
+                const data = await response.json();
+                document.getElementById('apiResult').textContent = '✅ Success';
+                document.getElementById('apiResponse').textContent = JSON.stringify(data, null, 2);
+                document.getElementById('apiStatus').textContent = '✅ Online';
+            } catch (error) {
+                document.getElementById('apiResult').textContent = '❌ Failed';
+                document.getElementById('apiResponse').textContent = 'Error: ' + error.message;
+                document.getElementById('apiStatus').textContent = '❌ Offline';
+            }
+        }
+
+        // Test counties endpoint
+        async function testCounties() {
+            try {
+                const response = await fetch('http://localhost:8081/counties');
+                const data = await response.json();
+                document.getElementById('countiesResult').textContent = '✅ Success';
+                document.getElementById('apiResponse').textContent = JSON.stringify(data, null, 2);
+                document.getElementById('dbStatus').textContent = '✅ Connected';
+            } catch (error) {
+                document.getElementById('countiesResult').textContent = '❌ Failed';
+                document.getElementById('apiResponse').textContent = 'Error: ' + error.message;
+                document.getElementById('dbStatus').textContent = '❌ Error';
+            }
+        }
+
+        // Test documents endpoint
+        async function testDocuments() {
+            try {
+                const response = await fetch('http://localhost:8081/documents/health');
+                const data = await response.json();
+                document.getElementById('documentsResult').textContent = '✅ Success';
+                document.getElementById('apiResponse').textContent = JSON.stringify(data, null, 2);
+                document.getElementById('docStatus').textContent = '✅ Working';
+            } catch (error) {
+                document.getElementById('documentsResult').textContent = '❌ Failed';
+                document.getElementById('apiResponse').textContent = 'Error: ' + error.message;
+                document.getElementById('docStatus').textContent = '❌ Error';
+            }
+        }
+
+        // Auto-test on page load
+        window.onload = function() {
+            setTimeout(testAPI, 1000);
+            setTimeout(testCounties, 2000);
+            setTimeout(testDocuments, 3000);
+        };
+    </script>
+</body>
+</html>

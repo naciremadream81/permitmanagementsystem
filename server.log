@@ -1,103 +1,103 @@
-22:01:33,042 |-INFO in ch.qos.logback.classic.LoggerContext[default] - This is logback-classic version ?
-22:01:33,045 |-INFO in ch.qos.logback.classic.util.ContextInitializer@49d904ec - No custom configurators were discovered as a service.
-22:01:33,045 |-INFO in ch.qos.logback.classic.util.ContextInitializer@49d904ec - Trying to configure with ch.qos.logback.classic.joran.SerializedModelConfigurator
-22:01:33,047 |-INFO in ch.qos.logback.classic.util.ContextInitializer@49d904ec - Constructed configurator of type class ch.qos.logback.classic.joran.SerializedModelConfigurator
-22:01:33,058 |-INFO in ch.qos.logback.classic.LoggerContext[default] - Could NOT find resource [logback-test.scmo]
-22:01:33,059 |-INFO in ch.qos.logback.classic.LoggerContext[default] - Could NOT find resource [logback.scmo]
-22:01:33,078 |-INFO in ch.qos.logback.classic.util.ContextInitializer@49d904ec - ch.qos.logback.classic.joran.SerializedModelConfigurator.configure() call lasted 14 milliseconds. ExecutionStatus=INVOKE_NEXT_IF_ANY
-22:01:33,078 |-INFO in ch.qos.logback.classic.util.ContextInitializer@49d904ec - Trying to configure with ch.qos.logback.classic.util.DefaultJoranConfigurator
-22:01:33,079 |-INFO in ch.qos.logback.classic.util.ContextInitializer@49d904ec - Constructed configurator of type class ch.qos.logback.classic.util.DefaultJoranConfigurator
-22:01:33,080 |-INFO in ch.qos.logback.classic.LoggerContext[default] - Could NOT find resource [logback-test.xml]
-22:01:33,089 |-INFO in ch.qos.logback.classic.LoggerContext[default] - Found resource [logback.xml] at [jar:file:/Users/seans/Downloads/permitmanagementsystem/server/build/libs/server-all.jar!/logback.xml]
-22:01:33,098 |-INFO in ConfigurationWatchList(mainURL=jar:file:/Users/seans/Downloads/permitmanagementsystem/server/build/libs/server-all.jar!/logback.xml, fileWatchList={}, urlWatchList=[}) - URL [jar:file:/Users/seans/Downloads/permitmanagementsystem/server/build/libs/server-all.jar!/logback.xml] is not of type file
-22:01:33,463 |-WARN in ch.qos.logback.core.model.processor.ImplicitModelHandler - Ignoring unknown property [springProfile] in [ch.qos.logback.classic.LoggerContext]
-22:01:33,463 |-WARN in ch.qos.logback.core.model.processor.ImplicitModelHandler - Ignoring unknown property [springProfile] in [ch.qos.logback.classic.LoggerContext]
-22:01:33,463 |-WARN in ch.qos.logback.core.model.processor.ImplicitModelHandler - Ignoring unknown property [springProfile] in [ch.qos.logback.classic.LoggerContext]
-22:01:33,463 |-WARN in ch.qos.logback.core.model.processor.ImplicitModelHandler - Ignoring unknown property [springProfile] in [ch.qos.logback.classic.LoggerContext]
-22:01:33,477 |-INFO in ch.qos.logback.core.model.processor.AppenderModelHandler - Processing appender named [CONSOLE]
-22:01:33,477 |-INFO in ch.qos.logback.core.model.processor.AppenderModelHandler - About to instantiate appender of type [ch.qos.logback.core.ConsoleAppender]
-22:01:33,494 |-INFO in ch.qos.logback.core.model.processor.ImplicitModelHandler - Assuming default type [ch.qos.logback.classic.encoder.PatternLayoutEncoder] for [encoder] property
-22:01:33,751 |-INFO in ch.qos.logback.core.ConsoleAppender[CONSOLE] - BEWARE: Writing to the console can be very slow. Avoid logging to the 
-22:01:33,751 |-INFO in ch.qos.logback.core.ConsoleAppender[CONSOLE] - console in production environments, especially in high volume systems.
-22:01:33,751 |-INFO in ch.qos.logback.core.ConsoleAppender[CONSOLE] - See also https://logback.qos.ch/codes.html#slowConsole
-22:01:33,751 |-INFO in ch.qos.logback.core.model.processor.AppenderModelHandler - Processing appender named [FILE]
-22:01:33,752 |-INFO in ch.qos.logback.core.model.processor.AppenderModelHandler - About to instantiate appender of type [ch.qos.logback.core.rolling.RollingFileAppender]
-22:01:33,837 |-INFO in c.q.l.core.rolling.TimeBasedRollingPolicy@23211803 - setting totalSizeCap to 10 GB
-22:01:33,838 |-INFO in c.q.l.core.rolling.TimeBasedRollingPolicy@23211803 - Will use gz compression
-22:01:33,849 |-INFO in c.q.l.core.rolling.TimeBasedRollingPolicy@23211803 - Will use the pattern logs/server.%d{yyyy-MM-dd}.%i.log for the active file
-22:01:33,849 |-WARN in ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP@72a7c7e0 - SizeAndTimeBasedFNATP class was renamed as SizeAndTimeBasedFileNamingAndTriggeringPolicy.
-22:01:33,935 |-INFO in ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP@72a7c7e0 - The date pattern is 'yyyy-MM-dd' from file name pattern 'logs/server.%d{yyyy-MM-dd}.%i.log.gz'.
-22:01:33,935 |-INFO in ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP@72a7c7e0 - Roll-over at midnight.
-22:01:33,958 |-INFO in ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP@72a7c7e0 - Setting initial period to 2025-08-13T01:57:01.741Z
-22:01:33,959 |-WARN in ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP@72a7c7e0 - Direct use of either SizeAndTimeBasedFNATP or SizeAndTimeBasedFileNamingAndTriggeringPolicy 
-22:01:33,959 |-WARN in ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP@72a7c7e0 - is deprecated. Please use SizeAndTimeBasedRollingPolicy instead.
-22:01:33,959 |-WARN in ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP@72a7c7e0 - For more information see https://logback.qos.ch/manual/appenders.html#SizeAndTimeBasedRollingPolicy
-22:01:33,972 |-INFO in ch.qos.logback.core.model.processor.ImplicitModelHandler - Assuming default type [ch.qos.logback.classic.encoder.PatternLayoutEncoder] for [encoder] property
-22:01:33,984 |-INFO in ch.qos.logback.core.rolling.RollingFileAppender[FILE] - Active log file name: logs/server.log
-22:01:33,994 |-INFO in ch.qos.logback.core.rolling.RollingFileAppender[FILE] - Setting currentFileLength to 188517 for logs/server.log
-22:01:33,994 |-INFO in ch.qos.logback.core.rolling.RollingFileAppender[FILE] - File property is set to [logs/server.log]
-22:01:33,997 |-INFO in ch.qos.logback.core.model.processor.AppenderModelHandler - Processing appender named [ERROR_FILE]
-22:01:33,997 |-INFO in ch.qos.logback.core.model.processor.AppenderModelHandler - About to instantiate appender of type [ch.qos.logback.core.rolling.RollingFileAppender]
-22:01:34,007 |-INFO in c.q.l.core.rolling.TimeBasedRollingPolicy@776700275 - setting totalSizeCap to 5 GB
-22:01:34,007 |-INFO in c.q.l.core.rolling.TimeBasedRollingPolicy@776700275 - Will use gz compression
-22:01:34,007 |-INFO in c.q.l.core.rolling.TimeBasedRollingPolicy@776700275 - Will use the pattern logs/error.%d{yyyy-MM-dd}.%i.log for the active file
-22:01:34,007 |-WARN in ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP@70e8f8e - SizeAndTimeBasedFNATP class was renamed as SizeAndTimeBasedFileNamingAndTriggeringPolicy.
-22:01:34,009 |-INFO in ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP@70e8f8e - The date pattern is 'yyyy-MM-dd' from file name pattern 'logs/error.%d{yyyy-MM-dd}.%i.log.gz'.
-22:01:34,009 |-INFO in ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP@70e8f8e - Roll-over at midnight.
-22:01:34,010 |-INFO in ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP@70e8f8e - Setting initial period to 2025-08-13T01:36:51.519Z
-22:01:34,010 |-WARN in ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP@70e8f8e - Direct use of either SizeAndTimeBasedFNATP or SizeAndTimeBasedFileNamingAndTriggeringPolicy 
-22:01:34,010 |-WARN in ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP@70e8f8e - is deprecated. Please use SizeAndTimeBasedRollingPolicy instead.
-22:01:34,010 |-WARN in ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP@70e8f8e - For more information see https://logback.qos.ch/manual/appenders.html#SizeAndTimeBasedRollingPolicy
-22:01:34,011 |-INFO in ch.qos.logback.core.model.processor.ImplicitModelHandler - Assuming default type [ch.qos.logback.classic.encoder.PatternLayoutEncoder] for [encoder] property
-22:01:34,012 |-INFO in ch.qos.logback.core.rolling.RollingFileAppender[ERROR_FILE] - Active log file name: logs/error.log
-22:01:34,012 |-INFO in ch.qos.logback.core.rolling.RollingFileAppender[ERROR_FILE] - Setting currentFileLength to 173697 for logs/error.log
-22:01:34,012 |-INFO in ch.qos.logback.core.rolling.RollingFileAppender[ERROR_FILE] - File property is set to [logs/error.log]
-22:01:34,013 |-INFO in ch.qos.logback.core.model.processor.AppenderModelHandler - Processing appender named [ACCESS_FILE]
-22:01:34,013 |-INFO in ch.qos.logback.core.model.processor.AppenderModelHandler - About to instantiate appender of type [ch.qos.logback.core.rolling.RollingFileAppender]
-22:01:34,014 |-INFO in c.q.l.core.rolling.TimeBasedRollingPolicy@386163331 - setting totalSizeCap to 20 GB
-22:01:34,015 |-INFO in c.q.l.core.rolling.TimeBasedRollingPolicy@386163331 - Will use gz compression
-22:01:34,015 |-INFO in c.q.l.core.rolling.TimeBasedRollingPolicy@386163331 - Will use the pattern logs/access.%d{yyyy-MM-dd}.%i.log for the active file
-22:01:34,015 |-WARN in ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP@5bd03f44 - SizeAndTimeBasedFNATP class was renamed as SizeAndTimeBasedFileNamingAndTriggeringPolicy.
-22:01:34,017 |-INFO in ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP@5bd03f44 - The date pattern is 'yyyy-MM-dd' from file name pattern 'logs/access.%d{yyyy-MM-dd}.%i.log.gz'.
-22:01:34,017 |-INFO in ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP@5bd03f44 - Roll-over at midnight.
-22:01:34,018 |-INFO in ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP@5bd03f44 - Setting initial period to 2025-08-12T02:05:07.458Z
-22:01:34,018 |-WARN in ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP@5bd03f44 - Direct use of either SizeAndTimeBasedFNATP or SizeAndTimeBasedFileNamingAndTriggeringPolicy 
-22:01:34,018 |-WARN in ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP@5bd03f44 - is deprecated. Please use SizeAndTimeBasedRollingPolicy instead.
-22:01:34,018 |-WARN in ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP@5bd03f44 - For more information see https://logback.qos.ch/manual/appenders.html#SizeAndTimeBasedRollingPolicy
-22:01:34,020 |-INFO in ch.qos.logback.core.model.processor.ImplicitModelHandler - Assuming default type [ch.qos.logback.classic.encoder.PatternLayoutEncoder] for [encoder] property
-22:01:34,022 |-INFO in ch.qos.logback.core.rolling.RollingFileAppender[ACCESS_FILE] - Active log file name: logs/access.log
-22:01:34,022 |-INFO in ch.qos.logback.core.rolling.RollingFileAppender[ACCESS_FILE] - Setting currentFileLength to 0 for logs/access.log
-22:01:34,022 |-INFO in ch.qos.logback.core.rolling.RollingFileAppender[ACCESS_FILE] - File property is set to [logs/access.log]
-22:01:34,031 |-INFO in ch.qos.logback.core.model.processor.AppenderModelHandler - Processing appender named [ASYNC_FILE]
-22:01:34,031 |-INFO in ch.qos.logback.core.model.processor.AppenderModelHandler - About to instantiate appender of type [ch.qos.logback.classic.AsyncAppender]
-22:01:34,040 |-INFO in ch.qos.logback.core.model.processor.AppenderRefModelHandler - Attaching appender named [FILE] to ch.qos.logback.classic.AsyncAppender[ASYNC_FILE]
-22:01:34,040 |-INFO in ch.qos.logback.classic.AsyncAppender[ASYNC_FILE] - Attaching appender named [FILE] to AsyncAppender.
-22:01:34,042 |-INFO in ch.qos.logback.classic.AsyncAppender[ASYNC_FILE] - Setting discardingThreshold to 0
-22:01:34,043 |-INFO in ch.qos.logback.core.model.processor.AppenderModelHandler - Processing appender named [ASYNC_ERROR]
-22:01:34,043 |-INFO in ch.qos.logback.core.model.processor.AppenderModelHandler - About to instantiate appender of type [ch.qos.logback.classic.AsyncAppender]
-22:01:34,043 |-INFO in ch.qos.logback.core.model.processor.AppenderRefModelHandler - Attaching appender named [ERROR_FILE] to ch.qos.logback.classic.AsyncAppender[ASYNC_ERROR]
-22:01:34,043 |-INFO in ch.qos.logback.classic.AsyncAppender[ASYNC_ERROR] - Attaching appender named [ERROR_FILE] to AsyncAppender.
-22:01:34,044 |-INFO in ch.qos.logback.classic.AsyncAppender[ASYNC_ERROR] - Setting discardingThreshold to 0
-22:01:34,045 |-INFO in ch.qos.logback.classic.model.processor.LoggerModelHandler - Setting level of logger [io.ktor.server.engine.ApplicationEngine] to INFO
-22:01:34,053 |-INFO in ch.qos.logback.classic.model.processor.LoggerModelHandler - Setting additivity of logger [io.ktor.server.engine.ApplicationEngine] to false
-22:01:34,054 |-INFO in ch.qos.logback.core.model.processor.AppenderRefModelHandler - Attaching appender named [ACCESS_FILE] to Logger[io.ktor.server.engine.ApplicationEngine]
-22:01:34,054 |-INFO in ch.qos.logback.classic.model.processor.LoggerModelHandler - Setting level of logger [Exposed] to INFO
-22:01:34,054 |-INFO in ch.qos.logback.classic.model.processor.LoggerModelHandler - Setting level of logger [org.jetbrains.exposed] to INFO
-22:01:34,055 |-INFO in ch.qos.logback.classic.model.processor.LoggerModelHandler - Setting level of logger [com.zaxxer.hikari] to INFO
-22:01:34,055 |-INFO in ch.qos.logback.classic.model.processor.LoggerModelHandler - Setting level of logger [com.regnowsnaes.permitmanagementsystem.services.AuthService] to INFO
-22:01:34,055 |-INFO in ch.qos.logback.classic.model.processor.LoggerModelHandler - Setting level of logger [io.netty] to WARN
-22:01:34,055 |-INFO in ch.qos.logback.classic.model.processor.LoggerModelHandler - Setting level of logger [org.postgresql] to WARN
-22:01:34,056 |-INFO in ch.qos.logback.classic.model.processor.RootLoggerModelHandler - Setting level of ROOT logger to INFO
-22:01:34,056 |-INFO in ch.qos.logback.core.model.processor.AppenderRefModelHandler - Attaching appender named [CONSOLE] to Logger[ROOT]
-22:01:34,056 |-INFO in ch.qos.logback.core.model.processor.AppenderRefModelHandler - Attaching appender named [ASYNC_FILE] to Logger[ROOT]
-22:01:34,056 |-INFO in ch.qos.logback.core.model.processor.AppenderRefModelHandler - Attaching appender named [ASYNC_ERROR] to Logger[ROOT]
-22:01:34,056 |-INFO in ch.qos.logback.core.model.processor.DefaultProcessor@29626d54 - End of configuration.
-22:01:34,057 |-INFO in ch.qos.logback.classic.joran.JoranConfigurator@5a63f509 - Registering current configuration as safe fallback point
-22:01:34,058 |-INFO in ch.qos.logback.classic.util.ContextInitializer@49d904ec - ch.qos.logback.classic.util.DefaultJoranConfigurator.configure() call lasted 978 milliseconds. ExecutionStatus=DO_NOT_INVOKE_NEXT_IF_ANY
+23:11:12,771 |-INFO in ch.qos.logback.classic.LoggerContext[default] - This is logback-classic version ?
+23:11:12,775 |-INFO in ch.qos.logback.classic.util.ContextInitializer@49d904ec - No custom configurators were discovered as a service.
+23:11:12,775 |-INFO in ch.qos.logback.classic.util.ContextInitializer@49d904ec - Trying to configure with ch.qos.logback.classic.joran.SerializedModelConfigurator
+23:11:12,780 |-INFO in ch.qos.logback.classic.util.ContextInitializer@49d904ec - Constructed configurator of type class ch.qos.logback.classic.joran.SerializedModelConfigurator
+23:11:12,805 |-INFO in ch.qos.logback.classic.LoggerContext[default] - Could NOT find resource [logback-test.scmo]
+23:11:12,806 |-INFO in ch.qos.logback.classic.LoggerContext[default] - Could NOT find resource [logback.scmo]
+23:11:12,825 |-INFO in ch.qos.logback.classic.util.ContextInitializer@49d904ec - ch.qos.logback.classic.joran.SerializedModelConfigurator.configure() call lasted 26 milliseconds. ExecutionStatus=INVOKE_NEXT_IF_ANY
+23:11:12,825 |-INFO in ch.qos.logback.classic.util.ContextInitializer@49d904ec - Trying to configure with ch.qos.logback.classic.util.DefaultJoranConfigurator
+23:11:12,826 |-INFO in ch.qos.logback.classic.util.ContextInitializer@49d904ec - Constructed configurator of type class ch.qos.logback.classic.util.DefaultJoranConfigurator
+23:11:12,827 |-INFO in ch.qos.logback.classic.LoggerContext[default] - Could NOT find resource [logback-test.xml]
+23:11:12,835 |-INFO in ch.qos.logback.classic.LoggerContext[default] - Found resource [logback.xml] at [jar:file:/Users/seans/Downloads/permitmanagementsystem/server/build/libs/server-all.jar!/logback.xml]
+23:11:12,847 |-INFO in ConfigurationWatchList(mainURL=jar:file:/Users/seans/Downloads/permitmanagementsystem/server/build/libs/server-all.jar!/logback.xml, fileWatchList={}, urlWatchList=[}) - URL [jar:file:/Users/seans/Downloads/permitmanagementsystem/server/build/libs/server-all.jar!/logback.xml] is not of type file
+23:11:13,320 |-WARN in ch.qos.logback.core.model.processor.ImplicitModelHandler - Ignoring unknown property [springProfile] in [ch.qos.logback.classic.LoggerContext]
+23:11:13,320 |-WARN in ch.qos.logback.core.model.processor.ImplicitModelHandler - Ignoring unknown property [springProfile] in [ch.qos.logback.classic.LoggerContext]
+23:11:13,320 |-WARN in ch.qos.logback.core.model.processor.ImplicitModelHandler - Ignoring unknown property [springProfile] in [ch.qos.logback.classic.LoggerContext]
+23:11:13,320 |-WARN in ch.qos.logback.core.model.processor.ImplicitModelHandler - Ignoring unknown property [springProfile] in [ch.qos.logback.classic.LoggerContext]
+23:11:13,335 |-INFO in ch.qos.logback.core.model.processor.AppenderModelHandler - Processing appender named [CONSOLE]
+23:11:13,335 |-INFO in ch.qos.logback.core.model.processor.AppenderModelHandler - About to instantiate appender of type [ch.qos.logback.core.ConsoleAppender]
+23:11:13,353 |-INFO in ch.qos.logback.core.model.processor.ImplicitModelHandler - Assuming default type [ch.qos.logback.classic.encoder.PatternLayoutEncoder] for [encoder] property
+23:11:13,563 |-INFO in ch.qos.logback.core.ConsoleAppender[CONSOLE] - BEWARE: Writing to the console can be very slow. Avoid logging to the 
+23:11:13,563 |-INFO in ch.qos.logback.core.ConsoleAppender[CONSOLE] - console in production environments, especially in high volume systems.
+23:11:13,563 |-INFO in ch.qos.logback.core.ConsoleAppender[CONSOLE] - See also https://logback.qos.ch/codes.html#slowConsole
+23:11:13,564 |-INFO in ch.qos.logback.core.model.processor.AppenderModelHandler - Processing appender named [FILE]
+23:11:13,564 |-INFO in ch.qos.logback.core.model.processor.AppenderModelHandler - About to instantiate appender of type [ch.qos.logback.core.rolling.RollingFileAppender]
+23:11:13,611 |-INFO in c.q.l.core.rolling.TimeBasedRollingPolicy@23211803 - setting totalSizeCap to 10 GB
+23:11:13,612 |-INFO in c.q.l.core.rolling.TimeBasedRollingPolicy@23211803 - Will use gz compression
+23:11:13,618 |-INFO in c.q.l.core.rolling.TimeBasedRollingPolicy@23211803 - Will use the pattern logs/server.%d{yyyy-MM-dd}.%i.log for the active file
+23:11:13,618 |-WARN in ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP@72a7c7e0 - SizeAndTimeBasedFNATP class was renamed as SizeAndTimeBasedFileNamingAndTriggeringPolicy.
+23:11:13,728 |-INFO in ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP@72a7c7e0 - The date pattern is 'yyyy-MM-dd' from file name pattern 'logs/server.%d{yyyy-MM-dd}.%i.log.gz'.
+23:11:13,728 |-INFO in ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP@72a7c7e0 - Roll-over at midnight.
+23:11:13,760 |-INFO in ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP@72a7c7e0 - Setting initial period to 2025-08-13T03:01:35.149Z
+23:11:13,760 |-WARN in ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP@72a7c7e0 - Direct use of either SizeAndTimeBasedFNATP or SizeAndTimeBasedFileNamingAndTriggeringPolicy 
+23:11:13,760 |-WARN in ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP@72a7c7e0 - is deprecated. Please use SizeAndTimeBasedRollingPolicy instead.
+23:11:13,760 |-WARN in ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP@72a7c7e0 - For more information see https://logback.qos.ch/manual/appenders.html#SizeAndTimeBasedRollingPolicy
+23:11:13,781 |-INFO in ch.qos.logback.core.model.processor.ImplicitModelHandler - Assuming default type [ch.qos.logback.classic.encoder.PatternLayoutEncoder] for [encoder] property
+23:11:13,796 |-INFO in ch.qos.logback.core.rolling.RollingFileAppender[FILE] - Active log file name: logs/server.log
+23:11:13,805 |-INFO in ch.qos.logback.core.rolling.RollingFileAppender[FILE] - Setting currentFileLength to 233397 for logs/server.log
+23:11:13,807 |-INFO in ch.qos.logback.core.rolling.RollingFileAppender[FILE] - File property is set to [logs/server.log]
+23:11:13,809 |-INFO in ch.qos.logback.core.model.processor.AppenderModelHandler - Processing appender named [ERROR_FILE]
+23:11:13,809 |-INFO in ch.qos.logback.core.model.processor.AppenderModelHandler - About to instantiate appender of type [ch.qos.logback.core.rolling.RollingFileAppender]
+23:11:13,817 |-INFO in c.q.l.core.rolling.TimeBasedRollingPolicy@776700275 - setting totalSizeCap to 5 GB
+23:11:13,817 |-INFO in c.q.l.core.rolling.TimeBasedRollingPolicy@776700275 - Will use gz compression
+23:11:13,818 |-INFO in c.q.l.core.rolling.TimeBasedRollingPolicy@776700275 - Will use the pattern logs/error.%d{yyyy-MM-dd}.%i.log for the active file
+23:11:13,818 |-WARN in ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP@70e8f8e - SizeAndTimeBasedFNATP class was renamed as SizeAndTimeBasedFileNamingAndTriggeringPolicy.
+23:11:13,820 |-INFO in ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP@70e8f8e - The date pattern is 'yyyy-MM-dd' from file name pattern 'logs/error.%d{yyyy-MM-dd}.%i.log.gz'.
+23:11:13,820 |-INFO in ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP@70e8f8e - Roll-over at midnight.
+23:11:13,828 |-INFO in ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP@70e8f8e - Setting initial period to 2025-08-13T02:28:25.838Z
+23:11:13,828 |-WARN in ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP@70e8f8e - Direct use of either SizeAndTimeBasedFNATP or SizeAndTimeBasedFileNamingAndTriggeringPolicy 
+23:11:13,828 |-WARN in ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP@70e8f8e - is deprecated. Please use SizeAndTimeBasedRollingPolicy instead.
+23:11:13,828 |-WARN in ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP@70e8f8e - For more information see https://logback.qos.ch/manual/appenders.html#SizeAndTimeBasedRollingPolicy
+23:11:13,829 |-INFO in ch.qos.logback.core.model.processor.ImplicitModelHandler - Assuming default type [ch.qos.logback.classic.encoder.PatternLayoutEncoder] for [encoder] property
+23:11:13,831 |-INFO in ch.qos.logback.core.rolling.RollingFileAppender[ERROR_FILE] - Active log file name: logs/error.log
+23:11:13,831 |-INFO in ch.qos.logback.core.rolling.RollingFileAppender[ERROR_FILE] - Setting currentFileLength to 217653 for logs/error.log
+23:11:13,831 |-INFO in ch.qos.logback.core.rolling.RollingFileAppender[ERROR_FILE] - File property is set to [logs/error.log]
+23:11:13,832 |-INFO in ch.qos.logback.core.model.processor.AppenderModelHandler - Processing appender named [ACCESS_FILE]
+23:11:13,832 |-INFO in ch.qos.logback.core.model.processor.AppenderModelHandler - About to instantiate appender of type [ch.qos.logback.core.rolling.RollingFileAppender]
+23:11:13,838 |-INFO in c.q.l.core.rolling.TimeBasedRollingPolicy@386163331 - setting totalSizeCap to 20 GB
+23:11:13,838 |-INFO in c.q.l.core.rolling.TimeBasedRollingPolicy@386163331 - Will use gz compression
+23:11:13,838 |-INFO in c.q.l.core.rolling.TimeBasedRollingPolicy@386163331 - Will use the pattern logs/access.%d{yyyy-MM-dd}.%i.log for the active file
+23:11:13,838 |-WARN in ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP@5bd03f44 - SizeAndTimeBasedFNATP class was renamed as SizeAndTimeBasedFileNamingAndTriggeringPolicy.
+23:11:13,841 |-INFO in ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP@5bd03f44 - The date pattern is 'yyyy-MM-dd' from file name pattern 'logs/access.%d{yyyy-MM-dd}.%i.log.gz'.
+23:11:13,841 |-INFO in ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP@5bd03f44 - Roll-over at midnight.
+23:11:13,842 |-INFO in ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP@5bd03f44 - Setting initial period to 2025-08-12T02:05:07.458Z
+23:11:13,842 |-WARN in ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP@5bd03f44 - Direct use of either SizeAndTimeBasedFNATP or SizeAndTimeBasedFileNamingAndTriggeringPolicy 
+23:11:13,842 |-WARN in ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP@5bd03f44 - is deprecated. Please use SizeAndTimeBasedRollingPolicy instead.
+23:11:13,842 |-WARN in ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP@5bd03f44 - For more information see https://logback.qos.ch/manual/appenders.html#SizeAndTimeBasedRollingPolicy
+23:11:13,843 |-INFO in ch.qos.logback.core.model.processor.ImplicitModelHandler - Assuming default type [ch.qos.logback.classic.encoder.PatternLayoutEncoder] for [encoder] property
+23:11:13,844 |-INFO in ch.qos.logback.core.rolling.RollingFileAppender[ACCESS_FILE] - Active log file name: logs/access.log
+23:11:13,844 |-INFO in ch.qos.logback.core.rolling.RollingFileAppender[ACCESS_FILE] - Setting currentFileLength to 0 for logs/access.log
+23:11:13,844 |-INFO in ch.qos.logback.core.rolling.RollingFileAppender[ACCESS_FILE] - File property is set to [logs/access.log]
+23:11:13,857 |-INFO in ch.qos.logback.core.model.processor.AppenderModelHandler - Processing appender named [ASYNC_FILE]
+23:11:13,857 |-INFO in ch.qos.logback.core.model.processor.AppenderModelHandler - About to instantiate appender of type [ch.qos.logback.classic.AsyncAppender]
+23:11:13,862 |-INFO in ch.qos.logback.core.model.processor.AppenderRefModelHandler - Attaching appender named [FILE] to ch.qos.logback.classic.AsyncAppender[ASYNC_FILE]
+23:11:13,863 |-INFO in ch.qos.logback.classic.AsyncAppender[ASYNC_FILE] - Attaching appender named [FILE] to AsyncAppender.
+23:11:13,866 |-INFO in ch.qos.logback.classic.AsyncAppender[ASYNC_FILE] - Setting discardingThreshold to 0
+23:11:13,866 |-INFO in ch.qos.logback.core.model.processor.AppenderModelHandler - Processing appender named [ASYNC_ERROR]
+23:11:13,866 |-INFO in ch.qos.logback.core.model.processor.AppenderModelHandler - About to instantiate appender of type [ch.qos.logback.classic.AsyncAppender]
+23:11:13,867 |-INFO in ch.qos.logback.core.model.processor.AppenderRefModelHandler - Attaching appender named [ERROR_FILE] to ch.qos.logback.classic.AsyncAppender[ASYNC_ERROR]
+23:11:13,867 |-INFO in ch.qos.logback.classic.AsyncAppender[ASYNC_ERROR] - Attaching appender named [ERROR_FILE] to AsyncAppender.
+23:11:13,867 |-INFO in ch.qos.logback.classic.AsyncAppender[ASYNC_ERROR] - Setting discardingThreshold to 0
+23:11:13,870 |-INFO in ch.qos.logback.classic.model.processor.LoggerModelHandler - Setting level of logger [io.ktor.server.engine.ApplicationEngine] to INFO
+23:11:13,877 |-INFO in ch.qos.logback.classic.model.processor.LoggerModelHandler - Setting additivity of logger [io.ktor.server.engine.ApplicationEngine] to false
+23:11:13,878 |-INFO in ch.qos.logback.core.model.processor.AppenderRefModelHandler - Attaching appender named [ACCESS_FILE] to Logger[io.ktor.server.engine.ApplicationEngine]
+23:11:13,878 |-INFO in ch.qos.logback.classic.model.processor.LoggerModelHandler - Setting level of logger [Exposed] to INFO
+23:11:13,878 |-INFO in ch.qos.logback.classic.model.processor.LoggerModelHandler - Setting level of logger [org.jetbrains.exposed] to INFO
+23:11:13,878 |-INFO in ch.qos.logback.classic.model.processor.LoggerModelHandler - Setting level of logger [com.zaxxer.hikari] to INFO
+23:11:13,878 |-INFO in ch.qos.logback.classic.model.processor.LoggerModelHandler - Setting level of logger [com.regnowsnaes.permitmanagementsystem.services.AuthService] to INFO
+23:11:13,878 |-INFO in ch.qos.logback.classic.model.processor.LoggerModelHandler - Setting level of logger [io.netty] to WARN
+23:11:13,878 |-INFO in ch.qos.logback.classic.model.processor.LoggerModelHandler - Setting level of logger [org.postgresql] to WARN
+23:11:13,878 |-INFO in ch.qos.logback.classic.model.processor.RootLoggerModelHandler - Setting level of ROOT logger to INFO
+23:11:13,879 |-INFO in ch.qos.logback.core.model.processor.AppenderRefModelHandler - Attaching appender named [CONSOLE] to Logger[ROOT]
+23:11:13,879 |-INFO in ch.qos.logback.core.model.processor.AppenderRefModelHandler - Attaching appender named [ASYNC_FILE] to Logger[ROOT]
+23:11:13,879 |-INFO in ch.qos.logback.core.model.processor.AppenderRefModelHandler - Attaching appender named [ASYNC_ERROR] to Logger[ROOT]
+23:11:13,879 |-INFO in ch.qos.logback.core.model.processor.DefaultProcessor@29626d54 - End of configuration.
+23:11:13,880 |-INFO in ch.qos.logback.classic.joran.JoranConfigurator@5a63f509 - Registering current configuration as safe fallback point
+23:11:13,880 |-INFO in ch.qos.logback.classic.util.ContextInitializer@49d904ec - ch.qos.logback.classic.util.DefaultJoranConfigurator.configure() call lasted 1054 milliseconds. ExecutionStatus=DO_NOT_INVOKE_NEXT_IF_ANY
 
-2025-08-12 22:01:34.153 [main] INFO  com.zaxxer.hikari.HikariDataSource - PermitManagementPool - Starting...
-2025-08-12 22:01:34.739 [main] INFO  com.zaxxer.hikari.pool.HikariPool - PermitManagementPool - Added connection org.postgresql.jdbc.PgConnection@57d7f8ca
-2025-08-12 22:01:34.743 [main] INFO  com.zaxxer.hikari.HikariDataSource - PermitManagementPool - Start completed.
+2025-08-12 23:11:13.982 [main] INFO  com.zaxxer.hikari.HikariDataSource - PermitManagementPool - Starting...
+2025-08-12 23:11:14.357 [main] INFO  com.zaxxer.hikari.pool.HikariPool - PermitManagementPool - Added connection org.postgresql.jdbc.PgConnection@57d7f8ca
+2025-08-12 23:11:14.361 [main] INFO  com.zaxxer.hikari.HikariDataSource - PermitManagementPool - Start completed.
 ✅ Database connection test successful
 ✅ Database tables created/verified
 ✅ Database already contains seed data
@@ -106,241 +106,6 @@
    Environment: development
    Server: 0.0.0.0:8081
    Database: jdbc:postgresql://localhost:5432/permit_management_dev
-2025-08-12 22:01:36.878 [main] INFO  ktor.application - Autoreload is disabled because the development mode is off.
-2025-08-12 22:01:37.846 [main] INFO  ktor.application - Application started in 1.048 seconds.
-2025-08-12 22:01:38.303 [DefaultDispatcher-worker-1] INFO  ktor.application - Responding at http://0.0.0.0:8081
-2025-08-12 22:02:07.451 [eventLoopGroupProxy-4-2] ERROR ktor.application - Unhandled exception
-java.lang.IllegalStateException: Serializing collections of different element types is not yet supported. Selected serializers: [kotlin.Boolean, kotlin.String]
-	at io.ktor.serialization.kotlinx.SerializerLookupKt.elementSerializer(SerializerLookup.kt:60)
-	at io.ktor.serialization.kotlinx.SerializerLookupKt.guessSerializer(SerializerLookup.kt:44)
-	at io.ktor.serialization.kotlinx.KotlinxSerializationConverter.serializeNullable(KotlinxSerializationConverter.kt:66)
-	at io.ktor.server.plugins.contentnegotiation.ResponseConverterKt$convertResponseBody$1$2.invokeSuspend(ResponseConverter.kt:66)
-	at io.ktor.server.plugins.contentnegotiation.ResponseConverterKt$convertResponseBody$1$2.invoke(ResponseConverter.kt)
-	at io.ktor.server.plugins.contentnegotiation.ResponseConverterKt$convertResponseBody$1$2.invoke(ResponseConverter.kt)
-	at io.ktor.server.application.OnCallRespondContext.transformBody(KtorCallContexts.kt:86)
-	at io.ktor.server.plugins.contentnegotiation.ResponseConverterKt$convertResponseBody$1.invokeSuspend(ResponseConverter.kt:39)
-	at io.ktor.server.plugins.contentnegotiation.ResponseConverterKt$convertResponseBody$1.invoke(ResponseConverter.kt)
-	at io.ktor.server.plugins.contentnegotiation.ResponseConverterKt$convertResponseBody$1.invoke(ResponseConverter.kt)
-	at io.ktor.server.application.PluginBuilder$onDefaultPhase$1.invokeSuspend(PluginBuilder.kt:215)
-	at io.ktor.server.application.PluginBuilder$onDefaultPhase$1.invoke(PluginBuilder.kt)
-	at io.ktor.server.application.PluginBuilder$onDefaultPhase$1.invoke(PluginBuilder.kt)
-	at io.ktor.server.application.PluginBuilder$onDefaultPhaseWithMessage$1$1$1.invokeSuspend(PluginBuilder.kt:198)
-	at io.ktor.server.application.PluginBuilder$onDefaultPhaseWithMessage$1$1$1.invoke(PluginBuilder.kt)
-	at io.ktor.server.application.PluginBuilder$onDefaultPhaseWithMessage$1$1$1.invoke(PluginBuilder.kt)
-	at io.ktor.util.debug.ContextUtilsKt.addToContextInDebugMode(ContextUtils.kt:30)
-	at io.ktor.server.application.PluginBuilder$onDefaultPhaseWithMessage$1$1.invokeSuspend(PluginBuilder.kt:194)
-	at io.ktor.server.application.PluginBuilder$onDefaultPhaseWithMessage$1$1.invoke(PluginBuilder.kt)
-	at io.ktor.server.application.PluginBuilder$onDefaultPhaseWithMessage$1$1.invoke(PluginBuilder.kt)
-	at io.ktor.util.pipeline.SuspendFunctionGun.loop(SuspendFunctionGun.kt:131)
-	at io.ktor.util.pipeline.SuspendFunctionGun.proceed(SuspendFunctionGun.kt:89)
-	at io.ktor.util.pipeline.SuspendFunctionGun.execute$ktor_utils(SuspendFunctionGun.kt:109)
-	at io.ktor.util.pipeline.Pipeline.execute(Pipeline.kt:77)
-	at com.regnowsnaes.permitmanagementsystem.routes.DocumentRoutesKt$configureDocumentRoutes$1$1.invokeSuspend(DocumentRoutes.kt:202)
-	at kotlin.coroutines.jvm.internal.BaseContinuationImpl.resumeWith(ContinuationImpl.kt:33)
-	at kotlinx.coroutines.internal.DispatchedContinuation.resumeWith(DispatchedContinuation.kt:197)
-	at io.ktor.util.pipeline.SuspendFunctionGun.resumeRootWith(SuspendFunctionGun.kt:149)
-	at io.ktor.util.pipeline.SuspendFunctionGun.loop(SuspendFunctionGun.kt:134)
-	at io.ktor.util.pipeline.SuspendFunctionGun.proceed(SuspendFunctionGun.kt:89)
-	at io.ktor.util.pipeline.SuspendFunctionGun.execute$ktor_utils(SuspendFunctionGun.kt:109)
-	at io.ktor.util.pipeline.Pipeline.execute(Pipeline.kt:77)
-	at com.regnowsnaes.permitmanagementsystem.routes.DocumentRoutesKt$configureDocumentRoutes$1$1.invokeSuspend(DocumentRoutes.kt:160)
-	at com.regnowsnaes.permitmanagementsystem.routes.DocumentRoutesKt$configureDocumentRoutes$1$1.invoke(DocumentRoutes.kt)
-	at com.regnowsnaes.permitmanagementsystem.routes.DocumentRoutesKt$configureDocumentRoutes$1$1.invoke(DocumentRoutes.kt)
-	at io.ktor.server.routing.Route$buildPipeline$1$1.invokeSuspend(Route.kt:116)
-	at io.ktor.server.routing.Route$buildPipeline$1$1.invoke(Route.kt)
-	at io.ktor.server.routing.Route$buildPipeline$1$1.invoke(Route.kt)
-	at io.ktor.util.pipeline.SuspendFunctionGun.loop(SuspendFunctionGun.kt:131)
-	at io.ktor.util.pipeline.SuspendFunctionGun.proceed(SuspendFunctionGun.kt:89)
-	at io.ktor.util.pipeline.SuspendFunctionGun.execute$ktor_utils(SuspendFunctionGun.kt:109)
-	at io.ktor.util.pipeline.Pipeline.execute(Pipeline.kt:77)
-	at io.ktor.server.routing.Routing$executeResult$$inlined$execute$1.invokeSuspend(Pipeline.kt:478)
-	at io.ktor.server.routing.Routing$executeResult$$inlined$execute$1.invoke(Pipeline.kt)
-	at io.ktor.server.routing.Routing$executeResult$$inlined$execute$1.invoke(Pipeline.kt)
-	at io.ktor.util.debug.ContextUtilsKt.initContextInDebugMode(ContextUtils.kt:17)
-	at io.ktor.server.routing.Routing.executeResult(Routing.kt:190)
-	at io.ktor.server.routing.Routing.interceptor(Routing.kt:64)
-	at io.ktor.server.routing.Routing$Plugin$install$1.invokeSuspend(Routing.kt:140)
-	at io.ktor.server.routing.Routing$Plugin$install$1.invoke(Routing.kt)
-	at io.ktor.server.routing.Routing$Plugin$install$1.invoke(Routing.kt)
-	at io.ktor.util.pipeline.SuspendFunctionGun.loop(SuspendFunctionGun.kt:131)
-	at io.ktor.util.pipeline.SuspendFunctionGun.proceed(SuspendFunctionGun.kt:89)
-	at io.ktor.server.engine.BaseApplicationEngineKt$installDefaultTransformationChecker$1.invokeSuspend(BaseApplicationEngine.kt:124)
-	at io.ktor.server.engine.BaseApplicationEngineKt$installDefaultTransformationChecker$1.invoke(BaseApplicationEngine.kt)
-	at io.ktor.server.engine.BaseApplicationEngineKt$installDefaultTransformationChecker$1.invoke(BaseApplicationEngine.kt)
-	at io.ktor.util.pipeline.SuspendFunctionGun.loop(SuspendFunctionGun.kt:131)
-	at io.ktor.util.pipeline.SuspendFunctionGun.proceed(SuspendFunctionGun.kt:89)
-	at io.ktor.server.application.hooks.CallFailed$install$1$1.invokeSuspend(CommonHooks.kt:45)
-	at io.ktor.server.application.hooks.CallFailed$install$1$1.invoke(CommonHooks.kt)
-	at io.ktor.server.application.hooks.CallFailed$install$1$1.invoke(CommonHooks.kt)
-	at kotlinx.coroutines.intrinsics.UndispatchedKt.startUndspatched(Undispatched.kt:66)
-	at kotlinx.coroutines.intrinsics.UndispatchedKt.startUndispatchedOrReturn(Undispatched.kt:43)
-	at kotlinx.coroutines.CoroutineScopeKt.coroutineScope(CoroutineScope.kt:286)
-	at io.ktor.server.application.hooks.CallFailed$install$1.invokeSuspend(CommonHooks.kt:44)
-	at io.ktor.server.application.hooks.CallFailed$install$1.invoke(CommonHooks.kt)
-	at io.ktor.server.application.hooks.CallFailed$install$1.invoke(CommonHooks.kt)
-	at io.ktor.util.pipeline.SuspendFunctionGun.loop(SuspendFunctionGun.kt:131)
-	at io.ktor.util.pipeline.SuspendFunctionGun.proceed(SuspendFunctionGun.kt:89)
-	at io.ktor.util.pipeline.SuspendFunctionGun.execute$ktor_utils(SuspendFunctionGun.kt:109)
-	at io.ktor.util.pipeline.Pipeline.execute(Pipeline.kt:77)
-	at io.ktor.server.engine.DefaultEnginePipelineKt$defaultEnginePipeline$1$invokeSuspend$$inlined$execute$1.invokeSuspend(Pipeline.kt:478)
-	at io.ktor.server.engine.DefaultEnginePipelineKt$defaultEnginePipeline$1$invokeSuspend$$inlined$execute$1.invoke(Pipeline.kt)
-	at io.ktor.server.engine.DefaultEnginePipelineKt$defaultEnginePipeline$1$invokeSuspend$$inlined$execute$1.invoke(Pipeline.kt)
-	at io.ktor.util.debug.ContextUtilsKt.initContextInDebugMode(ContextUtils.kt:17)
-	at io.ktor.server.engine.DefaultEnginePipelineKt$defaultEnginePipeline$1.invokeSuspend(DefaultEnginePipeline.kt:123)
-	at io.ktor.server.engine.DefaultEnginePipelineKt$defaultEnginePipeline$1.invoke(DefaultEnginePipeline.kt)
-	at io.ktor.server.engine.DefaultEnginePipelineKt$defaultEnginePipeline$1.invoke(DefaultEnginePipeline.kt)
-	at io.ktor.util.pipeline.SuspendFunctionGun.loop(SuspendFunctionGun.kt:131)
-	at io.ktor.util.pipeline.SuspendFunctionGun.proceed(SuspendFunctionGun.kt:89)
-	at io.ktor.util.pipeline.SuspendFunctionGun.execute$ktor_utils(SuspendFunctionGun.kt:109)
-	at io.ktor.util.pipeline.Pipeline.execute(Pipeline.kt:77)
-	at io.ktor.server.netty.NettyApplicationCallHandler$handleRequest$1$invokeSuspend$$inlined$execute$1.invokeSuspend(Pipeline.kt:478)
-	at io.ktor.server.netty.NettyApplicationCallHandler$handleRequest$1$invokeSuspend$$inlined$execute$1.invoke(Pipeline.kt)
-	at io.ktor.server.netty.NettyApplicationCallHandler$handleRequest$1$invokeSuspend$$inlined$execute$1.invoke(Pipeline.kt)
-	at io.ktor.util.debug.ContextUtilsKt.initContextInDebugMode(ContextUtils.kt:17)
-	at io.ktor.server.netty.NettyApplicationCallHandler$handleRequest$1.invokeSuspend(NettyApplicationCallHandler.kt:140)
-	at io.ktor.server.netty.NettyApplicationCallHandler$handleRequest$1.invoke(NettyApplicationCallHandler.kt)
-	at io.ktor.server.netty.NettyApplicationCallHandler$handleRequest$1.invoke(NettyApplicationCallHandler.kt)
-	at kotlinx.coroutines.intrinsics.UndispatchedKt.startCoroutineUndispatched(Undispatched.kt:20)
-	at kotlinx.coroutines.CoroutineStart.invoke(CoroutineStart.kt:360)
-	at kotlinx.coroutines.AbstractCoroutine.start(AbstractCoroutine.kt:134)
-	at kotlinx.coroutines.BuildersKt__Builders_commonKt.launch(Builders.common.kt:53)
-	at kotlinx.coroutines.BuildersKt.launch(Unknown Source)
-	at io.ktor.server.netty.NettyApplicationCallHandler.handleRequest(NettyApplicationCallHandler.kt:41)
-	at io.ktor.server.netty.NettyApplicationCallHandler.channelRead(NettyApplicationCallHandler.kt:33)
-	at io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:444)
-	at io.netty.channel.AbstractChannelHandlerContext.access$600(AbstractChannelHandlerContext.java:61)
-	at io.netty.channel.AbstractChannelHandlerContext$7.run(AbstractChannelHandlerContext.java:425)
-	at io.netty.util.concurrent.AbstractEventExecutor.runTask(AbstractEventExecutor.java:173)
-	at io.netty.util.concurrent.AbstractEventExecutor.safeExecute(AbstractEventExecutor.java:166)
-	at io.netty.util.concurrent.SingleThreadEventExecutor.runAllTasks(SingleThreadEventExecutor.java:469)
-	at io.netty.channel.nio.NioEventLoop.run(NioEventLoop.java:569)
-	at io.netty.util.concurrent.SingleThreadEventExecutor$4.run(SingleThreadEventExecutor.java:994)
-	at io.netty.util.internal.ThreadExecutorMap$2.run(ThreadExecutorMap.java:74)
-	at io.ktor.server.netty.EventLoopGroupProxy$Companion.create$lambda$1$lambda$0(NettyApplicationEngine.kt:296)
-	at io.netty.util.concurrent.FastThreadLocalRunnable.run(FastThreadLocalRunnable.java:30)
-	at java.base/java.lang.Thread.run(Thread.java:1583)
-2025-08-12 22:02:07.461 [eventLoopGroupProxy-4-2] ERROR ktor.application - 500 Internal Server Error: GET - /documents/package/1
-java.lang.IllegalStateException: Serializing collections of different element types is not yet supported. Selected serializers: [kotlin.String, kotlin.Long, kotlin.collections.ArrayList]
-	at io.ktor.serialization.kotlinx.SerializerLookupKt.elementSerializer(SerializerLookup.kt:60)
-	at io.ktor.serialization.kotlinx.SerializerLookupKt.guessSerializer(SerializerLookup.kt:44)
-	at io.ktor.serialization.kotlinx.KotlinxSerializationConverter.serializeNullable(KotlinxSerializationConverter.kt:66)
-	at io.ktor.server.plugins.contentnegotiation.ResponseConverterKt$convertResponseBody$1$2.invokeSuspend(ResponseConverter.kt:66)
-	at io.ktor.server.plugins.contentnegotiation.ResponseConverterKt$convertResponseBody$1$2.invoke(ResponseConverter.kt)
-	at io.ktor.server.plugins.contentnegotiation.ResponseConverterKt$convertResponseBody$1$2.invoke(ResponseConverter.kt)
-	at io.ktor.server.application.OnCallRespondContext.transformBody(KtorCallContexts.kt:86)
-	at io.ktor.server.plugins.contentnegotiation.ResponseConverterKt$convertResponseBody$1.invokeSuspend(ResponseConverter.kt:39)
-	at io.ktor.server.plugins.contentnegotiation.ResponseConverterKt$convertResponseBody$1.invoke(ResponseConverter.kt)
-	at io.ktor.server.plugins.contentnegotiation.ResponseConverterKt$convertResponseBody$1.invoke(ResponseConverter.kt)
-	at io.ktor.server.application.PluginBuilder$onDefaultPhase$1.invokeSuspend(PluginBuilder.kt:215)
-	at io.ktor.server.application.PluginBuilder$onDefaultPhase$1.invoke(PluginBuilder.kt)
-	at io.ktor.server.application.PluginBuilder$onDefaultPhase$1.invoke(PluginBuilder.kt)
-	at io.ktor.server.application.PluginBuilder$onDefaultPhaseWithMessage$1$1$1.invokeSuspend(PluginBuilder.kt:198)
-	at io.ktor.server.application.PluginBuilder$onDefaultPhaseWithMessage$1$1$1.invoke(PluginBuilder.kt)
-	at io.ktor.server.application.PluginBuilder$onDefaultPhaseWithMessage$1$1$1.invoke(PluginBuilder.kt)
-	at io.ktor.util.debug.ContextUtilsKt.addToContextInDebugMode(ContextUtils.kt:30)
-	at io.ktor.server.application.PluginBuilder$onDefaultPhaseWithMessage$1$1.invokeSuspend(PluginBuilder.kt:194)
-	at io.ktor.server.application.PluginBuilder$onDefaultPhaseWithMessage$1$1.invoke(PluginBuilder.kt)
-	at io.ktor.server.application.PluginBuilder$onDefaultPhaseWithMessage$1$1.invoke(PluginBuilder.kt)
-	at io.ktor.util.pipeline.SuspendFunctionGun.loop(SuspendFunctionGun.kt:131)
-	at io.ktor.util.pipeline.SuspendFunctionGun.proceed(SuspendFunctionGun.kt:89)
-	at io.ktor.util.pipeline.SuspendFunctionGun.execute$ktor_utils(SuspendFunctionGun.kt:109)
-	at io.ktor.util.pipeline.Pipeline.execute(Pipeline.kt:77)
-	at com.regnowsnaes.permitmanagementsystem.ApplicationKt$module$3$1.invokeSuspend(Application.kt:294)
-	at com.regnowsnaes.permitmanagementsystem.ApplicationKt$module$3$1.invoke(Application.kt)
-	at com.regnowsnaes.permitmanagementsystem.ApplicationKt$module$3$1.invoke(Application.kt)
-	at io.ktor.server.plugins.statuspages.StatusPagesKt$StatusPages$2$2$1.invokeSuspend(StatusPages.kt:93)
-	at io.ktor.server.plugins.statuspages.StatusPagesKt$StatusPages$2$2$1.invoke(StatusPages.kt)
-	at io.ktor.server.plugins.statuspages.StatusPagesKt$StatusPages$2$2$1.invoke(StatusPages.kt)
-	at io.ktor.server.logging.EmptyMDCProvider.withMDCBlock(Logging.kt:27)
-	at io.ktor.server.plugins.statuspages.StatusPagesKt$StatusPages$2$2.invokeSuspend(StatusPages.kt:91)
-	at io.ktor.server.plugins.statuspages.StatusPagesKt$StatusPages$2$2.invoke(StatusPages.kt)
-	at io.ktor.server.plugins.statuspages.StatusPagesKt$StatusPages$2$2.invoke(StatusPages.kt)
-	at io.ktor.server.application.hooks.CallFailed$install$1.invokeSuspend(CommonHooks.kt:48)
-	at kotlin.coroutines.jvm.internal.BaseContinuationImpl.resumeWith(ContinuationImpl.kt:33)
-	at kotlinx.coroutines.internal.ScopeCoroutine.afterResume(Scopes.kt:35)
-	at kotlinx.coroutines.AbstractCoroutine.resumeWith(AbstractCoroutine.kt:101)
-	at kotlin.coroutines.jvm.internal.BaseContinuationImpl.resumeWith(ContinuationImpl.kt:46)
-	at kotlinx.coroutines.DispatchedTask.run(DispatchedTask.kt:98)
-	at kotlinx.coroutines.EventLoop.processUnconfinedEvent(EventLoop.common.kt:65)
-	at kotlinx.coroutines.internal.DispatchedContinuation.resumeWith(DispatchedContinuation.kt:343)
-	at io.ktor.util.pipeline.SuspendFunctionGun.resumeRootWith(SuspendFunctionGun.kt:149)
-	at io.ktor.util.pipeline.SuspendFunctionGun.loop(SuspendFunctionGun.kt:134)
-	at io.ktor.util.pipeline.SuspendFunctionGun.proceed(SuspendFunctionGun.kt:89)
-	at io.ktor.util.pipeline.SuspendFunctionGun.execute$ktor_utils(SuspendFunctionGun.kt:109)
-	at io.ktor.util.pipeline.Pipeline.execute(Pipeline.kt:77)
-	at com.regnowsnaes.permitmanagementsystem.routes.DocumentRoutesKt$configureDocumentRoutes$1$1.invokeSuspend(DocumentRoutes.kt:160)
-	at com.regnowsnaes.permitmanagementsystem.routes.DocumentRoutesKt$configureDocumentRoutes$1$1.invoke(DocumentRoutes.kt)
-	at com.regnowsnaes.permitmanagementsystem.routes.DocumentRoutesKt$configureDocumentRoutes$1$1.invoke(DocumentRoutes.kt)
-	at io.ktor.server.routing.Route$buildPipeline$1$1.invokeSuspend(Route.kt:116)
-	at io.ktor.server.routing.Route$buildPipeline$1$1.invoke(Route.kt)
-	at io.ktor.server.routing.Route$buildPipeline$1$1.invoke(Route.kt)
-	at io.ktor.util.pipeline.SuspendFunctionGun.loop(SuspendFunctionGun.kt:131)
-	at io.ktor.util.pipeline.SuspendFunctionGun.proceed(SuspendFunctionGun.kt:89)
-	at io.ktor.util.pipeline.SuspendFunctionGun.execute$ktor_utils(SuspendFunctionGun.kt:109)
-	at io.ktor.util.pipeline.Pipeline.execute(Pipeline.kt:77)
-	at io.ktor.server.routing.Routing$executeResult$$inlined$execute$1.invokeSuspend(Pipeline.kt:478)
-	at io.ktor.server.routing.Routing$executeResult$$inlined$execute$1.invoke(Pipeline.kt)
-	at io.ktor.server.routing.Routing$executeResult$$inlined$execute$1.invoke(Pipeline.kt)
-	at io.ktor.util.debug.ContextUtilsKt.initContextInDebugMode(ContextUtils.kt:17)
-	at io.ktor.server.routing.Routing.executeResult(Routing.kt:190)
-	at io.ktor.server.routing.Routing.interceptor(Routing.kt:64)
-	at io.ktor.server.routing.Routing$Plugin$install$1.invokeSuspend(Routing.kt:140)
-	at io.ktor.server.routing.Routing$Plugin$install$1.invoke(Routing.kt)
-	at io.ktor.server.routing.Routing$Plugin$install$1.invoke(Routing.kt)
-	at io.ktor.util.pipeline.SuspendFunctionGun.loop(SuspendFunctionGun.kt:131)
-	at io.ktor.util.pipeline.SuspendFunctionGun.proceed(SuspendFunctionGun.kt:89)
-	at io.ktor.server.engine.BaseApplicationEngineKt$installDefaultTransformationChecker$1.invokeSuspend(BaseApplicationEngine.kt:124)
-	at io.ktor.server.engine.BaseApplicationEngineKt$installDefaultTransformationChecker$1.invoke(BaseApplicationEngine.kt)
-	at io.ktor.server.engine.BaseApplicationEngineKt$installDefaultTransformationChecker$1.invoke(BaseApplicationEngine.kt)
-	at io.ktor.util.pipeline.SuspendFunctionGun.loop(SuspendFunctionGun.kt:131)
-	at io.ktor.util.pipeline.SuspendFunctionGun.proceed(SuspendFunctionGun.kt:89)
-	at io.ktor.server.application.hooks.CallFailed$install$1$1.invokeSuspend(CommonHooks.kt:45)
-	at io.ktor.server.application.hooks.CallFailed$install$1$1.invoke(CommonHooks.kt)
-	at io.ktor.server.application.hooks.CallFailed$install$1$1.invoke(CommonHooks.kt)
-	at kotlinx.coroutines.intrinsics.UndispatchedKt.startUndspatched(Undispatched.kt:66)
-	at kotlinx.coroutines.intrinsics.UndispatchedKt.startUndispatchedOrReturn(Undispatched.kt:43)
-	at kotlinx.coroutines.CoroutineScopeKt.coroutineScope(CoroutineScope.kt:286)
-	at io.ktor.server.application.hooks.CallFailed$install$1.invokeSuspend(CommonHooks.kt:44)
-	at io.ktor.server.application.hooks.CallFailed$install$1.invoke(CommonHooks.kt)
-	at io.ktor.server.application.hooks.CallFailed$install$1.invoke(CommonHooks.kt)
-	at io.ktor.util.pipeline.SuspendFunctionGun.loop(SuspendFunctionGun.kt:131)
-	at io.ktor.util.pipeline.SuspendFunctionGun.proceed(SuspendFunctionGun.kt:89)
-	at io.ktor.util.pipeline.SuspendFunctionGun.execute$ktor_utils(SuspendFunctionGun.kt:109)
-	at io.ktor.util.pipeline.Pipeline.execute(Pipeline.kt:77)
-	at io.ktor.server.engine.DefaultEnginePipelineKt$defaultEnginePipeline$1$invokeSuspend$$inlined$execute$1.invokeSuspend(Pipeline.kt:478)
-	at io.ktor.server.engine.DefaultEnginePipelineKt$defaultEnginePipeline$1$invokeSuspend$$inlined$execute$1.invoke(Pipeline.kt)
-	at io.ktor.server.engine.DefaultEnginePipelineKt$defaultEnginePipeline$1$invokeSuspend$$inlined$execute$1.invoke(Pipeline.kt)
-	at io.ktor.util.debug.ContextUtilsKt.initContextInDebugMode(ContextUtils.kt:17)
-	at io.ktor.server.engine.DefaultEnginePipelineKt$defaultEnginePipeline$1.invokeSuspend(DefaultEnginePipeline.kt:123)
-	at io.ktor.server.engine.DefaultEnginePipelineKt$defaultEnginePipeline$1.invoke(DefaultEnginePipeline.kt)
-	at io.ktor.server.engine.DefaultEnginePipelineKt$defaultEnginePipeline$1.invoke(DefaultEnginePipeline.kt)
-	at io.ktor.util.pipeline.SuspendFunctionGun.loop(SuspendFunctionGun.kt:131)
-	at io.ktor.util.pipeline.SuspendFunctionGun.proceed(SuspendFunctionGun.kt:89)
-	at io.ktor.util.pipeline.SuspendFunctionGun.execute$ktor_utils(SuspendFunctionGun.kt:109)
-	at io.ktor.util.pipeline.Pipeline.execute(Pipeline.kt:77)
-	at io.ktor.server.netty.NettyApplicationCallHandler$handleRequest$1$invokeSuspend$$inlined$execute$1.invokeSuspend(Pipeline.kt:478)
-	at io.ktor.server.netty.NettyApplicationCallHandler$handleRequest$1$invokeSuspend$$inlined$execute$1.invoke(Pipeline.kt)
-	at io.ktor.server.netty.NettyApplicationCallHandler$handleRequest$1$invokeSuspend$$inlined$execute$1.invoke(Pipeline.kt)
-	at io.ktor.util.debug.ContextUtilsKt.initContextInDebugMode(ContextUtils.kt:17)
-	at io.ktor.server.netty.NettyApplicationCallHandler$handleRequest$1.invokeSuspend(NettyApplicationCallHandler.kt:140)
-	at io.ktor.server.netty.NettyApplicationCallHandler$handleRequest$1.invoke(NettyApplicationCallHandler.kt)
-	at io.ktor.server.netty.NettyApplicationCallHandler$handleRequest$1.invoke(NettyApplicationCallHandler.kt)
-	at kotlinx.coroutines.intrinsics.UndispatchedKt.startCoroutineUndispatched(Undispatched.kt:20)
-	at kotlinx.coroutines.CoroutineStart.invoke(CoroutineStart.kt:360)
-	at kotlinx.coroutines.AbstractCoroutine.start(AbstractCoroutine.kt:134)
-	at kotlinx.coroutines.BuildersKt__Builders_commonKt.launch(Builders.common.kt:53)
-	at kotlinx.coroutines.BuildersKt.launch(Unknown Source)
-	at io.ktor.server.netty.NettyApplicationCallHandler.handleRequest(NettyApplicationCallHandler.kt:41)
-	at io.ktor.server.netty.NettyApplicationCallHandler.channelRead(NettyApplicationCallHandler.kt:33)
-	at io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:444)
-	at io.netty.channel.AbstractChannelHandlerContext.access$600(AbstractChannelHandlerContext.java:61)
-	at io.netty.channel.AbstractChannelHandlerContext$7.run(AbstractChannelHandlerContext.java:425)
-	at io.netty.util.concurrent.AbstractEventExecutor.runTask(AbstractEventExecutor.java:173)
-	at io.netty.util.concurrent.AbstractEventExecutor.safeExecute(AbstractEventExecutor.java:166)
-	at io.netty.util.concurrent.SingleThreadEventExecutor.runAllTasks(SingleThreadEventExecutor.java:469)
-	at io.netty.channel.nio.NioEventLoop.run(NioEventLoop.java:569)
-	at io.netty.util.concurrent.SingleThreadEventExecutor$4.run(SingleThreadEventExecutor.java:994)
-	at io.netty.util.internal.ThreadExecutorMap$2.run(ThreadExecutorMap.java:74)
-	at io.ktor.server.netty.EventLoopGroupProxy$Companion.create$lambda$1$lambda$0(NettyApplicationEngine.kt:296)
-	at io.netty.util.concurrent.FastThreadLocalRunnable.run(FastThreadLocalRunnable.java:30)
-	at java.base/java.lang.Thread.run(Thread.java:1583)
+2025-08-12 23:11:15.994 [main] INFO  ktor.application - Autoreload is disabled because the development mode is off.
+2025-08-12 23:11:16.782 [main] INFO  ktor.application - Application started in 0.888 seconds.
+2025-08-12 23:11:17.314 [DefaultDispatcher-worker-1] INFO  ktor.application - Responding at http://0.0.0.0:8081
