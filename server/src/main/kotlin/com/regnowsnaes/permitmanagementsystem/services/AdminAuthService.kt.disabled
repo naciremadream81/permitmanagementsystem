@@ -1,0 +1,258 @@
+package com.regnowsnaes.permitmanagementsystem.services
+
+import com.regnowsnaes.permitmanagementsystem.database.AdminUsers
+import com.regnowsnaes.permitmanagementsystem.database.AdminSessions
+import com.regnowsnaes.permitmanagementsystem.database.AdminAuditLog
+import com.regnowsnaes.permitmanagementsystem.models.*
+import kotlinx.serialization.json.Json
+import kotlinx.serialization.encodeToString
+import org.jetbrains.exposed.sql.*
+import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
+import org.jetbrains.exposed.sql.transactions.transaction
+import org.mindrot.jbcrypt.BCrypt
+import java.time.LocalDateTime
+import java.util.*
+
+class AdminAuthService {
+    
+    fun createAdminUser(request: CreateAdminUserRequest): AdminUser? {
+        return transaction {
+            try {
+                // Check if user already exists
+                val existingUser = AdminUsers.select { AdminUsers.email eq request.email }.singleOrNull()
+                if (existingUser != null) {
+                    return@transaction null
+                }
+                
+                // Hash password
+                val passwordHash = BCrypt.hashpw(request.password, BCrypt.gensalt())
+                
+                // Create user
+                val userId = AdminUsers.insertAndGetId {
+                    it[email] = request.email
+                    it[passwordHash] = passwordHash
+                    it[firstName] = request.firstName
+                    it[lastName] = request.lastName
+                    it[role] = request.role.name
+                    it[countyRestrictions] = request.countyRestrictions?.let { counties -> 
+                        Json.encodeToString(counties) 
+                    }
+                    it[createdAt] = LocalDateTime.now()
+                    it[updatedAt] = LocalDateTime.now()
+                }
+                
+                // Return created user
+                AdminUsers.select { AdminUsers.id eq userId }.map { row ->
+                    AdminUser(
+                        id = row[AdminUsers.id].value,
+                        email = row[AdminUsers.email],
+                        firstName = row[AdminUsers.firstName],
+                        lastName = row[AdminUsers.lastName],
+                        role = AdminRole.valueOf(row[AdminUsers.role]),
+                        isActive = row[AdminUsers.isActive],
+                        countyRestrictions = row[AdminUsers.countyRestrictions]?.let { 
+                            Json.decodeFromString<List<Int>>(it) 
+                        },
+                        lastLogin = row[AdminUsers.lastLogin]?.toString(),
+                        createdAt = row[AdminUsers.createdAt].toString(),
+                        updatedAt = row[AdminUsers.updatedAt].toString()
+                    )
+                }.first()
+                
+            } catch (e: Exception) {
+                null
+            }
+        }
+    }
+    
+    fun authenticateAdmin(email: String, password: String, ipAddress: String? = null, userAgent: String? = null): AdminLoginResponse {
+        return transaction {
+            try {
+                // Find user
+                val userRow = AdminUsers.select { 
+                    (AdminUsers.email eq email) and (AdminUsers.isActive eq true) 
+                }.singleOrNull()
+                
+                if (userRow == null) {
+                    return@transaction AdminLoginResponse(
+                        success = false,
+                        message = "Invalid email or password"
+                    )
+                }
+                
+                // Verify password
+                val storedHash = userRow[AdminUsers.passwordHash]
+                if (!BCrypt.checkpw(password, storedHash)) {
+                    return@transaction AdminLoginResponse(
+                        success = false,
+                        message = "Invalid email or password"
+                    )
+                }
+                
+                // Create session
+                val sessionToken = UUID.randomUUID().toString()
+                val expiresAt = LocalDateTime.now().plusHours(8) // 8 hour session
+                
+                AdminSessions.insert {
+                    it[userId] = userRow[AdminUsers.id]
+                    it[AdminSessions.sessionToken] = sessionToken
+                    it[AdminSessions.expiresAt] = expiresAt
+                    it[AdminSessions.ipAddress] = ipAddress
+                    it[AdminSessions.userAgent] = userAgent
+                    it[createdAt] = LocalDateTime.now()
+                }
+                
+                // Update last login
+                AdminUsers.update({ AdminUsers.id eq userRow[AdminUsers.id] }) {
+                    it[lastLogin] = LocalDateTime.now()
+                    it[updatedAt] = LocalDateTime.now()
+                }
+                
+                // Log the login
+                logAuditEvent(
+                    userId = userRow[AdminUsers.id].value,
+                    action = "LOGIN",
+                    resourceType = "ADMIN_SESSION",
+                    ipAddress = ipAddress,
+                    userAgent = userAgent
+                )
+                
+                // Create user object
+                val user = AdminUser(
+                    id = userRow[AdminUsers.id].value,
+                    email = userRow[AdminUsers.email],
+                    firstName = userRow[AdminUsers.firstName],
+                    lastName = userRow[AdminUsers.lastName],
+                    role = AdminRole.valueOf(userRow[AdminUsers.role]),
+                    isActive = userRow[AdminUsers.isActive],
+                    countyRestrictions = userRow[AdminUsers.countyRestrictions]?.let { 
+                        Json.decodeFromString<List<Int>>(it) 
+                    },
+                    lastLogin = LocalDateTime.now().toString(),
+                    createdAt = userRow[AdminUsers.createdAt].toString(),
+                    updatedAt = userRow[AdminUsers.updatedAt].toString()
+                )
+                
+                AdminLoginResponse(
+                    success = true,
+                    message = "Login successful",
+                    user = user,
+                    sessionToken = sessionToken,
+                    expiresAt = expiresAt.toString()
+                )
+                
+            } catch (e: Exception) {
+                AdminLoginResponse(
+                    success = false,
+                    message = "Authentication failed: ${e.message}"
+                )
+            }
+        }
+    }
+    
+    fun validateSession(sessionToken: String): AdminUser? {
+        return transaction {
+            try {
+                val sessionRow = AdminSessions
+                    .join(AdminUsers, JoinType.INNER, AdminSessions.userId, AdminUsers.id)
+                    .select { 
+                        (AdminSessions.sessionToken eq sessionToken) and 
+                        (AdminSessions.expiresAt greater LocalDateTime.now()) and
+                        (AdminUsers.isActive eq true)
+                    }.singleOrNull()
+                
+                sessionRow?.let { row ->
+                    AdminUser(
+                        id = row[AdminUsers.id].value,
+                        email = row[AdminUsers.email],
+                        firstName = row[AdminUsers.firstName],
+                        lastName = row[AdminUsers.lastName],
+                        role = AdminRole.valueOf(row[AdminUsers.role]),
+                        isActive = row[AdminUsers.isActive],
+                        countyRestrictions = row[AdminUsers.countyRestrictions]?.let { 
+                            Json.decodeFromString<List<Int>>(it) 
+                        },
+                        lastLogin = row[AdminUsers.lastLogin]?.toString(),
+                        createdAt = row[AdminUsers.createdAt].toString(),
+                        updatedAt = row[AdminUsers.updatedAt].toString()
+                    )
+                }
+                
+            } catch (e: Exception) {
+                null
+            }
+        }
+    }
+    
+    fun logout(sessionToken: String): Boolean {
+        return transaction {
+            try {
+                val deletedCount = AdminSessions.deleteWhere { 
+                    AdminSessions.sessionToken eq sessionToken 
+                }
+                deletedCount > 0
+            } catch (e: Exception) {
+                false
+            }
+        }
+    }
+    
+    fun hasPermission(user: AdminUser, action: String, countyId: Int? = null): Boolean {
+        return when (user.role) {
+            AdminRole.SUPER_ADMIN -> true
+            AdminRole.ADMIN -> action != "MANAGE_USERS"
+            AdminRole.COUNTY_ADMIN -> {
+                if (countyId == null) return false
+                user.countyRestrictions?.contains(countyId) ?: false
+            }
+            AdminRole.VIEWER -> action.startsWith("VIEW") || action.startsWith("GET")
+        }
+    }
+    
+    fun logAuditEvent(
+        userId: Int? = null,
+        action: String,
+        resourceType: String,
+        resourceId: String? = null,
+        details: String? = null,
+        ipAddress: String? = null,
+        userAgent: String? = null
+    ) {
+        transaction {
+            AdminAuditLog.insert {
+                it[AdminAuditLog.userId] = userId
+                it[AdminAuditLog.action] = action
+                it[AdminAuditLog.resourceType] = resourceType
+                it[AdminAuditLog.resourceId] = resourceId
+                it[AdminAuditLog.details] = details
+                it[AdminAuditLog.ipAddress] = ipAddress
+                it[AdminAuditLog.userAgent] = userAgent
+                it[timestamp] = LocalDateTime.now()
+            }
+        }
+    }
+    
+    fun getAuditLog(limit: Int = 100, offset: Int = 0): List<AuditLogEntry> {
+        return transaction {
+            AdminAuditLog
+                .join(AdminUsers, JoinType.LEFT, AdminAuditLog.userId, AdminUsers.id)
+                .selectAll()
+                .orderBy(AdminAuditLog.timestamp to SortOrder.DESC)
+                .limit(limit, offset.toLong())
+                .map { row ->
+                    AuditLogEntry(
+                        id = row[AdminAuditLog.id].value,
+                        userId = row[AdminAuditLog.userId]?.value,
+                        userEmail = row[AdminUsers.email],
+                        action = row[AdminAuditLog.action],
+                        resourceType = row[AdminAuditLog.resourceType],
+                        resourceId = row[AdminAuditLog.resourceId],
+                        details = row[AdminAuditLog.details],
+                        ipAddress = row[AdminAuditLog.ipAddress],
+                        userAgent = row[AdminAuditLog.userAgent],
+                        timestamp = row[AdminAuditLog.timestamp].toString()
+                    )
+                }
+        }
+    }
+}

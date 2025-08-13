@@ -1,0 +1,582 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Florida Permit Management - Enhanced Admin Dashboard</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+
+        .admin-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 20px 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header h1 {
+            color: #2c3e50;
+            font-size: 2rem;
+            font-weight: 700;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+        }
+
+        .nav-tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 30px;
+        }
+
+        .nav-tab {
+            background: rgba(255, 255, 255, 0.9);
+            border: none;
+            padding: 12px 24px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            color: #666;
+        }
+
+        .nav-tab.active {
+            background: white;
+            color: #667eea;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .nav-tab:hover {
+            background: white;
+            transform: translateY(-2px);
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            transition: transform 0.3s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #667eea;
+            margin-bottom: 10px;
+        }
+
+        .stat-label {
+            color: #666;
+            font-size: 1.1rem;
+            font-weight: 500;
+        }
+
+        .content-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+        }
+
+        .btn {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-secondary {
+            background: #6c757d;
+        }
+
+        .btn-danger {
+            background: #dc3545;
+        }
+
+        .btn-success {
+            background: #28a745;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border-color 0.3s ease;
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(5px);
+            z-index: 1000;
+        }
+
+        .modal-content {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            max-width: 600px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+
+        .close {
+            position: absolute;
+            top: 15px;
+            right: 20px;
+            font-size: 24px;
+            cursor: pointer;
+            color: #999;
+        }
+
+        .close:hover {
+            color: #333;
+        }
+
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 15px 20px;
+            border-radius: 8px;
+            color: white;
+            font-weight: 600;
+            z-index: 1001;
+            transform: translateX(400px);
+            transition: transform 0.3s ease;
+        }
+
+        .notification.show {
+            transform: translateX(0);
+        }
+
+        .notification.success {
+            background: #28a745;
+        }
+
+        .notification.error {
+            background: #dc3545;
+        }
+
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #667eea;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .login-form {
+            max-width: 400px;
+            margin: 100px auto;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 40px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        }
+
+        .login-form h2 {
+            text-align: center;
+            margin-bottom: 30px;
+            color: #2c3e50;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        .bulk-selector {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .county-checkbox {
+            margin: 5px 10px;
+        }
+
+        .template-card {
+            border: 2px solid #e9ecef;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 15px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .template-card:hover {
+            border-color: #667eea;
+            background: #f8f9fa;
+        }
+
+        .template-card.selected {
+            border-color: #667eea;
+            background: rgba(102, 126, 234, 0.1);
+        }
+
+        .audit-log {
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .audit-entry {
+            padding: 10px;
+            border-bottom: 1px solid #e9ecef;
+            font-size: 14px;
+        }
+
+        .audit-entry:last-child {
+            border-bottom: none;
+        }
+
+        .audit-timestamp {
+            color: #666;
+            font-size: 12px;
+        }
+    </style>
+</head>
+<body>
+    <!-- Login Form -->
+    <div id="login-container" class="login-form">
+        <h2>🏛️ Admin Login</h2>
+        <form id="login-form">
+            <div class="form-group">
+                <label class="form-label">Email</label>
+                <input type="email" class="form-control" id="login-email" required>
+            </div>
+            <div class="form-group">
+                <label class="form-label">Password</label>
+                <input type="password" class="form-control" id="login-password" required>
+            </div>
+            <button type="submit" class="btn" style="width: 100%;">
+                <span id="login-loading" class="loading hidden"></span>
+                <span id="login-text">Login</span>
+            </button>
+        </form>
+    </div>
+
+    <!-- Main Admin Dashboard -->
+    <div id="admin-dashboard" class="admin-container hidden">
+        <div class="header">
+            <h1>🏛️ Florida Permit Management - Enhanced Admin</h1>
+            <div class="user-info">
+                <div class="user-avatar" id="user-avatar">A</div>
+                <div>
+                    <div id="user-name">Admin User</div>
+                    <div style="font-size: 12px; color: #666;" id="user-role">ADMIN</div>
+                </div>
+                <button class="btn btn-secondary" onclick="logout()">Logout</button>
+            </div>
+        </div>
+
+        <!-- Navigation Tabs -->
+        <div class="nav-tabs">
+            <button class="nav-tab active" onclick="showTab('dashboard')">📊 Dashboard</button>
+            <button class="nav-tab" onclick="showTab('counties')">🏛️ Counties</button>
+            <button class="nav-tab" onclick="showTab('bulk-ops')">⚡ Bulk Operations</button>
+            <button class="nav-tab" onclick="showTab('templates')">📋 Templates</button>
+            <button class="nav-tab" onclick="showTab('documents')">📁 Documents</button>
+            <button class="nav-tab" onclick="showTab('users')">👥 Users</button>
+            <button class="nav-tab" onclick="showTab('audit')">📝 Audit Log</button>
+        </div>
+
+        <!-- Dashboard Tab -->
+        <div id="dashboard-tab" class="tab-content active">
+            <div class="dashboard-grid">
+                <div class="stat-card">
+                    <div class="stat-number" id="total-counties">67</div>
+                    <div class="stat-label">Florida Counties</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" id="total-items">0</div>
+                    <div class="stat-label">Total Checklist Items</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" id="total-templates">6</div>
+                    <div class="stat-label">Available Templates</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" id="total-documents">0</div>
+                    <div class="stat-label">Uploaded Documents</div>
+                </div>
+            </div>
+
+            <div class="content-card">
+                <h3>🚀 Quick Actions</h3>
+                <div style="display: flex; gap: 15px; margin-top: 20px;">
+                    <button class="btn" onclick="showTab('bulk-ops')">⚡ Bulk Operations</button>
+                    <button class="btn" onclick="showTab('templates')">📋 Apply Template</button>
+                    <button class="btn" onclick="showTab('documents')">📁 Manage Documents</button>
+                    <button class="btn btn-success" onclick="exportData()">📊 Export Data</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Counties Tab -->
+        <div id="counties-tab" class="tab-content">
+            <div class="content-card">
+                <h3>🏛️ Florida Counties Management</h3>
+                <div id="counties-grid" class="dashboard-grid">
+                    <!-- Counties will be loaded here -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Bulk Operations Tab -->
+        <div id="bulk-ops-tab" class="tab-content">
+            <div class="content-card">
+                <h3>⚡ Bulk Operations</h3>
+                
+                <div class="bulk-selector">
+                    <h4>Select Counties</h4>
+                    <div style="margin: 15px 0;">
+                        <button class="btn btn-secondary" onclick="selectCountyType('major')">Major Counties</button>
+                        <button class="btn btn-secondary" onclick="selectCountyType('medium')">Medium Counties</button>
+                        <button class="btn btn-secondary" onclick="selectCountyType('small')">Small Counties</button>
+                        <button class="btn btn-secondary" onclick="selectCountyType('all')">All Counties</button>
+                        <button class="btn btn-secondary" onclick="clearCountySelection()">Clear All</button>
+                    </div>
+                    <div id="county-checkboxes">
+                        <!-- County checkboxes will be loaded here -->
+                    </div>
+                </div>
+
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px;">
+                    <div>
+                        <h4>Add Item to Selected Counties</h4>
+                        <form id="bulk-add-form">
+                            <div class="form-group">
+                                <label class="form-label">Title</label>
+                                <input type="text" class="form-control" id="bulk-title" required>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Description</label>
+                                <textarea class="form-control" id="bulk-description" rows="3" required></textarea>
+                            </div>
+                            <div class="form-group">
+                                <label>
+                                    <input type="checkbox" id="bulk-required" checked> Required Item
+                                </label>
+                            </div>
+                            <button type="submit" class="btn">Add to Selected Counties</button>
+                        </form>
+                    </div>
+
+                    <div>
+                        <h4>Update Existing Items</h4>
+                        <form id="bulk-update-form">
+                            <div class="form-group">
+                                <label class="form-label">Find Item by Title</label>
+                                <input type="text" class="form-control" id="bulk-find-title" required>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">New Title (optional)</label>
+                                <input type="text" class="form-control" id="bulk-new-title">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">New Description (optional)</label>
+                                <textarea class="form-control" id="bulk-new-description" rows="3"></textarea>
+                            </div>
+                            <button type="submit" class="btn">Update in Selected Counties</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Templates Tab -->
+        <div id="templates-tab" class="tab-content">
+            <div class="content-card">
+                <h3>📋 Checklist Templates</h3>
+                <div id="templates-list">
+                    <!-- Templates will be loaded here -->
+                </div>
+                
+                <div style="margin-top: 30px;">
+                    <h4>Apply Template to Counties</h4>
+                    <div id="template-apply-section" class="hidden">
+                        <div class="bulk-selector">
+                            <h5>Select Counties</h5>
+                            <div id="template-county-checkboxes">
+                                <!-- County checkboxes for template application -->
+                            </div>
+                        </div>
+                        <div style="margin: 20px 0;">
+                            <label>
+                                <input type="checkbox" id="replace-existing"> Replace existing checklist items
+                            </label>
+                        </div>
+                        <button class="btn" onclick="applySelectedTemplate()">Apply Template</button>
+                        <button class="btn btn-secondary" onclick="cancelTemplateApplication()">Cancel</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Documents Tab -->
+        <div id="documents-tab" class="tab-content">
+            <div class="content-card">
+                <h3>📁 Document Management</h3>
+                
+                <div style="margin-bottom: 30px;">
+                    <button class="btn" onclick="showUploadModal()">📤 Upload Document</button>
+                    <button class="btn btn-secondary" onclick="refreshDocuments()">🔄 Refresh</button>
+                </div>
+
+                <div id="documents-list">
+                    <!-- Documents will be loaded here -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Users Tab -->
+        <div id="users-tab" class="tab-content">
+            <div class="content-card">
+                <h3>👥 User Management</h3>
+                <div style="margin-bottom: 20px;">
+                    <button class="btn" onclick="showCreateUserModal()">➕ Create Admin User</button>
+                </div>
+                <div id="users-list">
+                    <!-- Users will be loaded here -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Audit Log Tab -->
+        <div id="audit-tab" class="tab-content">
+            <div class="content-card">
+                <h3>📝 Audit Log</h3>
+                <div class="audit-log" id="audit-log">
+                    <!-- Audit entries will be loaded here -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modals will be added in the next part -->
+    
+    <script>
+        // Global variables
+        let currentUser = null;
+        let sessionToken = null;
+        let counties = [];
+        let selectedTemplate = null;
+
+        // Initialize the application
+        document.addEventListener('DOMContentLoaded', function() {
+            checkExistingSession();
+        });
+
+        // Authentication functions will be added in the next part
+    </script>
+</body>
+</html>

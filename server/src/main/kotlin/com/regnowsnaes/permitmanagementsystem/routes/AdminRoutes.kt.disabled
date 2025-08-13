@@ -1,0 +1,330 @@
+package com.regnowsnaes.permitmanagementsystem.routes
+
+import com.regnowsnaes.permitmanagementsystem.models.*
+import com.regnowsnaes.permitmanagementsystem.services.AuthService
+import com.regnowsnaes.permitmanagementsystem.services.PermitService
+import io.ktor.http.*
+import io.ktor.server.application.*
+import io.ktor.server.request.*
+import io.ktor.server.response.*
+import io.ktor.server.routing.*
+
+fun Route.adminRoutes() {
+    route("/admin") {
+        // Middleware to check admin access
+        intercept(ApplicationCallPipeline.Call) {
+            val user = getAuthenticatedUser(call)
+            if (user == null || !AuthService.isAdmin(user)) {
+                call.respond(
+                    HttpStatusCode.Forbidden,
+                    ApiResponse<Nothing>(
+                        success = false,
+                        error = "Admin access required"
+                    )
+                )
+                finish()
+            }
+        }
+        
+        // User Management
+        route("/users") {
+            get {
+                try {
+                    val users = AuthService.getAllUsers()
+                    call.respond(
+                        HttpStatusCode.OK,
+                        ApiResponse(
+                            success = true,
+                            data = users.map { user -> 
+                                User(
+                                    id = user.id,
+                                    email = user.email,
+                                    firstName = user.firstName,
+                                    lastName = user.lastName,
+                                    role = user.role,
+                                    createdAt = user.createdAt,
+                                    updatedAt = user.updatedAt
+                                )
+                            },
+                            message = "Users retrieved successfully"
+                        )
+                    )
+                } catch (e: Exception) {
+                    call.respond(
+                        HttpStatusCode.InternalServerError,
+                        ApiResponse<Nothing>(
+                            success = false,
+                            error = "Failed to retrieve users: ${e.message}"
+                        )
+                    )
+                }
+            }
+            
+            put("/{id}/role") {
+                try {
+                    val userId = call.parameters["id"]?.toIntOrNull()
+                    if (userId == null) {
+                        call.respond(
+                            HttpStatusCode.BadRequest,
+                            ApiResponse<Nothing>(
+                                success = false,
+                                error = "Invalid user ID"
+                            )
+                        )
+                        return@put
+                    }
+                    
+                    val request = call.receive<UpdateUserRoleRequest>()
+                    val validRoles = listOf("user", "county_admin", "admin")
+                    
+                    if (request.role !in validRoles) {
+                        call.respond(
+                            HttpStatusCode.BadRequest,
+                            ApiResponse<Nothing>(
+                                success = false,
+                                error = "Invalid role. Must be one of: ${validRoles.joinToString()}"
+                            )
+                        )
+                        return@put
+                    }
+                    
+                    val updatedUser = AuthService.updateUserRole(userId, request.role)
+                    if (updatedUser != null) {
+                        call.respond(
+                            HttpStatusCode.OK,
+                            ApiResponse(
+                                success = true,
+                                data = updatedUser.copy(password = null),
+                                message = "User role updated successfully"
+                            )
+                        )
+                    } else {
+                        call.respond(
+                            HttpStatusCode.NotFound,
+                            ApiResponse<Nothing>(
+                                success = false,
+                                error = "User not found"
+                            )
+                        )
+                    }
+                } catch (e: Exception) {
+                    call.respond(
+                        HttpStatusCode.InternalServerError,
+                        ApiResponse<Nothing>(
+                            success = false,
+                            error = "Failed to update user role: ${e.message}"
+                        )
+                    )
+                }
+            }
+            
+            delete("/{id}") {
+                try {
+                    val userId = call.parameters["id"]?.toIntOrNull()
+                    if (userId == null) {
+                        call.respond(
+                            HttpStatusCode.BadRequest,
+                            ApiResponse<Nothing>(
+                                success = false,
+                                error = "Invalid user ID"
+                            )
+                        )
+                        return@delete
+                    }
+                    
+                    val currentUser = getAuthenticatedUser(call)!!
+                    if (currentUser.id == userId) {
+                        call.respond(
+                            HttpStatusCode.BadRequest,
+                            ApiResponse<Nothing>(
+                                success = false,
+                                error = "Cannot delete your own account"
+                            )
+                        )
+                        return@delete
+                    }
+                    
+                    val deleted = AuthService.deleteUser(userId)
+                    if (deleted) {
+                        call.respond(
+                            HttpStatusCode.OK,
+                            ApiResponse<Nothing>(
+                                success = true,
+                                message = "User deleted successfully"
+                            )
+                        )
+                    } else {
+                        call.respond(
+                            HttpStatusCode.NotFound,
+                            ApiResponse<Nothing>(
+                                success = false,
+                                error = "User not found"
+                            )
+                        )
+                    }
+                } catch (e: Exception) {
+                    call.respond(
+                        HttpStatusCode.InternalServerError,
+                        ApiResponse<Nothing>(
+                            success = false,
+                            error = "Failed to delete user: ${e.message}"
+                        )
+                    )
+                }
+            }
+        }
+        
+        // County Checklist Management
+        route("/counties/{countyId}/checklist") {
+            post {
+                try {
+                    val countyId = call.parameters["countyId"]?.toIntOrNull()
+                    if (countyId == null) {
+                        call.respond(
+                            HttpStatusCode.BadRequest,
+                            ApiResponse<Nothing>(
+                                success = false,
+                                error = "Invalid county ID"
+                            )
+                        )
+                        return@post
+                    }
+                    
+                    val request = call.receive<CreateChecklistItemRequest>()
+                    val checklistItem = PermitService.createChecklistItem(
+                        countyId = countyId,
+                        title = request.title,
+                        description = request.description,
+                        required = request.required,
+                        orderIndex = request.orderIndex
+                    )
+                    
+                    call.respond(
+                        HttpStatusCode.Created,
+                        ApiResponse(
+                            success = true,
+                            data = checklistItem,
+                            message = "Checklist item created successfully"
+                        )
+                    )
+                } catch (e: Exception) {
+                    call.respond(
+                        HttpStatusCode.InternalServerError,
+                        ApiResponse<Nothing>(
+                            success = false,
+                            error = "Failed to create checklist item: ${e.message}"
+                        )
+                    )
+                }
+            }
+            
+            put("/{itemId}") {
+                try {
+                    val countyId = call.parameters["countyId"]?.toIntOrNull()
+                    val itemId = call.parameters["itemId"]?.toIntOrNull()
+                    
+                    if (countyId == null || itemId == null) {
+                        call.respond(
+                            HttpStatusCode.BadRequest,
+                            ApiResponse<Nothing>(
+                                success = false,
+                                error = "Invalid county ID or item ID"
+                            )
+                        )
+                        return@put
+                    }
+                    
+                    val request = call.receive<UpdateChecklistItemRequest>()
+                    val updatedItem = PermitService.updateChecklistItem(
+                        itemId = itemId,
+                        title = request.title,
+                        description = request.description,
+                        required = request.required,
+                        orderIndex = request.orderIndex
+                    )
+                    
+                    if (updatedItem != null) {
+                        call.respond(
+                            HttpStatusCode.OK,
+                            ApiResponse(
+                                success = true,
+                                data = updatedItem,
+                                message = "Checklist item updated successfully"
+                            )
+                        )
+                    } else {
+                        call.respond(
+                            HttpStatusCode.NotFound,
+                            ApiResponse<Nothing>(
+                                success = false,
+                                error = "Checklist item not found"
+                            )
+                        )
+                    }
+                } catch (e: Exception) {
+                    call.respond(
+                        HttpStatusCode.InternalServerError,
+                        ApiResponse<Nothing>(
+                            success = false,
+                            error = "Failed to update checklist item: ${e.message}"
+                        )
+                    )
+                }
+            }
+            
+            delete("/{itemId}") {
+                try {
+                    val itemId = call.parameters["itemId"]?.toIntOrNull()
+                    if (itemId == null) {
+                        call.respond(
+                            HttpStatusCode.BadRequest,
+                            ApiResponse<Nothing>(
+                                success = false,
+                                error = "Invalid item ID"
+                            )
+                        )
+                        return@delete
+                    }
+                    
+                    val deleted = PermitService.deleteChecklistItem(itemId)
+                    if (deleted) {
+                        call.respond(
+                            HttpStatusCode.OK,
+                            ApiResponse<Nothing>(
+                                success = true,
+                                message = "Checklist item deleted successfully"
+                            )
+                        )
+                    } else {
+                        call.respond(
+                            HttpStatusCode.NotFound,
+                            ApiResponse<Nothing>(
+                                success = false,
+                                error = "Checklist item not found"
+                            )
+                        )
+                    }
+                } catch (e: Exception) {
+                    call.respond(
+                        HttpStatusCode.InternalServerError,
+                        ApiResponse<Nothing>(
+                            success = false,
+                            error = "Failed to delete checklist item: ${e.message}"
+                        )
+                    )
+                }
+            }
+        }
+    }
+}
+
+// Helper function to get authenticated user (should be moved to a common place)
+private suspend fun getAuthenticatedUser(call: ApplicationCall): User? {
+    val authHeader = call.request.headers["Authorization"]
+    if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+        return null
+    }
+    
+    val token = authHeader.substring(7)
+    return AuthService.validateToken(token)
+}

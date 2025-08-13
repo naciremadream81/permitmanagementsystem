@@ -1,0 +1,281 @@
+package com.regnowsnaes.permitmanagementsystem.routes
+
+import com.regnowsnaes.permitmanagementsystem.database.ChecklistItems
+import com.regnowsnaes.permitmanagementsystem.database.Counties
+import com.regnowsnaes.permitmanagementsystem.models.ChecklistItem
+import io.ktor.http.*
+import io.ktor.server.application.*
+import io.ktor.server.request.*
+import io.ktor.server.response.*
+import io.ktor.server.routing.*
+import kotlinx.serialization.Serializable
+import org.jetbrains.exposed.sql.*
+import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
+import org.jetbrains.exposed.sql.transactions.transaction
+import java.time.LocalDateTime
+
+@Serializable
+data class BulkAddItemRequest(
+    val countyIds: List<Int>,
+    val title: String,
+    val description: String,
+    val required: Boolean = true,
+    val orderIndex: Int? = null
+)
+
+@Serializable
+data class BulkUpdateItemRequest(
+    val countyIds: List<Int>,
+    val itemTitle: String, // Title to match existing items
+    val updates: Map<String, String> // Fields to update
+)
+
+@Serializable
+data class BulkDeleteItemRequest(
+    val countyIds: List<Int>,
+    val itemTitle: String // Title to match items to delete
+)
+
+@Serializable
+data class BulkOperationResult(
+    val success: Boolean,
+    val message: String,
+    val affectedCounties: Int,
+    val affectedItems: Int,
+    val errors: List<String> = emptyList()
+)
+
+fun Application.configureBulkOperationsRoutes() {
+    routing {
+        
+        // Bulk add item to multiple counties
+        post("/admin/bulk/add-item") {
+            try {
+                val request = call.receive<BulkAddItemRequest>()
+                
+                val result = transaction {
+                    var successCount = 0
+                    var itemCount = 0
+                    val errors = mutableListOf<String>()
+                    
+                    request.countyIds.forEach { countyId ->
+                        try {
+                            // Verify county exists
+                            val countyExists = Counties.select { Counties.id eq countyId }.count() > 0
+                            if (!countyExists) {
+                                errors.add("County ID $countyId not found")
+                                return@forEach
+                            }
+                            
+                            // Get next order index if not provided
+                            val nextOrderIndex = request.orderIndex ?: run {
+                                val maxOrder = ChecklistItems.select { ChecklistItems.countyId eq countyId }
+                                    .maxByOrNull { it[ChecklistItems.orderIndex] }
+                                    ?.get(ChecklistItems.orderIndex) ?: 0
+                                maxOrder + 1
+                            }
+                            
+                            // Insert the new checklist item
+                            ChecklistItems.insertAndGetId {
+                                it[ChecklistItems.countyId] = countyId
+                                it[title] = request.title
+                                it[description] = request.description
+                                it[required] = request.required
+                                it[orderIndex] = nextOrderIndex
+                                it[createdAt] = LocalDateTime.now()
+                                it[updatedAt] = LocalDateTime.now()
+                            }
+                            
+                            successCount++
+                            itemCount++
+                            
+                        } catch (e: Exception) {
+                            errors.add("County ID $countyId: ${e.message}")
+                        }
+                    }
+                    
+                    BulkOperationResult(
+                        success = successCount > 0,
+                        message = "Added '$${request.title}' to $successCount counties",
+                        affectedCounties = successCount,
+                        affectedItems = itemCount,
+                        errors = errors
+                    )
+                }
+                
+                call.respond(HttpStatusCode.OK, result)
+                
+            } catch (e: Exception) {
+                call.application.log.error("Error in bulk add operation", e)
+                call.respond(
+                    HttpStatusCode.InternalServerError,
+                    BulkOperationResult(
+                        success = false,
+                        message = "Bulk add operation failed: ${e.message}",
+                        affectedCounties = 0,
+                        affectedItems = 0,
+                        errors = listOf(e.message ?: "Unknown error")
+                    )
+                )
+            }
+        }
+        
+        // Bulk update items across multiple counties
+        post("/admin/bulk/update-item") {
+            try {
+                val request = call.receive<BulkUpdateItemRequest>()
+                
+                val result = transaction {
+                    var successCount = 0
+                    var itemCount = 0
+                    val errors = mutableListOf<String>()
+                    
+                    request.countyIds.forEach { countyId ->
+                        try {
+                            // Find items with matching title in this county
+                            val itemsToUpdate = ChecklistItems.select { 
+                                (ChecklistItems.countyId eq countyId) and 
+                                (ChecklistItems.title eq request.itemTitle) 
+                            }
+                            
+                            if (itemsToUpdate.empty()) {
+                                errors.add("County ID $countyId: No items found with title '${request.itemTitle}'")
+                                return@forEach
+                            }
+                            
+                            itemsToUpdate.forEach { row ->
+                                val itemId = row[ChecklistItems.id]
+                                
+                                ChecklistItems.update({ ChecklistItems.id eq itemId }) {
+                                    request.updates["title"]?.let { title -> it[ChecklistItems.title] = title }
+                                    request.updates["description"]?.let { desc -> it[ChecklistItems.description] = desc }
+                                    request.updates["required"]?.let { req -> it[ChecklistItems.required] = req.toBoolean() }
+                                    request.updates["orderIndex"]?.let { order -> it[ChecklistItems.orderIndex] = order.toInt() }
+                                    it[updatedAt] = LocalDateTime.now()
+                                }
+                                
+                                itemCount++
+                            }
+                            
+                            successCount++
+                            
+                        } catch (e: Exception) {
+                            errors.add("County ID $countyId: ${e.message}")
+                        }
+                    }
+                    
+                    BulkOperationResult(
+                        success = successCount > 0,
+                        message = "Updated $itemCount items across $successCount counties",
+                        affectedCounties = successCount,
+                        affectedItems = itemCount,
+                        errors = errors
+                    )
+                }
+                
+                call.respond(HttpStatusCode.OK, result)
+                
+            } catch (e: Exception) {
+                call.application.log.error("Error in bulk update operation", e)
+                call.respond(
+                    HttpStatusCode.InternalServerError,
+                    BulkOperationResult(
+                        success = false,
+                        message = "Bulk update operation failed: ${e.message}",
+                        affectedCounties = 0,
+                        affectedItems = 0,
+                        errors = listOf(e.message ?: "Unknown error")
+                    )
+                )
+            }
+        }
+        
+        // Bulk delete items from multiple counties
+        post("/admin/bulk/delete-item") {
+            try {
+                val request = call.receive<BulkDeleteItemRequest>()
+                
+                val result = transaction {
+                    var successCount = 0
+                    var itemCount = 0
+                    val errors = mutableListOf<String>()
+                    
+                    request.countyIds.forEach { countyId ->
+                        try {
+                            // Delete items with matching title in this county
+                            val deletedCount = ChecklistItems.deleteWhere { 
+                                (ChecklistItems.countyId eq countyId) and 
+                                (ChecklistItems.title eq request.itemTitle) 
+                            }
+                            
+                            if (deletedCount == 0) {
+                                errors.add("County ID $countyId: No items found with title '${request.itemTitle}'")
+                            } else {
+                                successCount++
+                                itemCount += deletedCount
+                            }
+                            
+                        } catch (e: Exception) {
+                            errors.add("County ID $countyId: ${e.message}")
+                        }
+                    }
+                    
+                    BulkOperationResult(
+                        success = successCount > 0,
+                        message = "Deleted $itemCount items from $successCount counties",
+                        affectedCounties = successCount,
+                        affectedItems = itemCount,
+                        errors = errors
+                    )
+                }
+                
+                call.respond(HttpStatusCode.OK, result)
+                
+            } catch (e: Exception) {
+                call.application.log.error("Error in bulk delete operation", e)
+                call.respond(
+                    HttpStatusCode.InternalServerError,
+                    BulkOperationResult(
+                        success = false,
+                        message = "Bulk delete operation failed: ${e.message}",
+                        affectedCounties = 0,
+                        affectedItems = 0,
+                        errors = listOf(e.message ?: "Unknown error")
+                    )
+                )
+            }
+        }
+        
+        // Get counties by type for bulk operations
+        get("/admin/bulk/counties-by-type") {
+            try {
+                val result = transaction {
+                    val allCounties = Counties.selectAll().map { row ->
+                        mapOf(
+                            "id" to row[Counties.id].value,
+                            "name" to row[Counties.name],
+                            "state" to row[Counties.state]
+                        )
+                    }
+                    
+                    // Categorize counties by size/type
+                    val majorCounties = listOf(6, 28, 43, 48, 50, 52) // Broward, Hillsborough, Miami-Dade, Orange, Palm Beach, Pinellas
+                    val mediumCounties = listOf(15, 35, 52, 59, 34, 40, 54, 17, 45, 53, 41, 44, 26, 30, 36, 10, 8, 50)
+                    
+                    mapOf(
+                        "major" to allCounties.filter { it["id"] in majorCounties },
+                        "medium" to allCounties.filter { it["id"] in mediumCounties && it["id"] !in majorCounties },
+                        "small" to allCounties.filter { it["id"] !in majorCounties && it["id"] !in mediumCounties },
+                        "all" to allCounties
+                    )
+                }
+                
+                call.respond(HttpStatusCode.OK, result)
+                
+            } catch (e: Exception) {
+                call.application.log.error("Error getting counties by type", e)
+                call.respond(HttpStatusCode.InternalServerError, mapOf("error" to "Failed to get counties by type"))
+            }
+        }
+    }
+}

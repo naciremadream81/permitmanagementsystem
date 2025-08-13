@@ -1,0 +1,108 @@
+package com.regnowsnaes.permitmanagementsystem.models
+
+import kotlinx.serialization.Serializable
+import java.time.LocalDateTime
+
+@Serializable
+data class AdminUser(
+    val id: Int,
+    val email: String,
+    val firstName: String,
+    val lastName: String,
+    val role: AdminRole,
+    val isActive: Boolean,
+    val countyRestrictions: List<Int>? = null,
+    val lastLogin: String? = null,
+    val createdAt: String,
+    val updatedAt: String
+)
+
+@Serializable
+enum class AdminRole {
+    SUPER_ADMIN,    // Full system access
+    ADMIN,          // Full access except user management
+    COUNTY_ADMIN,   // Access to specific counties only
+    VIEWER          // Read-only access
+}
+
+@Serializable
+data class AdminSession(
+    val id: Int,
+    val userId: Int,
+    val sessionToken: String,
+    val expiresAt: String,
+    val ipAddress: String? = null,
+    val userAgent: String? = null,
+    val createdAt: String
+)
+
+@Serializable
+data class AdminLoginRequest(
+    val email: String,
+    val password: String
+)
+
+@Serializable
+data class AdminLoginResponse(
+    val success: Boolean,
+    val message: String,
+    val user: AdminUser? = null,
+    val sessionToken: String? = null,
+    val expiresAt: String? = null
+)
+
+@Serializable
+data class CreateAdminUserRequest(
+    val email: String,
+    val password: String,
+    val firstName: String,
+    val lastName: String,
+    val role: AdminRole,
+    val countyRestrictions: List<Int>? = null
+)
+
+@Serializable
+data class UpdateAdminUserRequest(
+    val firstName: String? = null,
+    val lastName: String? = null,
+    val role: AdminRole? = null,
+    val isActive: Boolean? = null,
+    val countyRestrictions: List<Int>? = null
+)
+
+@Serializable
+data class ChangePasswordRequest(
+    val currentPassword: String,
+    val newPassword: String
+)
+
+@Serializable
+data class AuditLogEntry(
+    val id: Int,
+    val userId: Int? = null,
+    val userEmail: String? = null,
+    val action: String,
+    val resourceType: String,
+    val resourceId: String? = null,
+    val details: String? = null,
+    val ipAddress: String? = null,
+    val userAgent: String? = null,
+    val timestamp: String
+)
+
+@Serializable
+data class DocumentUpload(
+    val id: Int,
+    val fileName: String,
+    val originalFileName: String,
+    val filePath: String,
+    val fileSize: Long,
+    val mimeType: String,
+    val uploadedBy: Int? = null,
+    val uploaderName: String? = null,
+    val relatedType: String,
+    val relatedId: Int? = null,
+    val isPublic: Boolean,
+    val uploadedAt: String,
+    val downloadUrl: String? = null
+)

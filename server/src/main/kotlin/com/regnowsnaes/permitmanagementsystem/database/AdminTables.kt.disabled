@@ -1,0 +1,50 @@
+package com.regnowsnaes.permitmanagementsystem.database
+
+import org.jetbrains.exposed.dao.id.IntIdTable
+import org.jetbrains.exposed.sql.kotlin.datetime.datetime
+
+object AdminUsers : IntIdTable("admin_users") {
+    val email = varchar("email", 255).uniqueIndex()
+    val passwordHash = varchar("password_hash", 255)
+    val firstName = varchar("first_name", 100)
+    val lastName = varchar("last_name", 100)
+    val role = varchar("role", 50) // SUPER_ADMIN, ADMIN, COUNTY_ADMIN, VIEWER
+    val isActive = bool("is_active").default(true)
+    val countyRestrictions = text("county_restrictions").nullable() // JSON array of county IDs for COUNTY_ADMIN
+    val lastLogin = datetime("last_login").nullable()
+    val createdAt = datetime("created_at")
+    val updatedAt = datetime("updated_at")
+}
+
+object AdminSessions : IntIdTable("admin_sessions") {
+    val userId = reference("user_id", AdminUsers)
+    val sessionToken = varchar("session_token", 255).uniqueIndex()
+    val expiresAt = datetime("expires_at")
+    val ipAddress = varchar("ip_address", 45).nullable()
+    val userAgent = text("user_agent").nullable()
+    val createdAt = datetime("created_at")
+}
+
+object AdminAuditLog : IntIdTable("admin_audit_log") {
+    val userId = reference("user_id", AdminUsers).nullable()
+    val action = varchar("action", 100) // CREATE, UPDATE, DELETE, BULK_CREATE, etc.
+    val resourceType = varchar("resource_type", 50) // CHECKLIST_ITEM, COUNTY, TEMPLATE, etc.
+    val resourceId = varchar("resource_id", 100).nullable()
+    val details = text("details").nullable() // JSON with additional details
+    val ipAddress = varchar("ip_address", 45).nullable()
+    val userAgent = text("user_agent").nullable()
+    val timestamp = datetime("timestamp")
+}
+
+object DocumentUploads : IntIdTable("document_uploads") {
+    val fileName = varchar("file_name", 255)
+    val originalFileName = varchar("original_file_name", 255)
+    val filePath = varchar("file_path", 500)
+    val fileSize = long("file_size")
+    val mimeType = varchar("mime_type", 100)
+    val uploadedBy = reference("uploaded_by", AdminUsers).nullable()
+    val relatedType = varchar("related_type", 50) // CHECKLIST_ITEM, COUNTY, TEMPLATE
+    val relatedId = integer("related_id").nullable()
+    val isPublic = bool("is_public").default(false)
+    val uploadedAt = datetime("uploaded_at")
+}

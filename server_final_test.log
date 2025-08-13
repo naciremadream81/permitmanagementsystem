@@ -1,0 +1,267 @@
+2025-07-08 19:57:18.869 [main] DEBUG Exposed - SELECT COUNT(*) FROM counties
+2025-07-08 19:57:19.045 [main] INFO  io.ktor.server.Application - Autoreload is disabled because the development mode is off.
+2025-07-08 19:57:19.440 [main] INFO  io.ktor.server.Application - Application started in 0.43 seconds.
+WARNING: A restricted method in java.lang.System has been called
+WARNING: java.lang.System::loadLibrary has been called by io.netty.util.internal.NativeLibraryUtil in an unnamed module (file:/Users/seans/AndroidStudioProjects/permitmanagementsystem/server/build/libs/server-all.jar)
+WARNING: Use --enable-native-access=ALL-UNNAMED to avoid a warning for callers in this module
+WARNING: Restricted methods will be blocked in a future release unless native access is enabled
+
+2025-07-08 19:57:20.863 [DefaultDispatcher-worker-2] INFO  io.ktor.server.Application - Responding at http://0.0.0.0:8080
+2025-07-08 19:57:29.380 [eventLoopGroupProxy-4-1] TRACE io.ktor.server.routing.Routing - Trace for [counties]
+/, segment:0 -> SUCCESS @ /
+  /, segment:0 -> SUCCESS @ /
+    /(method:GET), segment:0 -> FAILURE "Not all segments matched" @ /(method:GET)
+  /auth, segment:0 -> FAILURE "Selector didn't match" @ /auth
+  /counties, segment:1 -> SUCCESS @ /counties
+    /counties/(method:GET), segment:1 -> SUCCESS @ /counties/(method:GET)
+    /counties/{id}, segment:1 -> FAILURE "Selector didn't match" @ /counties/{id}
+  /packages, segment:0 -> FAILURE "Selector didn't match" @ /packages
+  /uploads, segment:0 -> FAILURE "Selector didn't match" @ /uploads
+Matched routes:
+  "" -> "counties" -> "(method:GET)"
+Routing resolve result:
+  SUCCESS @ /counties/(method:GET)
+Getting counties...
+2025-07-08 19:57:29.454 [eventLoopGroupProxy-4-1] DEBUG Exposed - SELECT counties.id, counties."name", counties."state", counties.created_at, counties.updated_at FROM counties
+Found 67 counties
+2025-07-08 19:57:37.942 [eventLoopGroupProxy-4-2] TRACE io.ktor.server.routing.Routing - Trace for []
+/, segment:0 -> SUCCESS @ /
+  /, segment:0 -> SUCCESS @ /
+    /(method:GET), segment:0 -> SUCCESS @ /(method:GET)
+  /auth, segment:0 -> FAILURE "Selector didn't match" @ /auth
+  /counties, segment:0 -> FAILURE "Selector didn't match" @ /counties
+  /packages, segment:0 -> FAILURE "Selector didn't match" @ /packages
+  /uploads, segment:0 -> FAILURE "Selector didn't match" @ /uploads
+Matched routes:
+  "" -> "<slash>" -> "(method:GET)"
+Routing resolve result:
+  SUCCESS @ /(method:GET)
+2025-07-08 19:57:37.953 [eventLoopGroupProxy-4-2] TRACE i.k.s.p.c.ContentNegotiation - Skipping because body is already converted.
+2025-07-08 19:57:46.061 [eventLoopGroupProxy-4-3] TRACE io.ktor.server.routing.Routing - Trace for [auth, register]
+/, segment:0 -> SUCCESS @ /
+  /, segment:0 -> SUCCESS @ /
+    /(method:GET), segment:0 -> FAILURE "Selector didn't match" @ /(method:GET)
+  /auth, segment:1 -> SUCCESS @ /auth
+    /auth/register, segment:2 -> SUCCESS @ /auth/register
+      /auth/register/(method:POST), segment:2 -> SUCCESS @ /auth/register/(method:POST)
+    /auth/login, segment:1 -> FAILURE "Selector didn't match" @ /auth/login
+  /counties, segment:0 -> FAILURE "Selector didn't match" @ /counties
+  /packages, segment:0 -> FAILURE "Selector didn't match" @ /packages
+  /uploads, segment:0 -> FAILURE "Selector didn't match" @ /uploads
+Matched routes:
+  "" -> "auth" -> "register" -> "(method:POST)"
+Routing resolve result:
+  SUCCESS @ /auth/register/(method:POST)
+2025-07-08 19:57:46.088 [eventLoopGroupProxy-4-3] TRACE i.k.server.engine.DefaultTransform - No Default Transformations found for class io.ktor.utils.io.ByteChannel and expected type TypeInfo(com.regnowsnaes.permitmanagementsystem.models.RegisterRequest) for call /auth/register
+2025-07-08 19:57:46.597 [eventLoopGroupProxy-4-3] DEBUG Exposed - SELECT users.id, users.email, users."password", users.first_name, users.last_name, users.created_at, users.updated_at FROM users WHERE users.email = 'test@example.com'
+2025-07-08 19:57:48.404 [eventLoopGroupProxy-4-3] DEBUG Exposed - INSERT INTO users (created_at, email, first_name, last_name, "password", updated_at) VALUES ('2025-07-08T19:57:48.349894', 'test@example.com', 'Test', 'User', '$2a$12$zPTBTZvkPgATKsA4H29SsubgW5LdvOHDHYRY8fa9K7Z8tRQVrswra', '2025-07-08T19:57:48.349937')
+2025-07-08 19:58:19.201 [eventLoopGroupProxy-4-4] TRACE io.ktor.server.routing.Routing - Trace for []
+/, segment:0 -> SUCCESS @ /
+  /, segment:0 -> SUCCESS @ /
+    /(method:GET), segment:0 -> SUCCESS @ /(method:GET)
+  /auth, segment:0 -> FAILURE "Selector didn't match" @ /auth
+  /counties, segment:0 -> FAILURE "Selector didn't match" @ /counties
+  /packages, segment:0 -> FAILURE "Selector didn't match" @ /packages
+  /uploads, segment:0 -> FAILURE "Selector didn't match" @ /uploads
+Matched routes:
+  "" -> "<slash>" -> "(method:GET)"
+Routing resolve result:
+  SUCCESS @ /(method:GET)
+2025-07-08 19:58:19.212 [eventLoopGroupProxy-4-4] TRACE i.k.s.p.c.ContentNegotiation - Skipping because body is already converted.
+2025-07-08 19:58:19.263 [eventLoopGroupProxy-4-1] TRACE io.ktor.server.routing.Routing - Trace for [counties]
+/, segment:0 -> SUCCESS @ /
+  /, segment:0 -> SUCCESS @ /
+    /(method:GET), segment:0 -> FAILURE "Not all segments matched" @ /(method:GET)
+  /auth, segment:0 -> FAILURE "Selector didn't match" @ /auth
+  /counties, segment:1 -> SUCCESS @ /counties
+    /counties/(method:GET), segment:1 -> SUCCESS @ /counties/(method:GET)
+    /counties/{id}, segment:1 -> FAILURE "Selector didn't match" @ /counties/{id}
+  /packages, segment:0 -> FAILURE "Selector didn't match" @ /packages
+  /uploads, segment:0 -> FAILURE "Selector didn't match" @ /uploads
+Matched routes:
+  "" -> "counties" -> "(method:GET)"
+Routing resolve result:
+  SUCCESS @ /counties/(method:GET)
+Getting counties...
+2025-07-08 19:58:19.320 [eventLoopGroupProxy-4-1] DEBUG Exposed - SELECT counties.id, counties."name", counties."state", counties.created_at, counties.updated_at FROM counties
+Found 67 counties
+2025-07-08 20:17:04.847 [eventLoopGroupProxy-4-2] TRACE io.ktor.server.routing.Routing - Trace for [counties]
+/, segment:0 -> SUCCESS @ /
+  /, segment:0 -> SUCCESS @ /
+    /(method:GET), segment:0 -> FAILURE "Not all segments matched" @ /(method:GET)
+  /auth, segment:0 -> FAILURE "Selector didn't match" @ /auth
+  /counties, segment:1 -> SUCCESS @ /counties
+    /counties/(method:GET), segment:1 -> SUCCESS @ /counties/(method:GET)
+    /counties/{id}, segment:1 -> FAILURE "Selector didn't match" @ /counties/{id}
+  /packages, segment:0 -> FAILURE "Selector didn't match" @ /packages
+  /uploads, segment:0 -> FAILURE "Selector didn't match" @ /uploads
+Matched routes:
+  "" -> "counties" -> "(method:GET)"
+Routing resolve result:
+  SUCCESS @ /counties/(method:GET)
+Getting counties...
+2025-07-08 20:17:05.023 [eventLoopGroupProxy-4-2] DEBUG Exposed - SELECT counties.id, counties."name", counties."state", counties.created_at, counties.updated_at FROM counties
+Found 67 counties
+2025-07-08 20:17:48.386 [eventLoopGroupProxy-4-3] TRACE io.ktor.server.routing.Routing - Trace for [counties]
+/, segment:0 -> SUCCESS @ /
+  /, segment:0 -> SUCCESS @ /
+    /(method:GET), segment:0 -> FAILURE "Not all segments matched" @ /(method:GET)
+  /auth, segment:0 -> FAILURE "Selector didn't match" @ /auth
+  /counties, segment:1 -> SUCCESS @ /counties
+    /counties/(method:GET), segment:1 -> SUCCESS @ /counties/(method:GET)
+    /counties/{id}, segment:1 -> FAILURE "Selector didn't match" @ /counties/{id}
+  /packages, segment:0 -> FAILURE "Selector didn't match" @ /packages
+  /uploads, segment:0 -> FAILURE "Selector didn't match" @ /uploads
+Matched routes:
+  "" -> "counties" -> "(method:GET)"
+Routing resolve result:
+  SUCCESS @ /counties/(method:GET)
+Getting counties...
+2025-07-08 20:17:48.469 [eventLoopGroupProxy-4-3] DEBUG Exposed - SELECT counties.id, counties."name", counties."state", counties.created_at, counties.updated_at FROM counties
+Found 67 counties
+2025-07-08 20:23:25.542 [eventLoopGroupProxy-4-4] TRACE io.ktor.server.routing.Routing - Trace for [auth, login]
+/, segment:0 -> SUCCESS @ /
+  /, segment:0 -> SUCCESS @ /
+    /(method:GET), segment:0 -> FAILURE "Selector didn't match" @ /(method:GET)
+  /auth, segment:1 -> SUCCESS @ /auth
+    /auth/register, segment:1 -> FAILURE "Selector didn't match" @ /auth/register
+    /auth/login, segment:2 -> SUCCESS @ /auth/login
+      /auth/login/(method:POST), segment:2 -> SUCCESS @ /auth/login/(method:POST)
+  /counties, segment:0 -> FAILURE "Selector didn't match" @ /counties
+  /packages, segment:0 -> FAILURE "Selector didn't match" @ /packages
+  /uploads, segment:0 -> FAILURE "Selector didn't match" @ /uploads
+Matched routes:
+  "" -> "auth" -> "login" -> "(method:POST)"
+Routing resolve result:
+  SUCCESS @ /auth/login/(method:POST)
+2025-07-08 20:23:25.825 [eventLoopGroupProxy-4-4] TRACE i.k.server.engine.DefaultTransform - No Default Transformations found for class io.ktor.utils.io.ByteChannel and expected type TypeInfo(com.regnowsnaes.permitmanagementsystem.models.LoginRequest) for call /auth/login
+2025-07-08 20:23:26.069 [eventLoopGroupProxy-4-4] DEBUG Exposed - SELECT users.id, users.email, users."password", users.first_name, users.last_name, users.created_at, users.updated_at FROM users WHERE users.email = 'test@example.com'
+2025-07-08 20:23:48.588 [eventLoopGroupProxy-4-1] TRACE io.ktor.server.routing.Routing - Trace for [auth, register]
+/, segment:0 -> SUCCESS @ /
+  /, segment:0 -> SUCCESS @ /
+    /(method:GET), segment:0 -> FAILURE "Selector didn't match" @ /(method:GET)
+  /auth, segment:1 -> SUCCESS @ /auth
+    /auth/register, segment:2 -> SUCCESS @ /auth/register
+      /auth/register/(method:POST), segment:2 -> SUCCESS @ /auth/register/(method:POST)
+    /auth/login, segment:1 -> FAILURE "Selector didn't match" @ /auth/login
+  /counties, segment:0 -> FAILURE "Selector didn't match" @ /counties
+  /packages, segment:0 -> FAILURE "Selector didn't match" @ /packages
+  /uploads, segment:0 -> FAILURE "Selector didn't match" @ /uploads
+Matched routes:
+  "" -> "auth" -> "register" -> "(method:POST)"
+Routing resolve result:
+  SUCCESS @ /auth/register/(method:POST)
+2025-07-08 20:23:48.590 [eventLoopGroupProxy-4-1] TRACE i.k.server.engine.DefaultTransform - No Default Transformations found for class io.ktor.utils.io.ByteChannel and expected type TypeInfo(com.regnowsnaes.permitmanagementsystem.models.RegisterRequest) for call /auth/register
+2025-07-08 20:23:48.677 [eventLoopGroupProxy-4-1] DEBUG Exposed - SELECT users.id, users.email, users."password", users.first_name, users.last_name, users.created_at, users.updated_at FROM users WHERE users.email = 'test@example.com'
+2025-07-08 20:24:00.828 [eventLoopGroupProxy-4-2] TRACE io.ktor.server.routing.Routing - Trace for [auth, login]
+/, segment:0 -> SUCCESS @ /
+  /, segment:0 -> SUCCESS @ /
+    /(method:GET), segment:0 -> FAILURE "Selector didn't match" @ /(method:GET)
+  /auth, segment:1 -> SUCCESS @ /auth
+    /auth/register, segment:1 -> FAILURE "Selector didn't match" @ /auth/register
+    /auth/login, segment:2 -> SUCCESS @ /auth/login
+      /auth/login/(method:POST), segment:2 -> SUCCESS @ /auth/login/(method:POST)
+  /counties, segment:0 -> FAILURE "Selector didn't match" @ /counties
+  /packages, segment:0 -> FAILURE "Selector didn't match" @ /packages
+  /uploads, segment:0 -> FAILURE "Selector didn't match" @ /uploads
+Matched routes:
+  "" -> "auth" -> "login" -> "(method:POST)"
+Routing resolve result:
+  SUCCESS @ /auth/login/(method:POST)
+2025-07-08 20:24:00.829 [eventLoopGroupProxy-4-2] TRACE i.k.server.engine.DefaultTransform - No Default Transformations found for class io.ktor.utils.io.ByteChannel and expected type TypeInfo(com.regnowsnaes.permitmanagementsystem.models.LoginRequest) for call /auth/login
+2025-07-08 20:24:00.876 [eventLoopGroupProxy-4-2] DEBUG Exposed - SELECT users.id, users.email, users."password", users.first_name, users.last_name, users.created_at, users.updated_at FROM users WHERE users.email = 'test@example.com'
+2025-07-08 20:24:47.575 [eventLoopGroupProxy-4-3] TRACE io.ktor.server.routing.Routing - Trace for []
+/, segment:0 -> SUCCESS @ /
+  /, segment:0 -> SUCCESS @ /
+    /(method:GET), segment:0 -> SUCCESS @ /(method:GET)
+  /auth, segment:0 -> FAILURE "Selector didn't match" @ /auth
+  /counties, segment:0 -> FAILURE "Selector didn't match" @ /counties
+  /packages, segment:0 -> FAILURE "Selector didn't match" @ /packages
+  /uploads, segment:0 -> FAILURE "Selector didn't match" @ /uploads
+Matched routes:
+  "" -> "<slash>" -> "(method:GET)"
+Routing resolve result:
+  SUCCESS @ /(method:GET)
+2025-07-08 20:24:47.580 [eventLoopGroupProxy-4-3] TRACE i.k.s.p.c.ContentNegotiation - Skipping because body is already converted.
+2025-07-08 20:24:59.773 [eventLoopGroupProxy-4-4] TRACE io.ktor.server.routing.Routing - Trace for [auth, register]
+/, segment:0 -> SUCCESS @ /
+  /, segment:0 -> SUCCESS @ /
+    /(method:GET), segment:0 -> FAILURE "Selector didn't match" @ /(method:GET)
+  /auth, segment:1 -> SUCCESS @ /auth
+    /auth/register, segment:2 -> SUCCESS @ /auth/register
+      /auth/register/(method:POST), segment:2 -> SUCCESS @ /auth/register/(method:POST)
+    /auth/login, segment:1 -> FAILURE "Selector didn't match" @ /auth/login
+  /counties, segment:0 -> FAILURE "Selector didn't match" @ /counties
+  /packages, segment:0 -> FAILURE "Selector didn't match" @ /packages
+  /uploads, segment:0 -> FAILURE "Selector didn't match" @ /uploads
+Matched routes:
+  "" -> "auth" -> "register" -> "(method:POST)"
+Routing resolve result:
+  SUCCESS @ /auth/register/(method:POST)
+2025-07-08 20:24:59.774 [eventLoopGroupProxy-4-4] TRACE i.k.server.engine.DefaultTransform - No Default Transformations found for class io.ktor.utils.io.ByteChannel and expected type TypeInfo(com.regnowsnaes.permitmanagementsystem.models.RegisterRequest) for call /auth/register
+2025-07-08 20:24:59.826 [eventLoopGroupProxy-4-4] DEBUG Exposed - SELECT users.id, users.email, users."password", users.first_name, users.last_name, users.created_at, users.updated_at FROM users WHERE users.email = 'john.doe@example.com'
+2025-07-08 20:25:00.194 [eventLoopGroupProxy-4-4] DEBUG Exposed - INSERT INTO users (created_at, email, first_name, last_name, "password", updated_at) VALUES ('2025-07-08T20:25:00.165529', 'john.doe@example.com', 'John', 'Doe', '$2a$12$4r7j6SnBPwrD/qugSWE2k.yIUkpVYoW78RGWQTPSzVQeKIiNjeGVC', '2025-07-08T20:25:00.165549')
+2025-07-08 20:25:32.805 [eventLoopGroupProxy-4-1] TRACE io.ktor.server.routing.Routing - Trace for [counties]
+/, segment:0 -> SUCCESS @ /
+  /, segment:0 -> SUCCESS @ /
+    /(method:GET), segment:0 -> FAILURE "Not all segments matched" @ /(method:GET)
+  /auth, segment:0 -> FAILURE "Selector didn't match" @ /auth
+  /counties, segment:1 -> SUCCESS @ /counties
+    /counties/(method:GET), segment:1 -> SUCCESS @ /counties/(method:GET)
+    /counties/{id}, segment:1 -> FAILURE "Selector didn't match" @ /counties/{id}
+  /packages, segment:0 -> FAILURE "Selector didn't match" @ /packages
+  /uploads, segment:0 -> FAILURE "Selector didn't match" @ /uploads
+Matched routes:
+  "" -> "counties" -> "(method:GET)"
+Routing resolve result:
+  SUCCESS @ /counties/(method:GET)
+Getting counties...
+2025-07-08 20:25:32.890 [eventLoopGroupProxy-4-1] DEBUG Exposed - SELECT counties.id, counties."name", counties."state", counties.created_at, counties.updated_at FROM counties
+Found 67 counties
+2025-07-08 20:27:23.390 [eventLoopGroupProxy-4-2] TRACE io.ktor.server.routing.Routing - Trace for [counties]
+/, segment:0 -> SUCCESS @ /
+  /, segment:0 -> SUCCESS @ /
+    /(method:GET), segment:0 -> FAILURE "Not all segments matched" @ /(method:GET)
+  /auth, segment:0 -> FAILURE "Selector didn't match" @ /auth
+  /counties, segment:1 -> SUCCESS @ /counties
+    /counties/(method:GET), segment:1 -> SUCCESS @ /counties/(method:GET)
+    /counties/{id}, segment:1 -> FAILURE "Selector didn't match" @ /counties/{id}
+  /packages, segment:0 -> FAILURE "Selector didn't match" @ /packages
+  /uploads, segment:0 -> FAILURE "Selector didn't match" @ /uploads
+Matched routes:
+  "" -> "counties" -> "(method:GET)"
+Routing resolve result:
+  SUCCESS @ /counties/(method:GET)
+Getting counties...
+2025-07-08 20:27:23.497 [eventLoopGroupProxy-4-2] DEBUG Exposed - SELECT counties.id, counties."name", counties."state", counties.created_at, counties.updated_at FROM counties
+Found 67 counties
+2025-07-08 20:27:39.265 [eventLoopGroupProxy-4-3] TRACE io.ktor.server.routing.Routing - Trace for [packages]
+/, segment:0 -> SUCCESS @ /
+  /, segment:0 -> SUCCESS @ /
+    /(method:GET), segment:0 -> FAILURE "Selector didn't match" @ /(method:GET)
+  /auth, segment:0 -> FAILURE "Selector didn't match" @ /auth
+  /counties, segment:0 -> FAILURE "Selector didn't match" @ /counties
+  /packages, segment:1 -> SUCCESS @ /packages
+    /packages/(method:GET), segment:1 -> FAILURE "Selector didn't match" @ /packages/(method:GET)
+    /packages/(method:POST), segment:1 -> SUCCESS @ /packages/(method:POST)
+    /packages/{id}, segment:1 -> FAILURE "Selector didn't match" @ /packages/{id}
+  /uploads, segment:0 -> FAILURE "Selector didn't match" @ /uploads
+Matched routes:
+  "" -> "packages" -> "(method:POST)"
+Routing resolve result:
+  SUCCESS @ /packages/(method:POST)
+2025-07-08 20:27:43.336 [eventLoopGroupProxy-4-4] TRACE io.ktor.server.routing.Routing - Trace for [packages]
+/, segment:0 -> SUCCESS @ /
+  /, segment:0 -> SUCCESS @ /
+    /(method:GET), segment:0 -> FAILURE "Selector didn't match" @ /(method:GET)
+  /auth, segment:0 -> FAILURE "Selector didn't match" @ /auth
+  /counties, segment:0 -> FAILURE "Selector didn't match" @ /counties
+  /packages, segment:1 -> SUCCESS @ /packages
+    /packages/(method:GET), segment:1 -> FAILURE "Selector didn't match" @ /packages/(method:GET)
+    /packages/(method:POST), segment:1 -> SUCCESS @ /packages/(method:POST)
+    /packages/{id}, segment:1 -> FAILURE "Selector didn't match" @ /packages/{id}
+  /uploads, segment:0 -> FAILURE "Selector didn't match" @ /uploads
+Matched routes:
+  "" -> "packages" -> "(method:POST)"
+Routing resolve result:
+  SUCCESS @ /packages/(method:POST)

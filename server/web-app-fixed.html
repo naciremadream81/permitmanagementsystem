@@ -1,0 +1,598 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Permit Management System - FIXED VERSION</title>
+    <!-- FIXED WEB INTERFACE - NO JAVASCRIPT ERRORS -->
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background-color: #f5f5f5;
+            color: #333;
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            border-radius: 12px;
+            text-align: center;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+        
+        .header p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+        
+        .status-bar {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+        }
+        
+        .status-item {
+            text-align: center;
+        }
+        
+        .status-value {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #667eea;
+        }
+        
+        .status-label {
+            color: #666;
+            font-size: 0.9rem;
+        }
+        
+        .tabs {
+            display: flex;
+            background: white;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+        
+        .tab {
+            flex: 1;
+            padding: 15px 20px;
+            background: white;
+            border: none;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+        
+        .tab:hover {
+            background: #f8f9fa;
+        }
+        
+        .tab.active {
+            background: #667eea;
+            color: white;
+        }
+        
+        .content {
+            background: white;
+            border-radius: 12px;
+            padding: 30px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            min-height: 400px;
+        }
+        
+        .county-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+        
+        .county-card {
+            background: #f8f9fa;
+            border: 1px solid #e9ecef;
+            border-radius: 8px;
+            padding: 20px;
+            transition: all 0.3s ease;
+        }
+        
+        .county-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        
+        .county-name {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 5px;
+        }
+        
+        .county-state {
+            color: #666;
+            margin-bottom: 15px;
+        }
+        
+        .btn {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: background 0.3s ease;
+        }
+        
+        .btn:hover {
+            background: #5a6fd8;
+        }
+        
+        .btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+        
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: #666;
+        }
+        
+        .error {
+            background: #f8d7da;
+            color: #721c24;
+            padding: 15px;
+            border-radius: 6px;
+            margin: 20px 0;
+        }
+        
+        .success {
+            background: #d4edda;
+            color: #155724;
+            padding: 15px;
+            border-radius: 6px;
+            margin: 20px 0;
+        }
+        
+        .hidden {
+            display: none;
+        }
+        
+        .alert {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 15px 20px;
+            border-radius: 6px;
+            color: white;
+            font-weight: 500;
+            z-index: 1000;
+            min-width: 300px;
+            animation: slideIn 0.3s ease;
+        }
+        
+        .alert-success {
+            background: #28a745;
+        }
+        
+        .alert-error {
+            background: #dc3545;
+        }
+        
+        .alert-info {
+            background: #17a2b8;
+        }
+        
+        @keyframes slideIn {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+        
+        .api-test {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+        
+        .api-results {
+            background: #2d3748;
+            color: #e2e8f0;
+            padding: 15px;
+            border-radius: 6px;
+            font-family: 'Monaco', 'Menlo', monospace;
+            font-size: 0.9rem;
+            white-space: pre-wrap;
+            max-height: 400px;
+            overflow-y: auto;
+            margin-top: 15px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🏛️ Permit Management System</h1>
+            <p>Florida Counties - Live API Connection</p>
+        </div>
+        
+        <div class="status-bar">
+            <div class="status-item">
+                <div class="status-value" id="server-status">Checking...</div>
+                <div class="status-label">Server Status</div>
+            </div>
+            <div class="status-item">
+                <div class="status-value" id="county-count">-</div>
+                <div class="status-label">Counties Available</div>
+            </div>
+            <div class="status-item">
+                <div class="status-value" id="api-version">1.0</div>
+                <div class="status-label">API Version</div>
+            </div>
+            <div class="status-item">
+                <div class="status-value" id="last-updated">-</div>
+                <div class="status-label">Last Updated</div>
+            </div>
+        </div>
+        
+        <div class="tabs">
+            <button class="tab active" onclick="showTab('counties', this)">Counties</button>
+            <button class="tab" onclick="showTab('api-test', this)">API Test</button>
+            <button class="tab" onclick="showTab('about', this)">About</button>
+        </div>
+        
+        <div class="content">
+            <div id="counties-content">
+                <h2>Available Counties</h2>
+                <div id="counties-loading" class="loading">Loading counties from API...</div>
+                <div id="counties-error" class="error hidden"></div>
+                <div class="county-grid" id="county-grid"></div>
+            </div>
+            
+            <div id="api-test-content" class="hidden">
+                <h2>API Testing</h2>
+                <div class="api-test">
+                    <button class="btn" onclick="testApiEndpoint('/counties')">Test Counties</button>
+                    <button class="btn" onclick="testApiEndpoint('/counties/1/checklist')">Test Checklist</button>
+                    <button class="btn" onclick="testApiHealth()">Health Check</button>
+                    <button class="btn" onclick="clearResults()">Clear Results</button>
+                </div>
+                <div id="api-results" class="api-results">Click a button above to test API endpoints...</div>
+            </div>
+            
+            <div id="about-content" class="hidden">
+                <h2>About This Application</h2>
+                <div style="line-height: 1.8;">
+                    <p><strong>Florida Permit Management System</strong></p>
+                    <p>This is a live web application connected to the Permit Management System API.</p>
+                    
+                    <h3 style="margin-top: 30px;">Features:</h3>
+                    <ul style="margin-left: 20px; margin-top: 10px;">
+                        <li>Real-time connection to the backend API</li>
+                        <li>Dynamic county data loading</li>
+                        <li>API endpoint testing</li>
+                        <li>Responsive design</li>
+                        <li>Error handling and user feedback</li>
+                    </ul>
+                    
+                    <h3 style="margin-top: 30px;">Technical Stack:</h3>
+                    <ul style="margin-left: 20px; margin-top: 10px;">
+                        <li>Backend: Kotlin + Ktor framework</li>
+                        <li>Database: PostgreSQL + Redis</li>
+                        <li>Frontend: HTML5 + JavaScript</li>
+                        <li>API: RESTful JSON API</li>
+                        <li>Deployment: Docker + Nginx</li>
+                    </ul>
+                    
+                    <h3 style="margin-top: 30px;">API Endpoints:</h3>
+                    <ul style="margin-left: 20px; margin-top: 10px;">
+                        <li><code>GET /counties</code> - List all counties</li>
+                        <li><code>GET /counties/{id}/checklist</code> - Get county checklist</li>
+                        <li><code>POST /auth/register</code> - Register new user</li>
+                        <li><code>POST /auth/login</code> - User login</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Alert Container -->
+    <div id="alert-container"></div>
+    
+    <script>
+        // Global variables
+        const API_BASE = window.location.origin;
+        let counties = [];
+        
+        // Initialize the application when DOM is loaded
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('🚀 Initializing Permit Management System');
+            console.log('API Base URL:', API_BASE);
+            
+            checkServerStatus();
+            loadCounties();
+            updateLastUpdated();
+            
+            // Update timestamp every minute
+            setInterval(updateLastUpdated, 60000);
+        });
+        
+        // Check server status
+        async function checkServerStatus() {
+            try {
+                console.log('Checking server status...');
+                const response = await fetch(`${API_BASE}/counties`);
+                
+                if (response.ok) {
+                    document.getElementById('server-status').textContent = 'Online';
+                    document.getElementById('server-status').style.color = '#28a745';
+                    showAlert('Server connection established', 'success');
+                } else {
+                    throw new Error(`HTTP ${response.status}`);
+                }
+            } catch (error) {
+                console.error('Server status check failed:', error);
+                document.getElementById('server-status').textContent = 'Offline';
+                document.getElementById('server-status').style.color = '#dc3545';
+                showError('counties-error', `Server connection failed: ${error.message}`);
+            }
+        }
+        
+        // Load counties from API
+        async function loadCounties() {
+            console.log('Loading counties...');
+            
+            try {
+                const response = await fetch(`${API_BASE}/counties`);
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                
+                counties = await response.json();
+                console.log(`✅ Loaded ${counties.length} counties`);
+                
+                document.getElementById('county-count').textContent = counties.length;
+                displayCounties(counties);
+                hideElement('counties-loading');
+                
+            } catch (error) {
+                console.error('❌ Error loading counties:', error);
+                hideElement('counties-loading');
+                showError('counties-error', `Failed to load counties: ${error.message}`);
+            }
+        }
+        
+        // Display counties in the grid
+        function displayCounties(counties) {
+            const grid = document.getElementById('county-grid');
+            grid.innerHTML = '';
+            
+            if (counties.length === 0) {
+                grid.innerHTML = '<p style="text-align: center; color: #666; padding: 40px;">No counties found</p>';
+                return;
+            }
+            
+            counties.forEach(county => {
+                const card = document.createElement('div');
+                card.className = 'county-card';
+                card.innerHTML = `
+                    <div class="county-name">${county.name}</div>
+                    <div class="county-state">State: ${county.state}</div>
+                    <div style="color: #666; font-size: 0.9rem; margin-bottom: 15px;">ID: ${county.id}</div>
+                    <button class="btn" onclick="viewCountyDetails(${county.id}, '${county.name.replace(/'/g, "\\'")}')">
+                        View Checklist
+                    </button>
+                `;
+                grid.appendChild(card);
+            });
+        }
+        
+        // View county details
+        async function viewCountyDetails(countyId, countyName) {
+            try {
+                console.log(`Loading checklist for ${countyName} (ID: ${countyId})`);
+                
+                const response = await fetch(`${API_BASE}/counties/${countyId}/checklist`);
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                
+                const checklist = await response.json();
+                console.log(`✅ Loaded ${checklist.length} checklist items`);
+                
+                // Create a detailed view
+                let details = `County: ${countyName}\nID: ${countyId}\n\nChecklist Items (${checklist.length}):\n\n`;
+                
+                checklist.forEach((item, index) => {
+                    details += `${index + 1}. ${item.title}\n`;
+                    details += `   Description: ${item.description}\n`;
+                    details += `   Required: ${item.required ? 'Yes' : 'No'}\n\n`;
+                });
+                
+                alert(details);
+                showAlert(`Loaded checklist for ${countyName}`, 'success');
+                
+            } catch (error) {
+                console.error('❌ Error loading county details:', error);
+                showAlert(`Failed to load details for ${countyName}: ${error.message}`, 'error');
+            }
+        }
+        
+        // Tab management
+        function showTab(tabName, tabElement) {
+            // Hide all content
+            document.getElementById('counties-content').classList.add('hidden');
+            document.getElementById('api-test-content').classList.add('hidden');
+            document.getElementById('about-content').classList.add('hidden');
+            
+            // Remove active class from all tabs
+            document.querySelectorAll('.tab').forEach(tab => tab.classList.remove('active'));
+            
+            // Show selected content and activate tab
+            document.getElementById(tabName + '-content').classList.remove('hidden');
+            tabElement.classList.add('active');
+            
+            console.log(`Switched to ${tabName} tab`);
+        }
+        
+        // API Testing functions
+        async function testApiEndpoint(endpoint) {
+            const resultsDiv = document.getElementById('api-results');
+            resultsDiv.textContent = `Testing ${API_BASE}${endpoint}...\n\n`;
+            
+            try {
+                const start = Date.now();
+                const response = await fetch(`${API_BASE}${endpoint}`);
+                const end = Date.now();
+                
+                const data = await response.text();
+                
+                resultsDiv.textContent += `Status: ${response.status} ${response.statusText}\n`;
+                resultsDiv.textContent += `Response Time: ${end - start}ms\n`;
+                resultsDiv.textContent += `Content-Type: ${response.headers.get('content-type')}\n\n`;
+                resultsDiv.textContent += `Response Data:\n${data}`;
+                
+                if (response.ok) {
+                    showAlert(`API test successful: ${endpoint}`, 'success');
+                } else {
+                    showAlert(`API test failed: ${endpoint} (${response.status})`, 'error');
+                }
+                
+            } catch (error) {
+                resultsDiv.textContent += `Error: ${error.message}`;
+                showAlert(`API test error: ${error.message}`, 'error');
+            }
+        }
+        
+        async function testApiHealth() {
+            const resultsDiv = document.getElementById('api-results');
+            resultsDiv.textContent = 'Running comprehensive API health check...\n\n';
+            
+            const endpoints = [
+                { path: '/counties', name: 'Counties List' },
+                { path: '/counties/1/checklist', name: 'Sample Checklist' },
+                { path: '/health', name: 'Health Check' }
+            ];
+            
+            let successCount = 0;
+            
+            for (const endpoint of endpoints) {
+                try {
+                    const start = Date.now();
+                    const response = await fetch(`${API_BASE}${endpoint.path}`);
+                    const end = Date.now();
+                    
+                    const status = response.ok ? '✅' : '❌';
+                    resultsDiv.textContent += `${status} ${endpoint.name}: ${response.status} (${end - start}ms)\n`;
+                    
+                    if (response.ok) successCount++;
+                    
+                } catch (error) {
+                    resultsDiv.textContent += `❌ ${endpoint.name}: ${error.message}\n`;
+                }
+            }
+            
+            resultsDiv.textContent += `\n📊 Health Check Summary:\n`;
+            resultsDiv.textContent += `✅ Successful: ${successCount}/${endpoints.length}\n`;
+            resultsDiv.textContent += `⏰ Completed: ${new Date().toLocaleTimeString()}\n`;
+            
+            if (successCount === endpoints.length) {
+                showAlert('All API endpoints are healthy', 'success');
+            } else {
+                showAlert(`${successCount}/${endpoints.length} endpoints are healthy`, 'error');
+            }
+        }
+        
+        function clearResults() {
+            document.getElementById('api-results').textContent = 'Results cleared. Click a button above to test API endpoints...';
+        }
+        
+        // Utility functions
+        function showAlert(message, type) {
+            const alertContainer = document.getElementById('alert-container');
+            const alertDiv = document.createElement('div');
+            alertDiv.className = `alert alert-${type}`;
+            alertDiv.textContent = message;
+            
+            alertContainer.appendChild(alertDiv);
+            
+            // Remove alert after 5 seconds
+            setTimeout(() => {
+                if (alertDiv.parentNode) {
+                    alertDiv.parentNode.removeChild(alertDiv);
+                }
+            }, 5000);
+            
+            console.log(`${type.toUpperCase()}: ${message}`);
+        }
+        
+        function showError(elementId, message) {
+            const errorDiv = document.getElementById(elementId);
+            if (errorDiv) {
+                errorDiv.textContent = message;
+                errorDiv.classList.remove('hidden');
+            }
+        }
+        
+        function hideElement(elementId) {
+            const element = document.getElementById(elementId);
+            if (element) {
+                element.classList.add('hidden');
+            }
+        }
+        
+        function updateLastUpdated() {
+            const now = new Date();
+            document.getElementById('last-updated').textContent = now.toLocaleTimeString();
+        }
+        
+        // Error handling
+        window.addEventListener('error', function(e) {
+            console.error('JavaScript Error:', e.error);
+            showAlert('A JavaScript error occurred. Check the console for details.', 'error');
+        });
+        
+        window.addEventListener('unhandledrejection', function(e) {
+            console.error('Unhandled Promise Rejection:', e.reason);
+            showAlert('An async operation failed. Check the console for details.', 'error');
+        });
+        
+        console.log('✅ Permit Management System JavaScript loaded successfully');
+    </script>
+</body>
+</html>

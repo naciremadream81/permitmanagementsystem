@@ -1,0 +1,1300 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Permit Management System</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background-color: #f8fafc;
+            color: #334155;
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+            color: white;
+            padding: 2rem;
+            border-radius: 12px;
+            text-align: center;
+            margin-bottom: 2rem;
+            box-shadow: 0 10px 25px rgba(59, 130, 246, 0.3);
+        }
+        
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+            font-weight: 700;
+        }
+        
+        .header p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+        
+        .auth-section {
+            background: white;
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+            margin-bottom: 2rem;
+        }
+        
+        .main-content {
+            display: none;
+        }
+        
+        .main-content.active {
+            display: block;
+        }
+        
+        .nav-tabs {
+            display: flex;
+            background: white;
+            border-radius: 12px;
+            padding: 0.5rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+        }
+        
+        .nav-tab {
+            flex: 1;
+            padding: 1rem 1.5rem;
+            text-align: center;
+            background: transparent;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            color: #64748b;
+        }
+        
+        .nav-tab.active {
+            background: #3b82f6;
+            color: white;
+            box-shadow: 0 2px 4px rgba(59, 130, 246, 0.3);
+        }
+        
+        .nav-tab:hover:not(.active) {
+            background: #f1f5f9;
+            color: #3b82f6;
+        }
+        
+        .tab-content {
+            display: none;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+        
+        .card {
+            background: white;
+            border-radius: 12px;
+            padding: 2rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+            margin-bottom: 2rem;
+        }
+        
+        .card h2 {
+            color: #1e293b;
+            margin-bottom: 1.5rem;
+            font-size: 1.5rem;
+            font-weight: 600;
+        }
+        
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            color: #374151;
+        }
+        
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 0.75rem;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: border-color 0.3s ease;
+        }
+        
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        }
+        
+        .form-group textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+        
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+            text-align: center;
+        }
+        
+        .btn-primary {
+            background: #3b82f6;
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background: #2563eb;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.4);
+        }
+        
+        .btn-secondary {
+            background: #64748b;
+            color: white;
+        }
+        
+        .btn-secondary:hover {
+            background: #475569;
+        }
+        
+        .btn-success {
+            background: #10b981;
+            color: white;
+        }
+        
+        .btn-success:hover {
+            background: #059669;
+        }
+        
+        .btn-danger {
+            background: #ef4444;
+            color: white;
+        }
+        
+        .btn-danger:hover {
+            background: #dc2626;
+        }
+        
+        .permit-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 1.5rem;
+            margin-top: 2rem;
+        }
+        
+        .permit-card {
+            background: white;
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+            border-left: 4px solid #3b82f6;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        
+        .permit-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+        }
+        
+        .permit-card h3 {
+            color: #1e293b;
+            margin-bottom: 0.5rem;
+            font-size: 1.25rem;
+        }
+        
+        .permit-card p {
+            color: #64748b;
+            margin-bottom: 0.5rem;
+        }
+        
+        .status-badge {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.875rem;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.025em;
+        }
+        
+        .status-draft {
+            background: #fef3c7;
+            color: #92400e;
+        }
+        
+        .status-submitted {
+            background: #dbeafe;
+            color: #1e40af;
+        }
+        
+        .status-in_progress {
+            background: #fde68a;
+            color: #b45309;
+        }
+        
+        .status-approved {
+            background: #d1fae5;
+            color: #065f46;
+        }
+        
+        .status-rejected {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+        
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: #e2e8f0;
+            border-radius: 4px;
+            overflow: hidden;
+            margin: 1rem 0;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #3b82f6, #1d4ed8);
+            transition: width 0.3s ease;
+        }
+        
+        .checklist-item {
+            display: flex;
+            align-items: center;
+            padding: 0.75rem;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            margin-bottom: 0.5rem;
+            transition: background-color 0.3s ease;
+        }
+        
+        .checklist-item:hover {
+            background: #f8fafc;
+        }
+        
+        .checklist-item input[type="checkbox"] {
+            margin-right: 0.75rem;
+            transform: scale(1.2);
+        }
+        
+        .checklist-item.completed {
+            background: #f0fdf4;
+            border-color: #10b981;
+        }
+        
+        .alert {
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            font-weight: 500;
+        }
+        
+        .alert-success {
+            background: #d1fae5;
+            color: #065f46;
+            border: 1px solid #10b981;
+        }
+        
+        .alert-error {
+            background: #fee2e2;
+            color: #991b1b;
+            border: 1px solid #ef4444;
+        }
+        
+        .alert-info {
+            background: #dbeafe;
+            color: #1e40af;
+            border: 1px solid #3b82f6;
+        }
+        
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #3b82f6;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .user-info {
+            background: #f8fafc;
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+        }
+        
+        .modal-content {
+            background-color: white;
+            margin: 5% auto;
+            padding: 2rem;
+            border-radius: 12px;
+            width: 90%;
+            max-width: 600px;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+        
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        
+        .close:hover {
+            color: #000;
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                padding: 10px;
+            }
+            
+            .header h1 {
+                font-size: 2rem;
+            }
+            
+            .nav-tabs {
+                flex-direction: column;
+            }
+            
+            .permit-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🏛️ Permit Management System</h1>
+            <p>Streamline your permit applications and track progress in real-time</p>
+        </div>
+
+        <!-- Authentication Section -->
+        <div id="auth-section" class="auth-section">
+            <div id="login-form">
+                <h2>Login to Your Account</h2>
+                <div class="form-group">
+                    <label for="login-email">Email Address</label>
+                    <input type="email" id="login-email" placeholder="Enter your email" required>
+                </div>
+                <div class="form-group">
+                    <label for="login-password">Password</label>
+                    <input type="password" id="login-password" placeholder="Enter your password" required>
+                </div>
+                <button class="btn btn-primary" onclick="login()">Login</button>
+                <button class="btn btn-secondary" onclick="showRegister()" style="margin-left: 10px;">Register</button>
+            </div>
+
+            <div id="register-form" style="display: none;">
+                <h2>Create New Account</h2>
+                <div class="form-group">
+                    <label for="register-email">Email Address</label>
+                    <input type="email" id="register-email" placeholder="Enter your email" required>
+                </div>
+                <div class="form-group">
+                    <label for="register-password">Password</label>
+                    <input type="password" id="register-password" placeholder="Create a password" required>
+                </div>
+                <div class="form-group">
+                    <label for="register-firstname">First Name</label>
+                    <input type="text" id="register-firstname" placeholder="Enter your first name" required>
+                </div>
+                <div class="form-group">
+                    <label for="register-lastname">Last Name</label>
+                    <input type="text" id="register-lastname" placeholder="Enter your last name" required>
+                </div>
+                <button class="btn btn-primary" onclick="register()">Create Account</button>
+                <button class="btn btn-secondary" onclick="showLogin()" style="margin-left: 10px;">Back to Login</button>
+            </div>
+        </div>
+
+        <!-- Main Application -->
+        <div id="main-content" class="main-content">
+            <div class="user-info">
+                <span>Welcome, <strong id="user-name"></strong>!</span>
+                <button class="btn btn-secondary" onclick="logout()">Logout</button>
+            </div>
+
+            <div class="nav-tabs">
+                <button class="nav-tab active" onclick="showTab('dashboard')">📊 Dashboard</button>
+                <button class="nav-tab" onclick="showTab('new-permit')">➕ New Permit</button>
+                <button class="nav-tab" onclick="showTab('my-permits')">📋 My Permits</button>
+                <button class="nav-tab" onclick="showTab('documents')">📁 Documents</button>
+            </div>
+
+            <!-- Dashboard Tab -->
+            <div id="dashboard-tab" class="tab-content active">
+                <div class="card">
+                    <h2>📊 Dashboard Overview</h2>
+                    <div id="dashboard-stats">
+                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-bottom: 2rem;">
+                            <div style="background: #f0f9ff; padding: 1.5rem; border-radius: 8px; text-align: center;">
+                                <h3 style="color: #0369a1; margin-bottom: 0.5rem;">Total Permits</h3>
+                                <p style="font-size: 2rem; font-weight: bold; color: #0369a1;" id="total-permits">0</p>
+                            </div>
+                            <div style="background: #fef3c7; padding: 1.5rem; border-radius: 8px; text-align: center;">
+                                <h3 style="color: #b45309; margin-bottom: 0.5rem;">In Progress</h3>
+                                <p style="font-size: 2rem; font-weight: bold; color: #b45309;" id="in-progress-permits">0</p>
+                            </div>
+                            <div style="background: #d1fae5; padding: 1.5rem; border-radius: 8px; text-align: center;">
+                                <h3 style="color: #065f46; margin-bottom: 0.5rem;">Approved</h3>
+                                <p style="font-size: 2rem; font-weight: bold; color: #065f46;" id="approved-permits">0</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="recent-activity">
+                        <h3>Recent Activity</h3>
+                        <div id="activity-list">
+                            <p style="color: #64748b; text-align: center; padding: 2rem;">No recent activity</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- New Permit Tab -->
+            <div id="new-permit-tab" class="tab-content">
+                <div class="card">
+                    <h2>➕ Create New Permit Package</h2>
+                    <form id="new-permit-form">
+                        <div class="form-group">
+                            <label for="permit-county">Select County</label>
+                            <select id="permit-county" required>
+                                <option value="">Choose a county...</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="permit-name">Project Name</label>
+                            <input type="text" id="permit-name" placeholder="Enter project name" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="permit-description">Project Description</label>
+                            <textarea id="permit-description" placeholder="Describe your project in detail" required></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label for="permit-address">Project Address</label>
+                            <input type="text" id="permit-address" placeholder="Enter project address">
+                        </div>
+                        <div class="form-group">
+                            <label for="permit-type">Permit Type</label>
+                            <select id="permit-type" required>
+                                <option value="">Select permit type...</option>
+                                <option value="residential">Residential Construction</option>
+                                <option value="commercial">Commercial Construction</option>
+                                <option value="renovation">Renovation/Remodel</option>
+                                <option value="electrical">Electrical Work</option>
+                                <option value="plumbing">Plumbing Work</option>
+                                <option value="mechanical">Mechanical/HVAC</option>
+                                <option value="other">Other</option>
+                            </select>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Create Permit Package</button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- My Permits Tab -->
+            <div id="my-permits-tab" class="tab-content">
+                <div class="card">
+                    <h2>📋 My Permit Packages</h2>
+                    <div id="permits-list">
+                        <div class="loading" style="margin: 2rem auto; display: block;"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Documents Tab -->
+            <div id="documents-tab" class="tab-content">
+                <div class="card">
+                    <h2>📁 Document Management</h2>
+                    <p style="color: #64748b; margin-bottom: 2rem;">Select a permit package to manage its documents.</p>
+                    <div id="documents-content">
+                        <div style="text-align: center; padding: 3rem; color: #64748b;">
+                            <p>No permit package selected</p>
+                            <p style="margin-top: 1rem;">Go to "My Permits" and click on a permit to manage its documents.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Permit Details Modal -->
+    <div id="permit-modal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closePermitModal()">&times;</span>
+            <div id="permit-details-content">
+                <!-- Content will be loaded dynamically -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Alert Container -->
+    <div id="alert-container" style="position: fixed; top: 20px; right: 20px; z-index: 1001;"></div>
+
+    <script>
+        // Global variables
+        let currentUser = null;
+        let authToken = null;
+        let counties = [];
+        let userPermits = [];
+        let currentPermit = null;
+
+        // API Base URL
+        const API_BASE = window.location.origin;
+
+        // Initialize the application
+        document.addEventListener('DOMContentLoaded', function() {
+            checkAuthStatus();
+            loadCounties();
+        });
+
+        // Authentication functions
+        function checkAuthStatus() {
+            const token = localStorage.getItem('authToken');
+            const user = localStorage.getItem('currentUser');
+            
+            if (token && user) {
+                authToken = token;
+                currentUser = JSON.parse(user);
+                showMainContent();
+            } else {
+                showAuthSection();
+            }
+        }
+
+        function showAuthSection() {
+            document.getElementById('auth-section').style.display = 'block';
+            document.getElementById('main-content').style.display = 'none';
+        }
+
+        function showMainContent() {
+            document.getElementById('auth-section').style.display = 'none';
+            document.getElementById('main-content').style.display = 'block';
+            document.getElementById('user-name').textContent = currentUser.firstName + ' ' + currentUser.lastName;
+            loadDashboard();
+            loadUserPermits();
+        }
+
+        function showLogin() {
+            document.getElementById('login-form').style.display = 'block';
+            document.getElementById('register-form').style.display = 'none';
+        }
+
+        function showRegister() {
+            document.getElementById('login-form').style.display = 'none';
+            document.getElementById('register-form').style.display = 'block';
+        }
+
+        async function login() {
+            const email = document.getElementById('login-email').value;
+            const password = document.getElementById('login-password').value;
+
+            if (!email || !password) {
+                showAlert('Please fill in all fields', 'error');
+                return;
+            }
+
+            try {
+                const response = await fetch(`${API_BASE}/auth/login`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ email, password })
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    authToken = data.token;
+                    currentUser = data.user;
+                    localStorage.setItem('authToken', authToken);
+                    localStorage.setItem('currentUser', JSON.stringify(currentUser));
+                    showAlert('Login successful!', 'success');
+                    showMainContent();
+                } else {
+                    showAlert(data.message || 'Login failed', 'error');
+                }
+            } catch (error) {
+                console.error('Login error:', error);
+                showAlert('Login failed. Please try again.', 'error');
+            }
+        }
+
+        async function register() {
+            const email = document.getElementById('register-email').value;
+            const password = document.getElementById('register-password').value;
+            const firstName = document.getElementById('register-firstname').value;
+            const lastName = document.getElementById('register-lastname').value;
+
+            if (!email || !password || !firstName || !lastName) {
+                showAlert('Please fill in all fields', 'error');
+                return;
+            }
+
+            try {
+                const response = await fetch(`${API_BASE}/auth/register`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ email, password, firstName, lastName })
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    showAlert('Registration successful! Please login.', 'success');
+                    showLogin();
+                    // Clear form
+                    document.getElementById('register-email').value = '';
+                    document.getElementById('register-password').value = '';
+                    document.getElementById('register-firstname').value = '';
+                    document.getElementById('register-lastname').value = '';
+                } else {
+                    showAlert(data.message || 'Registration failed', 'error');
+                }
+            } catch (error) {
+                console.error('Registration error:', error);
+                showAlert('Registration failed. Please try again.', 'error');
+            }
+        }
+
+        function logout() {
+            localStorage.removeItem('authToken');
+            localStorage.removeItem('currentUser');
+            authToken = null;
+            currentUser = null;
+            showAuthSection();
+            showAlert('Logged out successfully', 'info');
+        }
+
+        // Continue with more JavaScript functions...
+    </script>
+</body>
+</html>
+// Tab management
+function showTab(tabName) {
+    // Hide all tab contents
+    const tabContents = document.querySelectorAll('.tab-content');
+    tabContents.forEach(tab => tab.classList.remove('active'));
+    
+    // Remove active class from all tabs
+    const tabs = document.querySelectorAll('.nav-tab');
+    tabs.forEach(tab => tab.classList.remove('active'));
+    
+    // Show selected tab content
+    document.getElementById(tabName + '-tab').classList.add('active');
+    
+    // Add active class to selected tab
+    event.target.classList.add('active');
+    
+    // Load tab-specific data
+    if (tabName === 'dashboard') {
+        loadDashboard();
+    } else if (tabName === 'my-permits') {
+        loadUserPermits();
+    }
+}
+
+// Load counties from API
+async function loadCounties() {
+    try {
+        const response = await fetch(`${API_BASE}/counties`);
+        const data = await response.json();
+        
+        if (response.ok) {
+            counties = data;
+            populateCountySelect();
+        } else {
+            console.error('Failed to load counties');
+        }
+    } catch (error) {
+        console.error('Error loading counties:', error);
+    }
+}
+
+function populateCountySelect() {
+    const select = document.getElementById('permit-county');
+    select.innerHTML = '<option value="">Choose a county...</option>';
+    
+    counties.forEach(county => {
+        const option = document.createElement('option');
+        option.value = county.id;
+        option.textContent = `${county.name}, ${county.state}`;
+        select.appendChild(option);
+    });
+}
+
+// Dashboard functions
+async function loadDashboard() {
+    try {
+        const response = await fetch(`${API_BASE}/packages`, {
+            headers: {
+                'Authorization': `Bearer ${authToken}`
+            }
+        });
+        
+        if (response.ok) {
+            const permits = await response.json();
+            updateDashboardStats(permits);
+            updateRecentActivity(permits);
+        }
+    } catch (error) {
+        console.error('Error loading dashboard:', error);
+    }
+}
+
+function updateDashboardStats(permits) {
+    const total = permits.length;
+    const inProgress = permits.filter(p => p.status === 'in_progress' || p.status === 'submitted').length;
+    const approved = permits.filter(p => p.status === 'approved').length;
+    
+    document.getElementById('total-permits').textContent = total;
+    document.getElementById('in-progress-permits').textContent = inProgress;
+    document.getElementById('approved-permits').textContent = approved;
+}
+
+function updateRecentActivity(permits) {
+    const activityList = document.getElementById('activity-list');
+    
+    if (permits.length === 0) {
+        activityList.innerHTML = '<p style="color: #64748b; text-align: center; padding: 2rem;">No permits created yet</p>';
+        return;
+    }
+    
+    // Sort by creation date (most recent first)
+    const recentPermits = permits
+        .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
+        .slice(0, 5);
+    
+    activityList.innerHTML = recentPermits.map(permit => `
+        <div style="padding: 1rem; border-left: 3px solid #3b82f6; margin-bottom: 1rem; background: #f8fafc;">
+            <h4 style="margin-bottom: 0.5rem;">${permit.name}</h4>
+            <p style="color: #64748b; margin-bottom: 0.5rem;">${permit.description}</p>
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+                <span class="status-badge status-${permit.status}">${formatStatus(permit.status)}</span>
+                <small style="color: #64748b;">${formatDate(permit.createdAt)}</small>
+            </div>
+        </div>
+    `).join('');
+}
+
+// Permit management functions
+async function loadUserPermits() {
+    const permitsList = document.getElementById('permits-list');
+    permitsList.innerHTML = '<div class="loading" style="margin: 2rem auto; display: block;"></div>';
+    
+    try {
+        const response = await fetch(`${API_BASE}/packages`, {
+            headers: {
+                'Authorization': `Bearer ${authToken}`
+            }
+        });
+        
+        if (response.ok) {
+            userPermits = await response.json();
+            displayUserPermits();
+        } else {
+            permitsList.innerHTML = '<p style="color: #ef4444; text-align: center; padding: 2rem;">Failed to load permits</p>';
+        }
+    } catch (error) {
+        console.error('Error loading permits:', error);
+        permitsList.innerHTML = '<p style="color: #ef4444; text-align: center; padding: 2rem;">Error loading permits</p>';
+    }
+}
+
+function displayUserPermits() {
+    const permitsList = document.getElementById('permits-list');
+    
+    if (userPermits.length === 0) {
+        permitsList.innerHTML = `
+            <div style="text-align: center; padding: 3rem; color: #64748b;">
+                <h3>No permits created yet</h3>
+                <p style="margin: 1rem 0;">Create your first permit package to get started.</p>
+                <button class="btn btn-primary" onclick="showTab('new-permit')">Create New Permit</button>
+            </div>
+        `;
+        return;
+    }
+    
+    permitsList.innerHTML = `
+        <div class="permit-grid">
+            ${userPermits.map(permit => createPermitCard(permit)).join('')}
+        </div>
+    `;
+}
+
+function createPermitCard(permit) {
+    const county = counties.find(c => c.id === permit.countyId);
+    const countyName = county ? `${county.name}, ${county.state}` : 'Unknown County';
+    
+    return `
+        <div class="permit-card" onclick="openPermitDetails(${permit.id})">
+            <h3>${permit.name}</h3>
+            <p><strong>County:</strong> ${countyName}</p>
+            <p><strong>Description:</strong> ${permit.description}</p>
+            <p><strong>Created:</strong> ${formatDate(permit.createdAt)}</p>
+            <div style="margin: 1rem 0;">
+                <span class="status-badge status-${permit.status}">${formatStatus(permit.status)}</span>
+            </div>
+            <div class="progress-bar">
+                <div class="progress-fill" style="width: ${calculateProgress(permit.status)}%"></div>
+            </div>
+            <div style="margin-top: 1rem; display: flex; gap: 0.5rem;">
+                <button class="btn btn-primary" onclick="event.stopPropagation(); openPermitDetails(${permit.id})" style="font-size: 0.875rem; padding: 0.5rem 1rem;">View Details</button>
+                <button class="btn btn-secondary" onclick="event.stopPropagation(); manageDocuments(${permit.id})" style="font-size: 0.875rem; padding: 0.5rem 1rem;">Documents</button>
+            </div>
+        </div>
+    `;
+}
+
+// Create new permit
+document.getElementById('new-permit-form').addEventListener('submit', async function(e) {
+    e.preventDefault();
+    
+    const formData = {
+        countyId: parseInt(document.getElementById('permit-county').value),
+        name: document.getElementById('permit-name').value,
+        description: document.getElementById('permit-description').value,
+        address: document.getElementById('permit-address').value,
+        type: document.getElementById('permit-type').value
+    };
+    
+    if (!formData.countyId || !formData.name || !formData.description) {
+        showAlert('Please fill in all required fields', 'error');
+        return;
+    }
+    
+    try {
+        const response = await fetch(`${API_BASE}/packages`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${authToken}`
+            },
+            body: JSON.stringify(formData)
+        });
+        
+        const data = await response.json();
+        
+        if (response.ok) {
+            showAlert('Permit package created successfully!', 'success');
+            // Clear form
+            document.getElementById('new-permit-form').reset();
+            // Refresh permits list
+            loadUserPermits();
+            // Switch to permits tab
+            showTab('my-permits');
+        } else {
+            showAlert(data.message || 'Failed to create permit package', 'error');
+        }
+    } catch (error) {
+        console.error('Error creating permit:', error);
+        showAlert('Failed to create permit package', 'error');
+    }
+});
+
+// Permit details modal
+async function openPermitDetails(permitId) {
+    try {
+        const response = await fetch(`${API_BASE}/packages/${permitId}`, {
+            headers: {
+                'Authorization': `Bearer ${authToken}`
+            }
+        });
+        
+        if (response.ok) {
+            const permit = await response.json();
+            currentPermit = permit;
+            displayPermitDetails(permit);
+            document.getElementById('permit-modal').style.display = 'block';
+        } else {
+            showAlert('Failed to load permit details', 'error');
+        }
+    } catch (error) {
+        console.error('Error loading permit details:', error);
+        showAlert('Error loading permit details', 'error');
+    }
+}
+
+async function displayPermitDetails(permit) {
+    const county = counties.find(c => c.id === permit.countyId);
+    const countyName = county ? `${county.name}, ${county.state}` : 'Unknown County';
+    
+    // Load checklist for this county
+    let checklist = [];
+    try {
+        const checklistResponse = await fetch(`${API_BASE}/counties/${permit.countyId}/checklist`);
+        if (checklistResponse.ok) {
+            checklist = await checklistResponse.json();
+        }
+    } catch (error) {
+        console.error('Error loading checklist:', error);
+    }
+    
+    // Load documents for this permit
+    let documents = [];
+    try {
+        const documentsResponse = await fetch(`${API_BASE}/packages/${permit.id}/documents`, {
+            headers: {
+                'Authorization': `Bearer ${authToken}`
+            }
+        });
+        if (documentsResponse.ok) {
+            documents = await documentsResponse.json();
+        }
+    } catch (error) {
+        console.error('Error loading documents:', error);
+    }
+    
+    const content = document.getElementById('permit-details-content');
+    content.innerHTML = `
+        <h2>${permit.name}</h2>
+        <div style="margin-bottom: 2rem;">
+            <p><strong>County:</strong> ${countyName}</p>
+            <p><strong>Description:</strong> ${permit.description}</p>
+            <p><strong>Status:</strong> <span class="status-badge status-${permit.status}">${formatStatus(permit.status)}</span></p>
+            <p><strong>Created:</strong> ${formatDate(permit.createdAt)}</p>
+            <p><strong>Last Updated:</strong> ${formatDate(permit.updatedAt)}</p>
+        </div>
+        
+        <div style="margin-bottom: 2rem;">
+            <h3>Progress</h3>
+            <div class="progress-bar">
+                <div class="progress-fill" style="width: ${calculateProgress(permit.status)}%"></div>
+            </div>
+            <p style="color: #64748b; margin-top: 0.5rem;">${calculateProgress(permit.status)}% Complete</p>
+        </div>
+        
+        <div style="margin-bottom: 2rem;">
+            <h3>Required Documents Checklist</h3>
+            <div id="checklist-items">
+                ${checklist.map(item => {
+                    const hasDocument = documents.some(doc => doc.checklistItemId === item.id);
+                    return `
+                        <div class="checklist-item ${hasDocument ? 'completed' : ''}">
+                            <input type="checkbox" ${hasDocument ? 'checked' : ''} disabled>
+                            <div style="flex: 1;">
+                                <strong>${item.title}</strong>
+                                <p style="color: #64748b; margin: 0.25rem 0;">${item.description}</p>
+                                ${item.required ? '<span style="color: #ef4444; font-size: 0.875rem;">Required</span>' : '<span style="color: #64748b; font-size: 0.875rem;">Optional</span>'}
+                            </div>
+                            ${!hasDocument ? `<button class="btn btn-primary" onclick="uploadDocument(${item.id})" style="font-size: 0.875rem; padding: 0.5rem 1rem;">Upload</button>` : '<span style="color: #10b981;">✓ Uploaded</span>'}
+                        </div>
+                    `;
+                }).join('')}
+            </div>
+        </div>
+        
+        <div style="margin-bottom: 2rem;">
+            <h3>Uploaded Documents</h3>
+            <div id="documents-list">
+                ${documents.length > 0 ? documents.map(doc => `
+                    <div style="display: flex; justify-content: space-between; align-items: center; padding: 1rem; border: 1px solid #e2e8f0; border-radius: 8px; margin-bottom: 0.5rem;">
+                        <div>
+                            <strong>${doc.filename}</strong>
+                            <p style="color: #64748b; margin: 0;">Uploaded: ${formatDate(doc.uploadedAt)}</p>
+                        </div>
+                        <div>
+                            <button class="btn btn-secondary" onclick="downloadDocument(${doc.id})" style="font-size: 0.875rem; padding: 0.5rem 1rem; margin-right: 0.5rem;">Download</button>
+                            <button class="btn btn-danger" onclick="deleteDocument(${doc.id})" style="font-size: 0.875rem; padding: 0.5rem 1rem;">Delete</button>
+                        </div>
+                    </div>
+                `).join('') : '<p style="color: #64748b; text-align: center; padding: 2rem;">No documents uploaded yet</p>'}
+            </div>
+        </div>
+        
+        <div style="display: flex; gap: 1rem; margin-top: 2rem;">
+            <button class="btn btn-primary" onclick="updatePermitStatus()">Update Status</button>
+            <button class="btn btn-secondary" onclick="closePermitModal()">Close</button>
+        </div>
+    `;
+}
+
+function closePermitModal() {
+    document.getElementById('permit-modal').style.display = 'none';
+    currentPermit = null;
+}
+
+// Document management
+function manageDocuments(permitId) {
+    const permit = userPermits.find(p => p.id === permitId);
+    if (permit) {
+        currentPermit = permit;
+        showTab('documents');
+        loadDocumentsTab(permitId);
+    }
+}
+
+async function loadDocumentsTab(permitId) {
+    const documentsContent = document.getElementById('documents-content');
+    documentsContent.innerHTML = '<div class="loading" style="margin: 2rem auto; display: block;"></div>';
+    
+    try {
+        // Load permit details
+        const permitResponse = await fetch(`${API_BASE}/packages/${permitId}`, {
+            headers: {
+                'Authorization': `Bearer ${authToken}`
+            }
+        });
+        
+        if (!permitResponse.ok) {
+            throw new Error('Failed to load permit details');
+        }
+        
+        const permit = await permitResponse.json();
+        
+        // Load checklist
+        const checklistResponse = await fetch(`${API_BASE}/counties/${permit.countyId}/checklist`);
+        const checklist = checklistResponse.ok ? await checklistResponse.json() : [];
+        
+        // Load documents
+        const documentsResponse = await fetch(`${API_BASE}/packages/${permitId}/documents`, {
+            headers: {
+                'Authorization': `Bearer ${authToken}`
+            }
+        });
+        const documents = documentsResponse.ok ? await documentsResponse.json() : [];
+        
+        displayDocumentsTab(permit, checklist, documents);
+        
+    } catch (error) {
+        console.error('Error loading documents tab:', error);
+        documentsContent.innerHTML = '<p style="color: #ef4444; text-align: center; padding: 2rem;">Error loading documents</p>';
+    }
+}
+
+function displayDocumentsTab(permit, checklist, documents) {
+    const county = counties.find(c => c.id === permit.countyId);
+    const countyName = county ? `${county.name}, ${county.state}` : 'Unknown County';
+    
+    const documentsContent = document.getElementById('documents-content');
+    documentsContent.innerHTML = `
+        <div style="background: #f8fafc; padding: 1.5rem; border-radius: 8px; margin-bottom: 2rem;">
+            <h3>${permit.name}</h3>
+            <p><strong>County:</strong> ${countyName}</p>
+            <p><strong>Status:</strong> <span class="status-badge status-${permit.status}">${formatStatus(permit.status)}</span></p>
+        </div>
+        
+        <div style="margin-bottom: 2rem;">
+            <h3>Document Requirements</h3>
+            <div id="documents-checklist">
+                ${checklist.map(item => {
+                    const hasDocument = documents.some(doc => doc.checklistItemId === item.id);
+                    return `
+                        <div class="checklist-item ${hasDocument ? 'completed' : ''}">
+                            <input type="checkbox" ${hasDocument ? 'checked' : ''} disabled>
+                            <div style="flex: 1;">
+                                <strong>${item.title}</strong>
+                                <p style="color: #64748b; margin: 0.25rem 0;">${item.description}</p>
+                                ${item.required ? '<span style="color: #ef4444; font-size: 0.875rem;">Required</span>' : '<span style="color: #64748b; font-size: 0.875rem;">Optional</span>'}
+                            </div>
+                            ${!hasDocument ? `
+                                <div>
+                                    <input type="file" id="file-${item.id}" style="display: none;" onchange="handleFileUpload(${item.id}, this)">
+                                    <button class="btn btn-primary" onclick="document.getElementById('file-${item.id}').click()" style="font-size: 0.875rem; padding: 0.5rem 1rem;">Upload File</button>
+                                </div>
+                            ` : '<span style="color: #10b981;">✓ Uploaded</span>'}
+                        </div>
+                    `;
+                }).join('')}
+            </div>
+        </div>
+        
+        <div>
+            <h3>Uploaded Documents</h3>
+            <div id="uploaded-documents">
+                ${documents.length > 0 ? documents.map(doc => `
+                    <div style="display: flex; justify-content: space-between; align-items: center; padding: 1rem; border: 1px solid #e2e8f0; border-radius: 8px; margin-bottom: 0.5rem;">
+                        <div>
+                            <strong>${doc.filename}</strong>
+                            <p style="color: #64748b; margin: 0;">Uploaded: ${formatDate(doc.uploadedAt)}</p>
+                        </div>
+                        <div>
+                            <button class="btn btn-secondary" onclick="downloadDocument(${doc.id})" style="font-size: 0.875rem; padding: 0.5rem 1rem; margin-right: 0.5rem;">Download</button>
+                            <button class="btn btn-danger" onclick="deleteDocument(${doc.id})" style="font-size: 0.875rem; padding: 0.5rem 1rem;">Delete</button>
+                        </div>
+                    </div>
+                `).join('') : '<p style="color: #64748b; text-align: center; padding: 2rem;">No documents uploaded yet</p>'}
+            </div>
+        </div>
+    `;
+}
+
+// File upload handling
+async function handleFileUpload(checklistItemId, fileInput) {
+    const file = fileInput.files[0];
+    if (!file) return;
+    
+    if (!currentPermit) {
+        showAlert('No permit selected', 'error');
+        return;
+    }
+    
+    const formData = new FormData();
+    formData.append('file', file);
+    formData.append('checklistItemId', checklistItemId);
+    
+    try {
+        const response = await fetch(`${API_BASE}/packages/${currentPermit.id}/documents`, {
+            method: 'POST',
+            headers: {
+                'Authorization': `Bearer ${authToken}`
+            },
+            body: formData
+        });
+        
+        if (response.ok) {
+            showAlert('Document uploaded successfully!', 'success');
+            // Refresh the documents tab
+            loadDocumentsTab(currentPermit.id);
+        } else {
+            const error = await response.json();
+            showAlert(error.message || 'Failed to upload document', 'error');
+        }
+    } catch (error) {
+        console.error('Error uploading document:', error);
+        showAlert('Failed to upload document', 'error');
+    }
+}
+
+async function deleteDocument(documentId) {
+    if (!confirm('Are you sure you want to delete this document?')) {
+        return;
+    }
+    
+    try {
+        const response = await fetch(`${API_BASE}/packages/${currentPermit.id}/documents/${documentId}`, {
+            method: 'DELETE',
+            headers: {
+                'Authorization': `Bearer ${authToken}`
+            }
+        });
+        
+        if (response.ok) {
+            showAlert('Document deleted successfully!', 'success');
+            // Refresh the documents tab
+            loadDocumentsTab(currentPermit.id);
+        } else {
+            showAlert('Failed to delete document', 'error');
+        }
+    } catch (error) {
+        console.error('Error deleting document:', error);
+        showAlert('Failed to delete document', 'error');
+    }
+}
+
+function downloadDocument(documentId) {
+    window.open(`${API_BASE}/packages/${currentPermit.id}/documents/${documentId}/download`, '_blank');
+}
+
+// Utility functions
+function formatStatus(status) {
+    const statusMap = {
+        'draft': 'Draft',
+        'submitted': 'Submitted',
+        'in_progress': 'In Progress',
+        'approved': 'Approved',
+        'rejected': 'Rejected'
+    };
+    return statusMap[status] || status;
+}
+
+function formatDate(dateString) {
+    const date = new Date(dateString);
+    return date.toLocaleDateString('en-US', {
+        year: 'numeric',
+        month: 'short',
+        day: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit'
+    });
+}
+
+function calculateProgress(status) {
+    const progressMap = {
+        'draft': 20,
+        'submitted': 40,
+        'in_progress': 70,
+        'approved': 100,
+        'rejected': 0
+    };
+    return progressMap[status] || 0;
+}
+
+function showAlert(message, type) {
+    const alertContainer = document.getElementById('alert-container');
+    const alertDiv = document.createElement('div');
+    alertDiv.className = `alert alert-${type}`;
+    alertDiv.textContent = message;
+    
+    alertContainer.appendChild(alertDiv);
+    
+    // Remove alert after 5 seconds
+    setTimeout(() => {
+        alertDiv.remove();
+    }, 5000);
+}
+
+// Close modal when clicking outside
+window.onclick = function(event) {
+    const modal = document.getElementById('permit-modal');
+    if (event.target === modal) {
+        closePermitModal();
+    }
+}
+
+    </script>
+</body>
+</html>

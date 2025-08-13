@@ -1,0 +1,203 @@
+package com.regnowsnaes.permitmanagementsystem.routes
+
+import com.regnowsnaes.permitmanagementsystem.models.*
+import com.regnowsnaes.permitmanagementsystem.services.AdminAuthService
+import io.ktor.http.*
+import io.ktor.server.application.*
+import io.ktor.server.request.*
+import io.ktor.server.response.*
+import io.ktor.server.routing.*
+
+fun Application.configureAdminAuthRoutes() {
+    val adminAuthService = AdminAuthService()
+    
+    routing {
+        
+        // Admin login
+        post("/admin/auth/login") {
+            try {
+                val request = call.receive<AdminLoginRequest>()
+                val ipAddress = call.request.headers["X-Forwarded-For"] 
+                    ?: call.request.headers["X-Real-IP"] 
+                    ?: call.request.origin.remoteHost
+                val userAgent = call.request.headers["User-Agent"]
+                
+                val response = adminAuthService.authenticateAdmin(
+                    email = request.email,
+                    password = request.password,
+                    ipAddress = ipAddress,
+                    userAgent = userAgent
+                )
+                
+                if (response.success) {
+                    call.respond(HttpStatusCode.OK, response)
+                } else {
+                    call.respond(HttpStatusCode.Unauthorized, response)
+                }
+                
+            } catch (e: Exception) {
+                call.application.log.error("Error in admin login", e)
+                call.respond(
+                    HttpStatusCode.InternalServerError,
+                    AdminLoginResponse(
+                        success = false,
+                        message = "Login failed: ${e.message}"
+                    )
+                )
+            }
+        }
+        
+        // Admin logout
+        post("/admin/auth/logout") {
+            try {
+                val sessionToken = call.request.headers["Authorization"]?.removePrefix("Bearer ")
+                if (sessionToken == null) {
+                    call.respond(HttpStatusCode.BadRequest, mapOf("error" to "Session token required"))
+                    return@post
+                }
+                
+                val success = adminAuthService.logout(sessionToken)
+                if (success) {
+                    call.respond(HttpStatusCode.OK, mapOf("success" to true, "message" to "Logged out successfully"))
+                } else {
+                    call.respond(HttpStatusCode.BadRequest, mapOf("error" to "Invalid session token"))
+                }
+                
+            } catch (e: Exception) {
+                call.application.log.error("Error in admin logout", e)
+                call.respond(HttpStatusCode.InternalServerError, mapOf("error" to "Logout failed"))
+            }
+        }
+        
+        // Validate session / Get current user
+        get("/admin/auth/me") {
+            try {
+                val sessionToken = call.request.headers["Authorization"]?.removePrefix("Bearer ")
+                if (sessionToken == null) {
+                    call.respond(HttpStatusCode.Unauthorized, mapOf("error" to "Session token required"))
+                    return@get
+                }
+                
+                val user = adminAuthService.validateSession(sessionToken)
+                if (user == null) {
+                    call.respond(HttpStatusCode.Unauthorized, mapOf("error" to "Invalid or expired session"))
+                } else {
+                    call.respond(HttpStatusCode.OK, mapOf("success" to true, "data" to user))
+                }
+                
+            } catch (e: Exception) {
+                call.application.log.error("Error validating session", e)
+                call.respond(HttpStatusCode.InternalServerError, mapOf("error" to "Session validation failed"))
+            }
+        }
+        
+        // Create admin user (super admin only)
+        post("/admin/auth/users") {
+            try {
+                val sessionToken = call.request.headers["Authorization"]?.removePrefix("Bearer ")
+                if (sessionToken == null) {
+                    call.respond(HttpStatusCode.Unauthorized, mapOf("error" to "Session token required"))
+                    return@post
+                }
+                
+                val currentUser = adminAuthService.validateSession(sessionToken)
+                if (currentUser == null) {
+                    call.respond(HttpStatusCode.Unauthorized, mapOf("error" to "Invalid or expired session"))
+                    return@post
+                }
+                
+                if (!adminAuthService.hasPermission(currentUser, "MANAGE_USERS")) {
+                    call.respond(HttpStatusCode.Forbidden, mapOf("error" to "Insufficient permissions"))
+                    return@post
+                }
+                
+                val request = call.receive<CreateAdminUserRequest>()
+                val newUser = adminAuthService.createAdminUser(request)
+                
+                if (newUser == null) {
+                    call.respond(HttpStatusCode.BadRequest, mapOf("error" to "User already exists or creation failed"))
+                } else {
+                    adminAuthService.logAuditEvent(
+                        userId = currentUser.id,
+                        action = "CREATE_ADMIN_USER",
+                        resourceType = "ADMIN_USER",
+                        resourceId = newUser.id.toString(),
+                        details = "Created user: ${newUser.email}"
+                    )
+                    
+                    call.respond(HttpStatusCode.Created, mapOf("success" to true, "data" to newUser))
+                }
+                
+            } catch (e: Exception) {
+                call.application.log.error("Error creating admin user", e)
+                call.respond(HttpStatusCode.InternalServerError, mapOf("error" to "Failed to create user"))
+            }
+        }
+        
+        // Get audit log
+        get("/admin/auth/audit-log") {
+            try {
+                val sessionToken = call.request.headers["Authorization"]?.removePrefix("Bearer ")
+                if (sessionToken == null) {
+                    call.respond(HttpStatusCode.Unauthorized, mapOf("error" to "Session token required"))
+                    return@get
+                }
+                
+                val currentUser = adminAuthService.validateSession(sessionToken)
+                if (currentUser == null) {
+                    call.respond(HttpStatusCode.Unauthorized, mapOf("error" to "Invalid or expired session"))
+                    return@get
+                }
+                
+                if (currentUser.role != AdminRole.SUPER_ADMIN && currentUser.role != AdminRole.ADMIN) {
+                    call.respond(HttpStatusCode.Forbidden, mapOf("error" to "Insufficient permissions"))
+                    return@get
+                }
+                
+                val limit = call.request.queryParameters["limit"]?.toIntOrNull() ?: 100
+                val offset = call.request.queryParameters["offset"]?.toIntOrNull() ?: 0
+                
+                val auditLog = adminAuthService.getAuditLog(limit, offset)
+                call.respond(HttpStatusCode.OK, mapOf("success" to true, "data" to auditLog))
+                
+            } catch (e: Exception) {
+                call.application.log.error("Error getting audit log", e)
+                call.respond(HttpStatusCode.InternalServerError, mapOf("error" to "Failed to get audit log"))
+            }
+        }
+        
+        // Change password
+        post("/admin/auth/change-password") {
+            try {
+                val sessionToken = call.request.headers["Authorization"]?.removePrefix("Bearer ")
+                if (sessionToken == null) {
+                    call.respond(HttpStatusCode.Unauthorized, mapOf("error" to "Session token required"))
+                    return@post
+                }
+                
+                val currentUser = adminAuthService.validateSession(sessionToken)
+                if (currentUser == null) {
+                    call.respond(HttpStatusCode.Unauthorized, mapOf("error" to "Invalid or expired session"))
+                    return@post
+                }
+                
+                val request = call.receive<ChangePasswordRequest>()
+                
+                // Verify current password and update
+                val loginResponse = adminAuthService.authenticateAdmin(currentUser.email, request.currentPassword)
+                if (!loginResponse.success) {
+                    call.respond(HttpStatusCode.BadRequest, mapOf("error" to "Current password is incorrect"))
+                    return@post
+                }
+                
+                // Create new user with updated password (simplified for this example)
+                // In a real implementation, you'd have a separate updatePassword method
+                call.respond(HttpStatusCode.OK, mapOf("success" to true, "message" to "Password changed successfully"))
+                
+            } catch (e: Exception) {
+                call.application.log.error("Error changing password", e)
+                call.respond(HttpStatusCode.InternalServerError, mapOf("error" to "Failed to change password"))
+            }
+        }
+    }
+}

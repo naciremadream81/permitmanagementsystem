@@ -1,0 +1,79 @@
+# Production Dockerfile for Permit Management System
+# Multi-stage build for optimized production image
+
+# Build stage
+FROM gradle:8.5-jdk21-alpine AS builder
+
+# Set JAVA_HOME explicitly for Alpine
+ENV JAVA_HOME=/opt/java/openjdk
+
+WORKDIR /app
+
+# Copy dependency files first for better caching
+COPY gradle/ gradle/
+COPY gradlew gradlew.bat build.gradle.kts settings.gradle.kts gradle.properties ./
+
+# Copy source code
+COPY shared/ shared/
+COPY server/ server/
+
+# Make gradlew executable
+RUN chmod +x ./gradlew
+
+# Debug Java environment
+RUN echo "Java version:" && java -version
+RUN echo "JAVA_HOME: $JAVA_HOME"
+RUN echo "PATH: $PATH"
+
+# Build the application with production optimizations (skip tests for faster build)
+RUN ./gradlew :server:shadowJar -x test --no-daemon --parallel --build-cache
+
+# Verify the JAR was built
+RUN ls -la server/build/libs/
+
+# Production runtime stage
+FROM eclipse-temurin:21-jre-alpine
+
+# Install required packages
+RUN apk add --no-cache \
+    curl \
+    tzdata \
+    && rm -rf /var/cache/apk/*
+
+# Set timezone
+ENV TZ=UTC
+
+# Create application user for security
+RUN addgroup -g 1001 -S appuser && \
+    adduser -u 1001 -S appuser -G appuser
+
+# Set working directory
+WORKDIR /app
+
+# Copy the built JAR from builder stage
+COPY --from=builder /app/server/build/libs/server-all.jar app.jar
+
+# Copy web interface files
+COPY web-app-fixed.html web-app-fixed.html
+COPY web-app-production.html web-app-production.html
+COPY web-test.html web-test.html
+
+# Create necessary directories
+RUN mkdir -p uploads logs data tmp && \
+    chown -R appuser:appuser /app
+
+# Switch to non-root user
+USER appuser
+
+# Expose port
+EXPOSE 8080
+
+# Set JVM options for production
+ENV JAVA_OPTS="-Xmx1g -Xms512m -XX:+UseG1GC -XX:+UseStringDeduplication -XX:+OptimizeStringConcat"
+
+# Health check
+HEALTHCHECK --interval=30s --timeout=10s --start-period=90s --retries=3 \
+    CMD curl -f http://localhost:8080/counties || exit 1
+
+# Run the application
+CMD ["sh", "-c", "java $JAVA_OPTS -jar app.jar"]

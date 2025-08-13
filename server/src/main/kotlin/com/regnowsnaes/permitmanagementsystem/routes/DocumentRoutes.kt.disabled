@@ -1,0 +1,395 @@
+package com.regnowsnaes.permitmanagementsystem.routes
+
+import com.regnowsnaes.permitmanagementsystem.database.DocumentUploads
+import com.regnowsnaes.permitmanagementsystem.database.AdminUsers
+import com.regnowsnaes.permitmanagementsystem.models.DocumentUpload
+import com.regnowsnaes.permitmanagementsystem.services.AdminAuthService
+import io.ktor.http.*
+import io.ktor.http.content.*
+import io.ktor.server.application.*
+import io.ktor.server.request.*
+import io.ktor.server.response.*
+import io.ktor.server.routing.*
+import org.jetbrains.exposed.sql.*
+import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
+import org.jetbrains.exposed.sql.transactions.transaction
+import java.io.File
+import java.time.LocalDateTime
+import java.util.*
+
+fun Application.configureDocumentRoutes() {
+    val adminAuthService = AdminAuthService()
+    
+    routing {
+        
+        // Upload document
+        post("/admin/documents/upload") {
+            try {
+                // Get session token from header
+                val sessionToken = call.request.headers["Authorization"]?.removePrefix("Bearer ")
+                if (sessionToken == null) {
+                    call.respond(HttpStatusCode.Unauthorized, mapOf("error" to "Session token required"))
+                    return@post
+                }
+                
+                // Validate session
+                val user = adminAuthService.validateSession(sessionToken)
+                if (user == null) {
+                    call.respond(HttpStatusCode.Unauthorized, mapOf("error" to "Invalid or expired session"))
+                    return@post
+                }
+                
+                val multipartData = call.receiveMultipart()
+                var fileName: String? = null
+                var originalFileName: String? = null
+                var fileBytes: ByteArray? = null
+                var relatedType: String? = null
+                var relatedId: Int? = null
+                var isPublic = false
+                
+                multipartData.forEachPart { part ->
+                    when (part) {
+                        is PartData.FormItem -> {
+                            when (part.name) {
+                                "relatedType" -> relatedType = part.value
+                                "relatedId" -> relatedId = part.value.toIntOrNull()
+                                "isPublic" -> isPublic = part.value.toBoolean()
+                            }
+                        }
+                        is PartData.FileItem -> {
+                            originalFileName = part.originalFileName
+                            fileBytes = part.streamProvider().readBytes()
+                            
+                            // Generate unique filename
+                            val extension = originalFileName?.substringAfterLast('.', "") ?: ""
+                            fileName = "${UUID.randomUUID()}${if (extension.isNotEmpty()) ".$extension" else ""}"
+                        }
+                        else -> {}
+                    }
+                    part.dispose()
+                }
+                
+                if (fileName == null || fileBytes == null || originalFileName == null || relatedType == null) {
+                    call.respond(HttpStatusCode.BadRequest, mapOf("error" to "Missing required fields"))
+                    return@post
+                }
+                
+                // Create uploads directory if it doesn't exist
+                val uploadsDir = File("uploads/documents")
+                if (!uploadsDir.exists()) {
+                    uploadsDir.mkdirs()
+                }
+                
+                // Save file
+                val filePath = "uploads/documents/$fileName"
+                val file = File(filePath)
+                file.writeBytes(fileBytes!!)
+                
+                // Save to database
+                val documentId = transaction {
+                    DocumentUploads.insertAndGetId {
+                        it[DocumentUploads.fileName] = fileName!!
+                        it[DocumentUploads.originalFileName] = originalFileName!!
+                        it[DocumentUploads.filePath] = filePath
+                        it[fileSize] = fileBytes!!.size.toLong()
+                        it[mimeType] = getMimeType(originalFileName!!)
+                        it[uploadedBy] = user.id
+                        it[DocumentUploads.relatedType] = relatedType!!
+                        it[DocumentUploads.relatedId] = relatedId
+                        it[DocumentUploads.isPublic] = isPublic
+                        it[uploadedAt] = LocalDateTime.now()
+                    }
+                }
+                
+                // Log the upload
+                adminAuthService.logAuditEvent(
+                    userId = user.id,
+                    action = "UPLOAD_DOCUMENT",
+                    resourceType = "DOCUMENT",
+                    resourceId = documentId.value.toString(),
+                    details = "Uploaded: $originalFileName"
+                )
+                
+                // Return document info
+                val document = getDocumentById(documentId.value)
+                call.respond(HttpStatusCode.OK, mapOf("success" to true, "data" to document))
+                
+            } catch (e: Exception) {
+                call.application.log.error("Error uploading document", e)
+                call.respond(HttpStatusCode.InternalServerError, mapOf("error" to "Failed to upload document"))
+            }
+        }
+        
+        // Get documents by type and ID
+        get("/admin/documents/{type}/{id}") {
+            try {
+                val sessionToken = call.request.headers["Authorization"]?.removePrefix("Bearer ")
+                if (sessionToken == null) {
+                    call.respond(HttpStatusCode.Unauthorized, mapOf("error" to "Session token required"))
+                    return@get
+                }
+                
+                val user = adminAuthService.validateSession(sessionToken)
+                if (user == null) {
+                    call.respond(HttpStatusCode.Unauthorized, mapOf("error" to "Invalid or expired session"))
+                    return@get
+                }
+                
+                val relatedType = call.parameters["type"]?.uppercase()
+                val relatedId = call.parameters["id"]?.toIntOrNull()
+                
+                if (relatedType == null || relatedId == null) {
+                    call.respond(HttpStatusCode.BadRequest, mapOf("error" to "Invalid type or ID"))
+                    return@get
+                }
+                
+                val documents = transaction {
+                    DocumentUploads
+                        .join(AdminUsers, JoinType.LEFT, DocumentUploads.uploadedBy, AdminUsers.id)
+                        .select { 
+                            (DocumentUploads.relatedType eq relatedType) and 
+                            (DocumentUploads.relatedId eq relatedId) 
+                        }
+                        .orderBy(DocumentUploads.uploadedAt to SortOrder.DESC)
+                        .map { row ->
+                            DocumentUpload(
+                                id = row[DocumentUploads.id].value,
+                                fileName = row[DocumentUploads.fileName],
+                                originalFileName = row[DocumentUploads.originalFileName],
+                                filePath = row[DocumentUploads.filePath],
+                                fileSize = row[DocumentUploads.fileSize],
+                                mimeType = row[DocumentUploads.mimeType],
+                                uploadedBy = row[DocumentUploads.uploadedBy]?.value,
+                                uploaderName = row[AdminUsers.firstName]?.let { first ->
+                                    "$first ${row[AdminUsers.lastName]}"
+                                },
+                                relatedType = row[DocumentUploads.relatedType],
+                                relatedId = row[DocumentUploads.relatedId],
+                                isPublic = row[DocumentUploads.isPublic],
+                                uploadedAt = row[DocumentUploads.uploadedAt].toString(),
+                                downloadUrl = "/admin/documents/download/${row[DocumentUploads.id].value}"
+                            )
+                        }
+                }
+                
+                call.respond(HttpStatusCode.OK, mapOf("success" to true, "data" to documents))
+                
+            } catch (e: Exception) {
+                call.application.log.error("Error getting documents", e)
+                call.respond(HttpStatusCode.InternalServerError, mapOf("error" to "Failed to get documents"))
+            }
+        }
+        
+        // Download document
+        get("/admin/documents/download/{id}") {
+            try {
+                val documentId = call.parameters["id"]?.toIntOrNull()
+                if (documentId == null) {
+                    call.respond(HttpStatusCode.BadRequest, mapOf("error" to "Invalid document ID"))
+                    return@get
+                }
+                
+                val document = transaction {
+                    DocumentUploads.select { DocumentUploads.id eq documentId }.singleOrNull()
+                }
+                
+                if (document == null) {
+                    call.respond(HttpStatusCode.NotFound, mapOf("error" to "Document not found"))
+                    return@get
+                }
+                
+                // Check if public or requires authentication
+                if (!document[DocumentUploads.isPublic]) {
+                    val sessionToken = call.request.headers["Authorization"]?.removePrefix("Bearer ")
+                    if (sessionToken == null) {
+                        call.respond(HttpStatusCode.Unauthorized, mapOf("error" to "Authentication required"))
+                        return@get
+                    }
+                    
+                    val user = AdminAuthService().validateSession(sessionToken)
+                    if (user == null) {
+                        call.respond(HttpStatusCode.Unauthorized, mapOf("error" to "Invalid session"))
+                        return@get
+                    }
+                }
+                
+                val file = File(document[DocumentUploads.filePath])
+                if (!file.exists()) {
+                    call.respond(HttpStatusCode.NotFound, mapOf("error" to "File not found on disk"))
+                    return@get
+                }
+                
+                call.response.header(
+                    HttpHeaders.ContentDisposition,
+                    ContentDisposition.Attachment.withParameter(
+                        ContentDisposition.Parameters.FileName,
+                        document[DocumentUploads.originalFileName]
+                    ).toString()
+                )
+                
+                call.respondFile(file)
+                
+            } catch (e: Exception) {
+                call.application.log.error("Error downloading document", e)
+                call.respond(HttpStatusCode.InternalServerError, mapOf("error" to "Failed to download document"))
+            }
+        }
+        
+        // Delete document
+        delete("/admin/documents/{id}") {
+            try {
+                val sessionToken = call.request.headers["Authorization"]?.removePrefix("Bearer ")
+                if (sessionToken == null) {
+                    call.respond(HttpStatusCode.Unauthorized, mapOf("error" to "Session token required"))
+                    return@delete
+                }
+                
+                val user = AdminAuthService().validateSession(sessionToken)
+                if (user == null) {
+                    call.respond(HttpStatusCode.Unauthorized, mapOf("error" to "Invalid or expired session"))
+                    return@delete
+                }
+                
+                val documentId = call.parameters["id"]?.toIntOrNull()
+                if (documentId == null) {
+                    call.respond(HttpStatusCode.BadRequest, mapOf("error" to "Invalid document ID"))
+                    return@delete
+                }
+                
+                val deleted = transaction {
+                    // Get document info before deletion
+                    val document = DocumentUploads.select { DocumentUploads.id eq documentId }.singleOrNull()
+                    if (document == null) {
+                        return@transaction false
+                    }
+                    
+                    // Delete file from disk
+                    val file = File(document[DocumentUploads.filePath])
+                    if (file.exists()) {
+                        file.delete()
+                    }
+                    
+                    // Delete from database
+                    val deletedCount = DocumentUploads.deleteWhere { DocumentUploads.id eq documentId }
+                    
+                    // Log the deletion
+                    AdminAuthService().logAuditEvent(
+                        userId = user.id,
+                        action = "DELETE_DOCUMENT",
+                        resourceType = "DOCUMENT",
+                        resourceId = documentId.toString(),
+                        details = "Deleted: ${document[DocumentUploads.originalFileName]}"
+                    )
+                    
+                    deletedCount > 0
+                }
+                
+                if (deleted) {
+                    call.respond(HttpStatusCode.OK, mapOf("success" to true, "message" to "Document deleted successfully"))
+                } else {
+                    call.respond(HttpStatusCode.NotFound, mapOf("error" to "Document not found"))
+                }
+                
+            } catch (e: Exception) {
+                call.application.log.error("Error deleting document", e)
+                call.respond(HttpStatusCode.InternalServerError, mapOf("error" to "Failed to delete document"))
+            }
+        }
+        
+        // Get all documents (admin only)
+        get("/admin/documents") {
+            try {
+                val sessionToken = call.request.headers["Authorization"]?.removePrefix("Bearer ")
+                if (sessionToken == null) {
+                    call.respond(HttpStatusCode.Unauthorized, mapOf("error" to "Session token required"))
+                    return@get
+                }
+                
+                val user = AdminAuthService().validateSession(sessionToken)
+                if (user == null) {
+                    call.respond(HttpStatusCode.Unauthorized, mapOf("error" to "Invalid or expired session"))
+                    return@get
+                }
+                
+                val limit = call.request.queryParameters["limit"]?.toIntOrNull() ?: 50
+                val offset = call.request.queryParameters["offset"]?.toIntOrNull() ?: 0
+                
+                val documents = transaction {
+                    DocumentUploads
+                        .join(AdminUsers, JoinType.LEFT, DocumentUploads.uploadedBy, AdminUsers.id)
+                        .selectAll()
+                        .orderBy(DocumentUploads.uploadedAt to SortOrder.DESC)
+                        .limit(limit, offset.toLong())
+                        .map { row ->
+                            DocumentUpload(
+                                id = row[DocumentUploads.id].value,
+                                fileName = row[DocumentUploads.fileName],
+                                originalFileName = row[DocumentUploads.originalFileName],
+                                filePath = row[DocumentUploads.filePath],
+                                fileSize = row[DocumentUploads.fileSize],
+                                mimeType = row[DocumentUploads.mimeType],
+                                uploadedBy = row[DocumentUploads.uploadedBy]?.value,
+                                uploaderName = row[AdminUsers.firstName]?.let { first ->
+                                    "$first ${row[AdminUsers.lastName]}"
+                                },
+                                relatedType = row[DocumentUploads.relatedType],
+                                relatedId = row[DocumentUploads.relatedId],
+                                isPublic = row[DocumentUploads.isPublic],
+                                uploadedAt = row[DocumentUploads.uploadedAt].toString(),
+                                downloadUrl = "/admin/documents/download/${row[DocumentUploads.id].value}"
+                            )
+                        }
+                }
+                
+                call.respond(HttpStatusCode.OK, mapOf("success" to true, "data" to documents))
+                
+            } catch (e: Exception) {
+                call.application.log.error("Error getting all documents", e)
+                call.respond(HttpStatusCode.InternalServerError, mapOf("error" to "Failed to get documents"))
+            }
+        }
+    }
+}
+
+private fun getDocumentById(id: Int): DocumentUpload? {
+    return transaction {
+        DocumentUploads
+            .join(AdminUsers, JoinType.LEFT, DocumentUploads.uploadedBy, AdminUsers.id)
+            .select { DocumentUploads.id eq id }
+            .singleOrNull()?.let { row ->
+                DocumentUpload(
+                    id = row[DocumentUploads.id].value,
+                    fileName = row[DocumentUploads.fileName],
+                    originalFileName = row[DocumentUploads.originalFileName],
+                    filePath = row[DocumentUploads.filePath],
+                    fileSize = row[DocumentUploads.fileSize],
+                    mimeType = row[DocumentUploads.mimeType],
+                    uploadedBy = row[DocumentUploads.uploadedBy]?.value,
+                    uploaderName = row[AdminUsers.firstName]?.let { first ->
+                        "$first ${row[AdminUsers.lastName]}"
+                    },
+                    relatedType = row[DocumentUploads.relatedType],
+                    relatedId = row[DocumentUploads.relatedId],
+                    isPublic = row[DocumentUploads.isPublic],
+                    uploadedAt = row[DocumentUploads.uploadedAt].toString(),
+                    downloadUrl = "/admin/documents/download/${row[DocumentUploads.id].value}"
+                )
+            }
+    }
+}
+
+private fun getMimeType(fileName: String): String {
+    return when (fileName.substringAfterLast('.', "").lowercase()) {
+        "pdf" -> "application/pdf"
+        "doc" -> "application/msword"
+        "docx" -> "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+        "xls" -> "application/vnd.ms-excel"
+        "xlsx" -> "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+        "jpg", "jpeg" -> "image/jpeg"
+        "png" -> "image/png"
+        "gif" -> "image/gif"
+        "txt" -> "text/plain"
+        "csv" -> "text/csv"
+        else -> "application/octet-stream"
+    }
+}

@@ -1,0 +1,638 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Construction Permit Manager</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        .gradient-bg {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        .card-hover {
+            transition: all 0.3s ease;
+        }
+        .card-hover:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        }
+        .status-badge {
+            padding: 0.25rem 0.75rem;
+            border-radius: 9999px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+        .status-draft { background-color: #f3f4f6; color: #374151; }
+        .status-in-progress { background-color: #fef3c7; color: #92400e; }
+        .status-completed { background-color: #d1fae5; color: #065f46; }
+        .status-submitted { background-color: #dbeafe; color: #1e40af; }
+        .phase-card {
+            border-left: 4px solid #3b82f6;
+        }
+        .phase-completed {
+            border-left-color: #10b981;
+            background-color: #f0fdf4;
+        }
+        .inspection-item {
+            border-left: 3px solid #e5e7eb;
+        }
+        .inspection-pending { border-left-color: #f59e0b; }
+        .inspection-scheduled { border-left-color: #3b82f6; }
+        .inspection-completed { border-left-color: #10b981; }
+        .inspection-failed { border-left-color: #ef4444; }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <!-- Navigation -->
+    <nav class="gradient-bg text-white shadow-lg">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center py-4">
+                <div class="flex items-center space-x-4">
+                    <i class="fas fa-hard-hat text-2xl"></i>
+                    <h1 class="text-xl font-bold">Construction Permit Manager</h1>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <span id="userInfo" class="text-sm"></span>
+                    <button id="logoutBtn" class="bg-red-500 hover:bg-red-600 px-4 py-2 rounded-lg transition-colors">
+                        <i class="fas fa-sign-out-alt mr-2"></i>Logout
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <!-- Dashboard Overview -->
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+            <div class="bg-white rounded-lg shadow-md p-6 card-hover">
+                <div class="flex items-center">
+                    <div class="p-3 rounded-full bg-blue-100 text-blue-600">
+                        <i class="fas fa-file-alt text-xl"></i>
+                    </div>
+                    <div class="ml-4">
+                        <p class="text-sm font-medium text-gray-600">Total Packages</p>
+                        <p id="totalPackages" class="text-2xl font-bold text-gray-900">0</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="bg-white rounded-lg shadow-md p-6 card-hover">
+                <div class="flex items-center">
+                    <div class="p-3 rounded-full bg-yellow-100 text-yellow-600">
+                        <i class="fas fa-clock text-xl"></i>
+                    </div>
+                    <div class="ml-4">
+                        <p class="text-sm font-medium text-gray-600">In Progress</p>
+                        <p id="inProgressPackages" class="text-2xl font-bold text-gray-900">0</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="bg-white rounded-lg shadow-md p-6 card-hover">
+                <div class="flex items-center">
+                    <div class="p-3 rounded-full bg-green-100 text-green-600">
+                        <i class="fas fa-check-circle text-xl"></i>
+                    </div>
+                    <div class="ml-4">
+                        <p class="text-sm font-medium text-gray-600">Completed</p>
+                        <p id="completedPackages" class="text-2xl font-bold text-gray-900">0</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="bg-white rounded-lg shadow-md p-6 card-hover">
+                <div class="flex items-center">
+                    <div class="p-3 rounded-full bg-purple-100 text-purple-600">
+                        <i class="fas fa-calendar-check text-xl"></i>
+                    </div>
+                    <div class="ml-4">
+                        <p class="text-sm font-medium text-gray-600">Pending Inspections</p>
+                        <p id="pendingInspections" class="text-2xl font-bold text-gray-900">0</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="flex flex-wrap gap-4 mb-8">
+            <button id="newPackageBtn" class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg font-medium transition-colors">
+                <i class="fas fa-plus mr-2"></i>New Permit Package
+            </button>
+            <button id="uploadDocumentsBtn" class="bg-green-600 hover:bg-green-700 text-white px-6 py-3 rounded-lg font-medium transition-colors">
+                <i class="fas fa-upload mr-2"></i>Upload Documents
+            </button>
+            <button id="scheduleInspectionBtn" class="bg-purple-600 hover:bg-purple-700 text-white px-6 py-3 rounded-lg font-medium transition-colors">
+                <i class="fas fa-calendar-plus mr-2"></i>Schedule Inspection
+            </button>
+            <button id="viewReportsBtn" class="bg-gray-600 hover:bg-gray-700 text-white px-6 py-3 rounded-lg font-medium transition-colors">
+                <i class="fas fa-chart-bar mr-2"></i>View Reports
+            </button>
+        </div>
+
+        <!-- Permit Packages -->
+        <div class="bg-white rounded-lg shadow-md mb-8">
+            <div class="px-6 py-4 border-b border-gray-200">
+                <h2 class="text-lg font-semibold text-gray-900">Permit Packages</h2>
+            </div>
+            <div class="p-6">
+                <div id="packagesList" class="space-y-4">
+                    <!-- Packages will be loaded here -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Project Phases & Inspections -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+            <!-- Project Phases -->
+            <div class="bg-white rounded-lg shadow-md">
+                <div class="px-6 py-4 border-b border-gray-200">
+                    <h3 class="text-lg font-semibold text-gray-900">Project Phases</h3>
+                </div>
+                <div class="p-6">
+                    <div id="phasesList" class="space-y-4">
+                        <!-- Phases will be loaded here -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Inspections -->
+            <div class="bg-white rounded-lg shadow-md">
+                <div class="px-6 py-4 border-b border-gray-200">
+                    <h3 class="text-lg font-semibold text-gray-900">Upcoming Inspections</h3>
+                </div>
+                <div class="p-6">
+                    <div id="inspectionsList" class="space-y-4">
+                        <!-- Inspections will be loaded here -->
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Fees & Payments -->
+        <div class="bg-white rounded-lg shadow-md mb-8">
+            <div class="px-6 py-4 border-b border-gray-200">
+                <h2 class="text-lg font-semibold text-gray-900">Fees & Payments</h2>
+            </div>
+            <div class="p-6">
+                <div id="feesList" class="space-y-4">
+                    <!-- Fees will be loaded here -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modals -->
+    <!-- New Package Modal -->
+    <div id="newPackageModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 hidden z-50">
+        <div class="flex items-center justify-center min-h-screen p-4">
+            <div class="bg-white rounded-lg shadow-xl max-w-2xl w-full">
+                <div class="px-6 py-4 border-b border-gray-200">
+                    <h3 class="text-lg font-semibold text-gray-900">Create New Permit Package</h3>
+                </div>
+                <form id="newPackageForm" class="p-6 space-y-4">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">County</label>
+                            <select id="countySelect" class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500" required>
+                                <option value="">Select County</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Project Name</label>
+                            <input type="text" id="projectName" class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500" required>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Project Type</label>
+                            <select id="projectType" class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500" required>
+                                <option value="">Select Type</option>
+                                <option value="new_construction">New Construction</option>
+                                <option value="addition">Addition</option>
+                                <option value="renovation">Renovation</option>
+                                <option value="demolition">Demolition</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Square Footage</label>
+                            <input type="number" id="squareFootage" class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        </div>
+                    </div>
+                    
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Description</label>
+                        <textarea id="projectDescription" rows="3" class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"></textarea>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Customer Name</label>
+                            <input type="text" id="customerName" class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Customer Email</label>
+                            <input type="email" id="customerEmail" class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Site Address</label>
+                            <input type="text" id="siteAddress" class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Site City</label>
+                            <input type="text" id="siteCity" class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        </div>
+                    </div>
+
+                    <div class="flex justify-end space-x-3 pt-4">
+                        <button type="button" id="cancelNewPackage" class="px-4 py-2 text-gray-700 bg-gray-200 rounded-lg hover:bg-gray-300 transition-colors">
+                            Cancel
+                        </button>
+                        <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
+                            Create Package
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Document Upload Modal -->
+    <div id="uploadModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 hidden z-50">
+        <div class="flex items-center justify-center min-h-screen p-4">
+            <div class="bg-white rounded-lg shadow-xl max-w-lg w-full">
+                <div class="px-6 py-4 border-b border-gray-200">
+                    <h3 class="text-lg font-semibold text-gray-900">Upload Documents</h3>
+                </div>
+                <form id="uploadForm" class="p-6 space-y-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Select Package</label>
+                        <select id="uploadPackageSelect" class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500" required>
+                            <option value="">Select Package</option>
+                        </select>
+                    </div>
+                    
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Document Type</label>
+                        <select id="documentType" class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500" required>
+                            <option value="">Select Type</option>
+                            <option value="drawing">Drawing</option>
+                            <option value="form">Form</option>
+                            <option value="photo">Photo</option>
+                            <option value="inspection">Inspection Report</option>
+                            <option value="other">Other</option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Files</label>
+                        <input type="file" id="fileInput" multiple class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500" required>
+                    </div>
+
+                    <div class="flex justify-end space-x-3 pt-4">
+                        <button type="button" id="cancelUpload" class="px-4 py-2 text-gray-700 bg-gray-200 rounded-lg hover:bg-gray-300 transition-colors">
+                            Cancel
+                        </button>
+                        <button type="submit" class="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors">
+                            Upload
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script>
+        // Global state
+        let currentUser = null;
+        let packages = [];
+        let counties = [];
+        let phases = [];
+        let inspections = [];
+        let fees = [];
+
+        // API base URL
+        const API_BASE = window.location.origin;
+
+        // Initialize the application
+        document.addEventListener('DOMContentLoaded', function() {
+            checkAuth();
+            setupEventListeners();
+        });
+
+        // Check authentication status
+        function checkAuth() {
+            const token = localStorage.getItem('authToken');
+            if (!token) {
+                window.location.href = '/';
+                return;
+            }
+            
+            // Get user info from token (in production, verify with backend)
+            const userInfo = JSON.parse(atob(token.split('.')[1]));
+            currentUser = {
+                id: userInfo.userId,
+                email: userInfo.email || 'user@example.com',
+                firstName: userInfo.firstName || 'User',
+                lastName: userInfo.lastName || 'Name'
+            };
+            
+            document.getElementById('userInfo').textContent = `${currentUser.firstName} ${currentUser.lastName}`;
+            
+            // Load initial data
+            loadCounties();
+            loadPackages();
+        }
+
+        // Setup event listeners
+        function setupEventListeners() {
+            document.getElementById('logoutBtn').addEventListener('click', logout);
+            document.getElementById('newPackageBtn').addEventListener('click', showNewPackageModal);
+            document.getElementById('uploadDocumentsBtn').addEventListener('click', showUploadModal);
+            document.getElementById('scheduleInspectionBtn').addEventListener('click', showScheduleInspectionModal);
+            document.getElementById('viewReportsBtn').addEventListener('click', showReports);
+            
+            // Modal close buttons
+            document.getElementById('cancelNewPackage').addEventListener('click', hideNewPackageModal);
+            document.getElementById('cancelUpload').addEventListener('click', hideUploadModal);
+            
+            // Form submissions
+            document.getElementById('newPackageForm').addEventListener('submit', createNewPackage);
+            document.getElementById('uploadForm').addEventListener('submit', uploadDocuments);
+        }
+
+        // Load counties
+        async function loadCounties() {
+            try {
+                const response = await fetch(`${API_BASE}/counties`);
+                const data = await response.json();
+                counties = data;
+                
+                // Populate county selects
+                const countySelect = document.getElementById('countySelect');
+                const uploadCountySelect = document.getElementById('uploadPackageSelect');
+                
+                counties.forEach(county => {
+                    const option = document.createElement('option');
+                    option.value = county.id;
+                    option.textContent = `${county.name}, ${county.state}`;
+                    countySelect.appendChild(option);
+                    
+                    const uploadOption = document.createElement('option');
+                    uploadOption.value = county.id;
+                    uploadOption.textContent = `${county.name}, ${county.state}`;
+                    uploadCountySelect.appendChild(uploadOption);
+                });
+            } catch (error) {
+                console.error('Error loading counties:', error);
+            }
+        }
+
+        // Load packages
+        async function loadPackages() {
+            try {
+                const token = localStorage.getItem('authToken');
+                const response = await fetch(`${API_BASE}/packages`, {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    packages = data.data || [];
+                    updateDashboard();
+                    renderPackages();
+                }
+            } catch (error) {
+                console.error('Error loading packages:', error);
+            }
+        }
+
+        // Update dashboard statistics
+        function updateDashboard() {
+            const total = packages.length;
+            const inProgress = packages.filter(p => p.status === 'in_progress').length;
+            const completed = packages.filter(p => p.status === 'completed').length;
+            const pendingInspections = phases.filter(p => !p.isCompleted).length;
+
+            document.getElementById('totalPackages').textContent = total;
+            document.getElementById('inProgressPackages').textContent = inProgress;
+            document.getElementById('completedPackages').textContent = completed;
+            document.getElementById('pendingInspections').textContent = pendingInspections;
+        }
+
+        // Render packages list
+        function renderPackages() {
+            const packagesList = document.getElementById('packagesList');
+            packagesList.innerHTML = '';
+
+            if (packages.length === 0) {
+                packagesList.innerHTML = `
+                    <div class="text-center py-8">
+                        <i class="fas fa-folder-open text-4xl text-gray-400 mb-4"></i>
+                        <p class="text-gray-500">No permit packages yet. Create your first one!</p>
+                    </div>
+                `;
+                return;
+            }
+
+            packages.forEach(package => {
+                const packageCard = createPackageCard(package);
+                packagesList.appendChild(packageCard);
+            });
+        }
+
+        // Create package card
+        function createPackageCard(package) {
+            const card = document.createElement('div');
+            card.className = 'bg-gray-50 rounded-lg p-4 border border-gray-200 card-hover';
+            
+            const statusClass = `status-${package.status.replace('_', '-')}`;
+            
+            card.innerHTML = `
+                <div class="flex justify-between items-start mb-3">
+                    <div>
+                        <h3 class="text-lg font-semibold text-gray-900">${package.name}</h3>
+                        <p class="text-sm text-gray-600">${package.description || 'No description'}</p>
+                    </div>
+                    <span class="status-badge ${statusClass}">${package.status.replace('_', ' ')}</span>
+                </div>
+                
+                <div class="grid grid-cols-2 gap-4 text-sm">
+                    <div>
+                        <span class="font-medium text-gray-700">Customer:</span>
+                        <p class="text-gray-600">${package.customerName || 'Not specified'}</p>
+                    </div>
+                    <div>
+                        <span class="font-medium text-gray-700">Site:</span>
+                        <p class="text-gray-600">${package.siteAddress || 'Not specified'}</p>
+                    </div>
+                </div>
+                
+                <div class="flex justify-between items-center mt-4 pt-3 border-t border-gray-200">
+                    <span class="text-xs text-gray-500">Created: ${new Date(package.createdAt).toLocaleDateString()}</span>
+                    <button onclick="viewPackageDetails(${package.id})" class="text-blue-600 hover:text-blue-800 text-sm font-medium">
+                        View Details <i class="fas fa-arrow-right ml-1"></i>
+                    </button>
+                </div>
+            `;
+            
+            return card;
+        }
+
+        // Show new package modal
+        function showNewPackageModal() {
+            document.getElementById('newPackageModal').classList.remove('hidden');
+        }
+
+        // Hide new package modal
+        function hideNewPackageModal() {
+            document.getElementById('newPackageModal').classList.add('hidden');
+            document.getElementById('newPackageForm').reset();
+        }
+
+        // Show upload modal
+        function showUploadModal() {
+            document.getElementById('uploadModal').classList.remove('hidden');
+        }
+
+        // Hide upload modal
+        function hideUploadModal() {
+            document.getElementById('uploadModal').classList.add('hidden');
+            document.getElementById('uploadForm').reset();
+        }
+
+        // Create new package
+        async function createNewPackage(e) {
+            e.preventDefault();
+            
+            const formData = {
+                countyId: parseInt(document.getElementById('countySelect').value),
+                name: document.getElementById('projectName').value,
+                description: document.getElementById('projectDescription').value,
+                projectType: document.getElementById('projectType').value,
+                squareFootage: parseFloat(document.getElementById('squareFootage').value) || null,
+                customerName: document.getElementById('customerName').value,
+                customerEmail: document.getElementById('customerEmail').value,
+                siteAddress: document.getElementById('siteAddress').value,
+                siteCity: document.getElementById('siteCity').value
+            };
+
+            try {
+                const token = localStorage.getItem('authToken');
+                const response = await fetch(`${API_BASE}/packages`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify(formData)
+                });
+
+                if (response.ok) {
+                    hideNewPackageModal();
+                    loadPackages();
+                    showNotification('Package created successfully!', 'success');
+                } else {
+                    const error = await response.json();
+                    showNotification(`Error: ${error.error || 'Failed to create package'}`, 'error');
+                }
+            } catch (error) {
+                console.error('Error creating package:', error);
+                showNotification('Error creating package', 'error');
+            }
+        }
+
+        // Upload documents
+        async function uploadDocuments(e) {
+            e.preventDefault();
+            
+            const packageId = document.getElementById('uploadPackageSelect').value;
+            const documentType = document.getElementById('documentType').value;
+            const files = document.getElementById('fileInput').files;
+
+            if (!packageId || !documentType || files.length === 0) {
+                showNotification('Please fill in all fields and select files', 'error');
+                return;
+            }
+
+            const formData = new FormData();
+            formData.append('checklistItemId', '1'); // Default checklist item
+            formData.append('documentType', documentType);
+            
+            for (let file of files) {
+                formData.append('files', file);
+            }
+
+            try {
+                const token = localStorage.getItem('authToken');
+                const response = await fetch(`${API_BASE}/packages/${packageId}/documents`, {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: formData
+                });
+
+                if (response.ok) {
+                    hideUploadModal();
+                    showNotification('Documents uploaded successfully!', 'success');
+                    loadPackages();
+                } else {
+                    const error = await response.json();
+                    showNotification(`Error: ${error.error || 'Failed to upload documents'}`, 'error');
+                }
+            } catch (error) {
+                console.error('Error uploading documents:', error);
+                showNotification('Error uploading documents', 'error');
+            }
+        }
+
+        // View package details
+        function viewPackageDetails(packageId) {
+            // This would open a detailed view modal or navigate to a detail page
+            console.log('Viewing package:', packageId);
+        }
+
+        // Show schedule inspection modal
+        function showScheduleInspectionModal() {
+            showNotification('Inspection scheduling coming soon!', 'info');
+        }
+
+        // Show reports
+        function showReports() {
+            showNotification('Reports coming soon!', 'info');
+        }
+
+        // Show notification
+        function showNotification(message, type = 'info') {
+            // Create notification element
+            const notification = document.createElement('div');
+            notification.className = `fixed top-4 right-4 p-4 rounded-lg shadow-lg z-50 ${
+                type === 'success' ? 'bg-green-500 text-white' :
+                type === 'error' ? 'bg-red-500 text-white' :
+                'bg-blue-500 text-white'
+            }`;
+            notification.textContent = message;
+            
+            document.body.appendChild(notification);
+            
+            // Remove after 3 seconds
+            setTimeout(() => {
+                notification.remove();
+            }, 3000);
+        }
+
+        // Logout
+        function logout() {
+            localStorage.removeItem('authToken');
+            window.location.href = '/';
+        }
+    </script>
+</body>
+</html>

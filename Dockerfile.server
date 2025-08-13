@@ -1,0 +1,83 @@
+# Permit Management System - Production Server Dockerfile
+# Updated to use Eclipse Temurin (recommended replacement for OpenJDK images)
+
+# Build stage
+FROM eclipse-temurin:17-jdk-alpine AS builder
+
+# Set working directory
+WORKDIR /app
+
+# Install required build tools
+RUN apk add --no-cache curl
+
+# Copy Gradle wrapper and configuration files first (for better Docker layer caching)
+COPY gradlew .
+COPY gradle.properties .
+COPY settings.gradle.kts .
+COPY gradle/ gradle/
+
+# Make gradlew executable
+RUN chmod +x ./gradlew
+
+# Copy project build configuration
+COPY build.gradle.kts .
+
+# Copy shared module first (it's a dependency of server)
+COPY shared/ shared/
+
+# Copy server module
+COPY server/ server/
+
+# Verify project structure
+RUN ls -la && ls -la shared/ && ls -la server/
+
+# Build the application using Gradle's installDist task
+# This creates a complete distribution with all dependencies
+RUN ./gradlew :server:installDist --no-daemon --stacktrace --info
+
+# Verify build output
+RUN ls -la server/build/install/server/
+
+# Production stage
+FROM eclipse-temurin:17-jre-alpine
+
+# Install runtime dependencies
+RUN apk add --no-cache curl
+
+# Create application user for security
+RUN addgroup -g 1001 appuser && \
+    adduser -D -u 1001 -G appuser appuser
+
+# Set working directory
+WORKDIR /app
+
+# Copy the complete distribution from build stage
+COPY --from=builder /app/server/build/install/server/ .
+
+# Create necessary directories for application data
+RUN mkdir -p uploads logs data tmp && \
+    chown -R appuser:appuser /app
+
+# Switch to non-root user
+USER appuser
+
+# Expose application port
+EXPOSE 8080
+
+# Set default environment variables
+ENV DATABASE_URL=jdbc:postgresql://db:5432/permit_management_prod \
+    DB_USER=permit_user \
+    DB_PASSWORD=changeme \
+    JWT_SECRET=changeme-this-should-be-at-least-32-characters-long \
+    SERVER_PORT=8080 \
+    SERVER_HOST=0.0.0.0 \
+    ENVIRONMENT=production \
+    JAVA_OPTS="-Xmx1g -Xms512m"
+
+# Health check using the root endpoint
+HEALTHCHECK --interval=30s --timeout=10s --start-period=90s --retries=3 \
+    CMD curl -f http://localhost:8080/ || exit 1
+
+# Run the application using the generated start script
+# The installDist task creates this script with proper classpath
+CMD ["./bin/server"]

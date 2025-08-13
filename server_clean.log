@@ -1,0 +1,250 @@
+2025-07-08 19:48:38.786 [main] DEBUG Exposed - SELECT COUNT(*) FROM counties
+2025-07-08 19:48:38.904 [main] INFO  io.ktor.server.Application - Autoreload is disabled because the development mode is off.
+2025-07-08 19:48:39.646 [main] INFO  io.ktor.server.Application - Application started in 0.777 seconds.
+WARNING: A restricted method in java.lang.System has been called
+WARNING: java.lang.System::loadLibrary has been called by io.netty.util.internal.NativeLibraryUtil in an unnamed module (file:/Users/seans/AndroidStudioProjects/permitmanagementsystem/server/build/libs/server-all.jar)
+WARNING: Use --enable-native-access=ALL-UNNAMED to avoid a warning for callers in this module
+WARNING: Restricted methods will be blocked in a future release unless native access is enabled
+
+2025-07-08 19:48:40.318 [DefaultDispatcher-worker-1] INFO  io.ktor.server.Application - Responding at http://0.0.0.0:8080
+2025-07-08 19:48:48.318 [eventLoopGroupProxy-4-1] TRACE io.ktor.server.routing.Routing - Trace for []
+/, segment:0 -> SUCCESS @ /
+  /, segment:0 -> SUCCESS @ /
+    /(method:GET), segment:0 -> SUCCESS @ /(method:GET)
+  /auth, segment:0 -> FAILURE "Selector didn't match" @ /auth
+  /counties, segment:0 -> FAILURE "Selector didn't match" @ /counties
+  /packages, segment:0 -> FAILURE "Selector didn't match" @ /packages
+  /uploads, segment:0 -> FAILURE "Selector didn't match" @ /uploads
+Matched routes:
+  "" -> "<slash>" -> "(method:GET)"
+Routing resolve result:
+  SUCCESS @ /(method:GET)
+2025-07-08 19:48:48.346 [eventLoopGroupProxy-4-1] TRACE i.k.s.p.c.ContentNegotiation - Skipping because body is already converted.
+2025-07-08 19:48:54.836 [eventLoopGroupProxy-4-2] TRACE io.ktor.server.routing.Routing - Trace for [counties]
+/, segment:0 -> SUCCESS @ /
+  /, segment:0 -> SUCCESS @ /
+    /(method:GET), segment:0 -> FAILURE "Not all segments matched" @ /(method:GET)
+  /auth, segment:0 -> FAILURE "Selector didn't match" @ /auth
+  /counties, segment:1 -> SUCCESS @ /counties
+    /counties/(method:GET), segment:1 -> SUCCESS @ /counties/(method:GET)
+    /counties/{id}, segment:1 -> FAILURE "Selector didn't match" @ /counties/{id}
+  /packages, segment:0 -> FAILURE "Selector didn't match" @ /packages
+  /uploads, segment:0 -> FAILURE "Selector didn't match" @ /uploads
+Matched routes:
+  "" -> "counties" -> "(method:GET)"
+Routing resolve result:
+  SUCCESS @ /counties/(method:GET)
+2025-07-08 19:48:54.887 [eventLoopGroupProxy-4-2] DEBUG Exposed - SELECT counties.id, counties."name", counties."state", counties.created_at, counties.updated_at FROM counties
+2025-07-08 19:48:55.033 [DefaultDispatcher-worker-3] ERROR io.ktor.server.Application - 500 Internal Server Error: GET - /counties
+kotlinx.serialization.SerializationException: Serializer for class 'ApiResponse' is not found.
+Please ensure that class is marked as '@Serializable' and that the serialization compiler plugin is applied.
+
+	at kotlinx.serialization.internal.Platform_commonKt.serializerNotRegistered(Platform.common.kt:90)
+	at kotlinx.serialization.SerializersKt__SerializersKt.serializer(Serializers.kt:299)
+	at kotlinx.serialization.SerializersKt.serializer(Unknown Source)
+	at io.ktor.serialization.kotlinx.SerializerLookupKt.guessSerializer(SerializerLookup.kt:54)
+	at io.ktor.serialization.kotlinx.KotlinxSerializationConverter.serialize(KotlinxSerializationConverter.kt:55)
+	at io.ktor.server.plugins.contentnegotiation.ResponseConverterKt$convertResponseBody$1$2.invokeSuspend(ResponseConverter.kt:66)
+	at io.ktor.server.plugins.contentnegotiation.ResponseConverterKt$convertResponseBody$1$2.invoke(ResponseConverter.kt)
+	at io.ktor.server.plugins.contentnegotiation.ResponseConverterKt$convertResponseBody$1$2.invoke(ResponseConverter.kt)
+	at io.ktor.server.application.OnCallRespondContext.transformBody(KtorCallContexts.kt:102)
+	at io.ktor.server.plugins.contentnegotiation.ResponseConverterKt$convertResponseBody$1.invokeSuspend(ResponseConverter.kt:39)
+	at io.ktor.server.plugins.contentnegotiation.ResponseConverterKt$convertResponseBody$1.invoke(ResponseConverter.kt)
+	at io.ktor.server.plugins.contentnegotiation.ResponseConverterKt$convertResponseBody$1.invoke(ResponseConverter.kt)
+	at io.ktor.server.application.PluginBuilder$onDefaultPhase$1.invokeSuspend(PluginBuilder.kt:245)
+	at io.ktor.server.application.PluginBuilder$onDefaultPhase$1.invoke(PluginBuilder.kt)
+	at io.ktor.server.application.PluginBuilder$onDefaultPhase$1.invoke(PluginBuilder.kt)
+	at io.ktor.server.application.PluginBuilder$onDefaultPhaseWithMessage$1$1$1.invokeSuspend(PluginBuilder.kt:228)
+	at io.ktor.server.application.PluginBuilder$onDefaultPhaseWithMessage$1$1$1.invoke(PluginBuilder.kt)
+	at io.ktor.server.application.PluginBuilder$onDefaultPhaseWithMessage$1$1$1.invoke(PluginBuilder.kt)
+	at io.ktor.util.debug.ContextUtilsKt.addToContextInDebugMode(ContextUtils.kt:34)
+	at io.ktor.server.application.PluginBuilder$onDefaultPhaseWithMessage$1$1.invokeSuspend(PluginBuilder.kt:224)
+	at io.ktor.server.application.PluginBuilder$onDefaultPhaseWithMessage$1$1.invoke(PluginBuilder.kt)
+	at io.ktor.server.application.PluginBuilder$onDefaultPhaseWithMessage$1$1.invoke(PluginBuilder.kt)
+	at io.ktor.util.pipeline.PipelineJvmKt.pipelineStartCoroutineUninterceptedOrReturn(PipelineJvm.kt:15)
+	at io.ktor.util.pipeline.SuspendFunctionGun.loop(SuspendFunctionGun.kt:131)
+	at io.ktor.util.pipeline.SuspendFunctionGun.proceed(SuspendFunctionGun.kt:89)
+	at io.ktor.util.pipeline.SuspendFunctionGun.execute$ktor_utils(SuspendFunctionGun.kt:109)
+	at io.ktor.util.pipeline.Pipeline.execute(Pipeline.kt:92)
+	at io.ktor.server.application.PipelineCall$DefaultImpls.respond(PipelineCall.kt:132)
+	at io.ktor.server.routing.RoutingPipelineCall.respond(RoutingPipelineCall.kt:23)
+	at io.ktor.server.routing.RoutingCall.respond(RoutingNode.kt:248)
+	at com.regnowsnaes.permitmanagementsystem.routes.PermitRoutesKt$permitRoutes$1$1.invokeSuspend(PermitRoutes.kt:524)
+	at kotlin.coroutines.jvm.internal.BaseContinuationImpl.resumeWith(ContinuationImpl.kt:33)
+	at kotlinx.coroutines.DispatchedTask.run(DispatchedTask.kt:98)
+	at kotlinx.coroutines.scheduling.CoroutineScheduler.runSafely(CoroutineScheduler.kt:586)
+	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.executeTask(CoroutineScheduler.kt:829)
+	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.runWorker(CoroutineScheduler.kt:717)
+	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.run(CoroutineScheduler.kt:704)
+2025-07-08 19:48:55.037 [DefaultDispatcher-worker-3] TRACE i.k.s.p.c.ContentNegotiation - Skipping response body transformation from HttpStatusCode to OutgoingContent for the GET /counties request because the HttpStatusCode type is ignored. See [ContentNegotiationConfig::ignoreType].
+2025-07-08 19:49:01.318 [eventLoopGroupProxy-4-3] TRACE io.ktor.server.routing.Routing - Trace for [counties]
+/, segment:0 -> SUCCESS @ /
+  /, segment:0 -> SUCCESS @ /
+    /(method:GET), segment:0 -> FAILURE "Not all segments matched" @ /(method:GET)
+  /auth, segment:0 -> FAILURE "Selector didn't match" @ /auth
+  /counties, segment:1 -> SUCCESS @ /counties
+    /counties/(method:GET), segment:1 -> SUCCESS @ /counties/(method:GET)
+    /counties/{id}, segment:1 -> FAILURE "Selector didn't match" @ /counties/{id}
+  /packages, segment:0 -> FAILURE "Selector didn't match" @ /packages
+  /uploads, segment:0 -> FAILURE "Selector didn't match" @ /uploads
+Matched routes:
+  "" -> "counties" -> "(method:GET)"
+Routing resolve result:
+  SUCCESS @ /counties/(method:GET)
+2025-07-08 19:49:01.349 [eventLoopGroupProxy-4-3] DEBUG Exposed - SELECT counties.id, counties."name", counties."state", counties.created_at, counties.updated_at FROM counties
+2025-07-08 19:49:01.387 [DefaultDispatcher-worker-1] ERROR io.ktor.server.Application - 500 Internal Server Error: GET - /counties
+kotlinx.serialization.SerializationException: Serializer for class 'ApiResponse' is not found.
+Please ensure that class is marked as '@Serializable' and that the serialization compiler plugin is applied.
+
+	at kotlinx.serialization.internal.Platform_commonKt.serializerNotRegistered(Platform.common.kt:90)
+	at kotlinx.serialization.SerializersKt__SerializersKt.serializer(Serializers.kt:299)
+	at kotlinx.serialization.SerializersKt.serializer(Unknown Source)
+	at io.ktor.serialization.kotlinx.SerializerLookupKt.guessSerializer(SerializerLookup.kt:54)
+	at io.ktor.serialization.kotlinx.KotlinxSerializationConverter.serialize(KotlinxSerializationConverter.kt:55)
+	at io.ktor.server.plugins.contentnegotiation.ResponseConverterKt$convertResponseBody$1$2.invokeSuspend(ResponseConverter.kt:66)
+	at io.ktor.server.plugins.contentnegotiation.ResponseConverterKt$convertResponseBody$1$2.invoke(ResponseConverter.kt)
+	at io.ktor.server.plugins.contentnegotiation.ResponseConverterKt$convertResponseBody$1$2.invoke(ResponseConverter.kt)
+	at io.ktor.server.application.OnCallRespondContext.transformBody(KtorCallContexts.kt:102)
+	at io.ktor.server.plugins.contentnegotiation.ResponseConverterKt$convertResponseBody$1.invokeSuspend(ResponseConverter.kt:39)
+	at io.ktor.server.plugins.contentnegotiation.ResponseConverterKt$convertResponseBody$1.invoke(ResponseConverter.kt)
+	at io.ktor.server.plugins.contentnegotiation.ResponseConverterKt$convertResponseBody$1.invoke(ResponseConverter.kt)
+	at io.ktor.server.application.PluginBuilder$onDefaultPhase$1.invokeSuspend(PluginBuilder.kt:245)
+	at io.ktor.server.application.PluginBuilder$onDefaultPhase$1.invoke(PluginBuilder.kt)
+	at io.ktor.server.application.PluginBuilder$onDefaultPhase$1.invoke(PluginBuilder.kt)
+	at io.ktor.server.application.PluginBuilder$onDefaultPhaseWithMessage$1$1$1.invokeSuspend(PluginBuilder.kt:228)
+	at io.ktor.server.application.PluginBuilder$onDefaultPhaseWithMessage$1$1$1.invoke(PluginBuilder.kt)
+	at io.ktor.server.application.PluginBuilder$onDefaultPhaseWithMessage$1$1$1.invoke(PluginBuilder.kt)
+	at io.ktor.util.debug.ContextUtilsKt.addToContextInDebugMode(ContextUtils.kt:34)
+	at io.ktor.server.application.PluginBuilder$onDefaultPhaseWithMessage$1$1.invokeSuspend(PluginBuilder.kt:224)
+	at io.ktor.server.application.PluginBuilder$onDefaultPhaseWithMessage$1$1.invoke(PluginBuilder.kt)
+	at io.ktor.server.application.PluginBuilder$onDefaultPhaseWithMessage$1$1.invoke(PluginBuilder.kt)
+	at io.ktor.util.pipeline.PipelineJvmKt.pipelineStartCoroutineUninterceptedOrReturn(PipelineJvm.kt:15)
+	at io.ktor.util.pipeline.SuspendFunctionGun.loop(SuspendFunctionGun.kt:131)
+	at io.ktor.util.pipeline.SuspendFunctionGun.proceed(SuspendFunctionGun.kt:89)
+	at io.ktor.util.pipeline.SuspendFunctionGun.execute$ktor_utils(SuspendFunctionGun.kt:109)
+	at io.ktor.util.pipeline.Pipeline.execute(Pipeline.kt:92)
+	at io.ktor.server.application.PipelineCall$DefaultImpls.respond(PipelineCall.kt:132)
+	at io.ktor.server.routing.RoutingPipelineCall.respond(RoutingPipelineCall.kt:23)
+	at io.ktor.server.routing.RoutingCall.respond(RoutingNode.kt:248)
+	at com.regnowsnaes.permitmanagementsystem.routes.PermitRoutesKt$permitRoutes$1$1.invokeSuspend(PermitRoutes.kt:524)
+	at kotlin.coroutines.jvm.internal.BaseContinuationImpl.resumeWith(ContinuationImpl.kt:33)
+	at kotlinx.coroutines.DispatchedTask.run(DispatchedTask.kt:98)
+	at kotlinx.coroutines.scheduling.CoroutineScheduler.runSafely(CoroutineScheduler.kt:586)
+	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.executeTask(CoroutineScheduler.kt:829)
+	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.runWorker(CoroutineScheduler.kt:717)
+	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.run(CoroutineScheduler.kt:704)
+2025-07-08 19:49:01.388 [DefaultDispatcher-worker-1] TRACE i.k.s.p.c.ContentNegotiation - Skipping response body transformation from HttpStatusCode to OutgoingContent for the GET /counties request because the HttpStatusCode type is ignored. See [ContentNegotiationConfig::ignoreType].
+2025-07-08 19:49:02.584 [eventLoopGroupProxy-4-4] TRACE io.ktor.server.routing.Routing - Trace for [counties]
+/, segment:0 -> SUCCESS @ /
+  /, segment:0 -> SUCCESS @ /
+    /(method:GET), segment:0 -> FAILURE "Not all segments matched" @ /(method:GET)
+  /auth, segment:0 -> FAILURE "Selector didn't match" @ /auth
+  /counties, segment:1 -> SUCCESS @ /counties
+    /counties/(method:GET), segment:1 -> SUCCESS @ /counties/(method:GET)
+    /counties/{id}, segment:1 -> FAILURE "Selector didn't match" @ /counties/{id}
+  /packages, segment:0 -> FAILURE "Selector didn't match" @ /packages
+  /uploads, segment:0 -> FAILURE "Selector didn't match" @ /uploads
+Matched routes:
+  "" -> "counties" -> "(method:GET)"
+Routing resolve result:
+  SUCCESS @ /counties/(method:GET)
+2025-07-08 19:49:02.635 [eventLoopGroupProxy-4-4] DEBUG Exposed - SELECT counties.id, counties."name", counties."state", counties.created_at, counties.updated_at FROM counties
+2025-07-08 19:49:02.652 [DefaultDispatcher-worker-2] ERROR io.ktor.server.Application - 500 Internal Server Error: GET - /counties
+kotlinx.serialization.SerializationException: Serializer for class 'ApiResponse' is not found.
+Please ensure that class is marked as '@Serializable' and that the serialization compiler plugin is applied.
+
+	at kotlinx.serialization.internal.Platform_commonKt.serializerNotRegistered(Platform.common.kt:90)
+	at kotlinx.serialization.SerializersKt__SerializersKt.serializer(Serializers.kt:299)
+	at kotlinx.serialization.SerializersKt.serializer(Unknown Source)
+	at io.ktor.serialization.kotlinx.SerializerLookupKt.guessSerializer(SerializerLookup.kt:54)
+	at io.ktor.serialization.kotlinx.KotlinxSerializationConverter.serialize(KotlinxSerializationConverter.kt:55)
+	at io.ktor.server.plugins.contentnegotiation.ResponseConverterKt$convertResponseBody$1$2.invokeSuspend(ResponseConverter.kt:66)
+	at io.ktor.server.plugins.contentnegotiation.ResponseConverterKt$convertResponseBody$1$2.invoke(ResponseConverter.kt)
+	at io.ktor.server.plugins.contentnegotiation.ResponseConverterKt$convertResponseBody$1$2.invoke(ResponseConverter.kt)
+	at io.ktor.server.application.OnCallRespondContext.transformBody(KtorCallContexts.kt:102)
+	at io.ktor.server.plugins.contentnegotiation.ResponseConverterKt$convertResponseBody$1.invokeSuspend(ResponseConverter.kt:39)
+	at io.ktor.server.plugins.contentnegotiation.ResponseConverterKt$convertResponseBody$1.invoke(ResponseConverter.kt)
+	at io.ktor.server.plugins.contentnegotiation.ResponseConverterKt$convertResponseBody$1.invoke(ResponseConverter.kt)
+	at io.ktor.server.application.PluginBuilder$onDefaultPhase$1.invokeSuspend(PluginBuilder.kt:245)
+	at io.ktor.server.application.PluginBuilder$onDefaultPhase$1.invoke(PluginBuilder.kt)
+	at io.ktor.server.application.PluginBuilder$onDefaultPhase$1.invoke(PluginBuilder.kt)
+	at io.ktor.server.application.PluginBuilder$onDefaultPhaseWithMessage$1$1$1.invokeSuspend(PluginBuilder.kt:228)
+	at io.ktor.server.application.PluginBuilder$onDefaultPhaseWithMessage$1$1$1.invoke(PluginBuilder.kt)
+	at io.ktor.server.application.PluginBuilder$onDefaultPhaseWithMessage$1$1$1.invoke(PluginBuilder.kt)
+	at io.ktor.util.debug.ContextUtilsKt.addToContextInDebugMode(ContextUtils.kt:34)
+	at io.ktor.server.application.PluginBuilder$onDefaultPhaseWithMessage$1$1.invokeSuspend(PluginBuilder.kt:224)
+	at io.ktor.server.application.PluginBuilder$onDefaultPhaseWithMessage$1$1.invoke(PluginBuilder.kt)
+	at io.ktor.server.application.PluginBuilder$onDefaultPhaseWithMessage$1$1.invoke(PluginBuilder.kt)
+	at io.ktor.util.pipeline.PipelineJvmKt.pipelineStartCoroutineUninterceptedOrReturn(PipelineJvm.kt:15)
+	at io.ktor.util.pipeline.SuspendFunctionGun.loop(SuspendFunctionGun.kt:131)
+	at io.ktor.util.pipeline.SuspendFunctionGun.proceed(SuspendFunctionGun.kt:89)
+	at io.ktor.util.pipeline.SuspendFunctionGun.execute$ktor_utils(SuspendFunctionGun.kt:109)
+	at io.ktor.util.pipeline.Pipeline.execute(Pipeline.kt:92)
+	at io.ktor.server.application.PipelineCall$DefaultImpls.respond(PipelineCall.kt:132)
+	at io.ktor.server.routing.RoutingPipelineCall.respond(RoutingPipelineCall.kt:23)
+	at io.ktor.server.routing.RoutingCall.respond(RoutingNode.kt:248)
+	at com.regnowsnaes.permitmanagementsystem.routes.PermitRoutesKt$permitRoutes$1$1.invokeSuspend(PermitRoutes.kt:524)
+	at kotlin.coroutines.jvm.internal.BaseContinuationImpl.resumeWith(ContinuationImpl.kt:33)
+	at kotlinx.coroutines.DispatchedTask.run(DispatchedTask.kt:98)
+	at kotlinx.coroutines.scheduling.CoroutineScheduler.runSafely(CoroutineScheduler.kt:586)
+	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.executeTask(CoroutineScheduler.kt:829)
+	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.runWorker(CoroutineScheduler.kt:717)
+	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.run(CoroutineScheduler.kt:704)
+2025-07-08 19:49:02.653 [DefaultDispatcher-worker-2] TRACE i.k.s.p.c.ContentNegotiation - Skipping response body transformation from HttpStatusCode to OutgoingContent for the GET /counties request because the HttpStatusCode type is ignored. See [ContentNegotiationConfig::ignoreType].
+2025-07-08 19:49:09.627 [eventLoopGroupProxy-4-1] TRACE io.ktor.server.routing.Routing - Trace for [counties]
+/, segment:0 -> SUCCESS @ /
+  /, segment:0 -> SUCCESS @ /
+    /(method:GET), segment:0 -> FAILURE "Not all segments matched" @ /(method:GET)
+  /auth, segment:0 -> FAILURE "Selector didn't match" @ /auth
+  /counties, segment:1 -> SUCCESS @ /counties
+    /counties/(method:GET), segment:1 -> SUCCESS @ /counties/(method:GET)
+    /counties/{id}, segment:1 -> FAILURE "Selector didn't match" @ /counties/{id}
+  /packages, segment:0 -> FAILURE "Selector didn't match" @ /packages
+  /uploads, segment:0 -> FAILURE "Selector didn't match" @ /uploads
+Matched routes:
+  "" -> "counties" -> "(method:GET)"
+Routing resolve result:
+  SUCCESS @ /counties/(method:GET)
+2025-07-08 19:49:09.649 [eventLoopGroupProxy-4-1] DEBUG Exposed - SELECT counties.id, counties."name", counties."state", counties.created_at, counties.updated_at FROM counties
+2025-07-08 19:49:09.688 [DefaultDispatcher-worker-4] ERROR io.ktor.server.Application - 500 Internal Server Error: GET - /counties
+kotlinx.serialization.SerializationException: Serializer for class 'ApiResponse' is not found.
+Please ensure that class is marked as '@Serializable' and that the serialization compiler plugin is applied.
+
+	at kotlinx.serialization.internal.Platform_commonKt.serializerNotRegistered(Platform.common.kt:90)
+	at kotlinx.serialization.SerializersKt__SerializersKt.serializer(Serializers.kt:299)
+	at kotlinx.serialization.SerializersKt.serializer(Unknown Source)
+	at io.ktor.serialization.kotlinx.SerializerLookupKt.guessSerializer(SerializerLookup.kt:54)
+	at io.ktor.serialization.kotlinx.KotlinxSerializationConverter.serialize(KotlinxSerializationConverter.kt:55)
+	at io.ktor.server.plugins.contentnegotiation.ResponseConverterKt$convertResponseBody$1$2.invokeSuspend(ResponseConverter.kt:66)
+	at io.ktor.server.plugins.contentnegotiation.ResponseConverterKt$convertResponseBody$1$2.invoke(ResponseConverter.kt)
+	at io.ktor.server.plugins.contentnegotiation.ResponseConverterKt$convertResponseBody$1$2.invoke(ResponseConverter.kt)
+	at io.ktor.server.application.OnCallRespondContext.transformBody(KtorCallContexts.kt:102)
+	at io.ktor.server.plugins.contentnegotiation.ResponseConverterKt$convertResponseBody$1.invokeSuspend(ResponseConverter.kt:39)
+	at io.ktor.server.plugins.contentnegotiation.ResponseConverterKt$convertResponseBody$1.invoke(ResponseConverter.kt)
+	at io.ktor.server.plugins.contentnegotiation.ResponseConverterKt$convertResponseBody$1.invoke(ResponseConverter.kt)
+	at io.ktor.server.application.PluginBuilder$onDefaultPhase$1.invokeSuspend(PluginBuilder.kt:245)
+	at io.ktor.server.application.PluginBuilder$onDefaultPhase$1.invoke(PluginBuilder.kt)
+	at io.ktor.server.application.PluginBuilder$onDefaultPhase$1.invoke(PluginBuilder.kt)
+	at io.ktor.server.application.PluginBuilder$onDefaultPhaseWithMessage$1$1$1.invokeSuspend(PluginBuilder.kt:228)
+	at io.ktor.server.application.PluginBuilder$onDefaultPhaseWithMessage$1$1$1.invoke(PluginBuilder.kt)
+	at io.ktor.server.application.PluginBuilder$onDefaultPhaseWithMessage$1$1$1.invoke(PluginBuilder.kt)
+	at io.ktor.util.debug.ContextUtilsKt.addToContextInDebugMode(ContextUtils.kt:34)
+	at io.ktor.server.application.PluginBuilder$onDefaultPhaseWithMessage$1$1.invokeSuspend(PluginBuilder.kt:224)
+	at io.ktor.server.application.PluginBuilder$onDefaultPhaseWithMessage$1$1.invoke(PluginBuilder.kt)
+	at io.ktor.server.application.PluginBuilder$onDefaultPhaseWithMessage$1$1.invoke(PluginBuilder.kt)
+	at io.ktor.util.pipeline.PipelineJvmKt.pipelineStartCoroutineUninterceptedOrReturn(PipelineJvm.kt:15)
+	at io.ktor.util.pipeline.SuspendFunctionGun.loop(SuspendFunctionGun.kt:131)
+	at io.ktor.util.pipeline.SuspendFunctionGun.proceed(SuspendFunctionGun.kt:89)
+	at io.ktor.util.pipeline.SuspendFunctionGun.execute$ktor_utils(SuspendFunctionGun.kt:109)
+	at io.ktor.util.pipeline.Pipeline.execute(Pipeline.kt:92)
+	at io.ktor.server.application.PipelineCall$DefaultImpls.respond(PipelineCall.kt:132)
+	at io.ktor.server.routing.RoutingPipelineCall.respond(RoutingPipelineCall.kt:23)
+	at io.ktor.server.routing.RoutingCall.respond(RoutingNode.kt:248)
+	at com.regnowsnaes.permitmanagementsystem.routes.PermitRoutesKt$permitRoutes$1$1.invokeSuspend(PermitRoutes.kt:524)
+	at kotlin.coroutines.jvm.internal.BaseContinuationImpl.resumeWith(ContinuationImpl.kt:33)
+	at kotlinx.coroutines.DispatchedTask.run(DispatchedTask.kt:98)
+	at kotlinx.coroutines.scheduling.CoroutineScheduler.runSafely(CoroutineScheduler.kt:586)
+	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.executeTask(CoroutineScheduler.kt:829)
+	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.runWorker(CoroutineScheduler.kt:717)
+	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.run(CoroutineScheduler.kt:704)
+2025-07-08 19:49:09.689 [DefaultDispatcher-worker-4] TRACE i.k.s.p.c.ContentNegotiation - Skipping response body transformation from HttpStatusCode to OutgoingContent for the GET /counties request because the HttpStatusCode type is ignored. See [ContentNegotiationConfig::ignoreType].

@@ -1,0 +1,625 @@
+package com.regnowsnaes.permitmanagementsystem.routes
+
+import com.regnowsnaes.permitmanagementsystem.models.*
+import com.regnowsnaes.permitmanagementsystem.services.AuthService
+import com.regnowsnaes.permitmanagementsystem.services.PermitService
+import io.ktor.http.*
+import io.ktor.http.content.*
+import io.ktor.server.application.*
+import io.ktor.server.request.*
+import io.ktor.server.response.*
+import io.ktor.server.routing.*
+import io.ktor.utils.io.*
+import java.io.File
+
+fun Route.permitRoutes() {
+    route("/counties") {
+        get {
+            try {
+                val counties = PermitService.getAllCounties()
+                call.respond(
+                    HttpStatusCode.OK,
+                    ApiResponse(
+                        success = true,
+                        data = counties,
+                        message = "Counties retrieved successfully"
+                    )
+                )
+            } catch (e: Exception) {
+                call.respond(
+                    HttpStatusCode.InternalServerError,
+                    ApiResponse<Nothing>(
+                        success = false,
+                        error = "Failed to retrieve counties"
+                    )
+                )
+            }
+        }
+        
+        get("/{id}/checklist") {
+            try {
+                val countyId = call.parameters["id"]?.toIntOrNull()
+                if (countyId == null) {
+                    call.respond(
+                        HttpStatusCode.BadRequest,
+                        ApiResponse<Nothing>(
+                            success = false,
+                            error = "Invalid county ID"
+                        )
+                    )
+                    return@get
+                }
+                
+                val checklist = PermitService.getChecklistByCountyId(countyId)
+                call.respond(
+                    HttpStatusCode.OK,
+                    ApiResponse(
+                        success = true,
+                        data = checklist,
+                        message = "Checklist retrieved successfully"
+                    )
+                )
+            } catch (e: Exception) {
+                call.respond(
+                    HttpStatusCode.InternalServerError,
+                    ApiResponse<Nothing>(
+                        success = false,
+                        error = "Failed to retrieve checklist"
+                    )
+                )
+            }
+        }
+    }
+    
+    route("/packages") {
+        get {
+            try {
+                val user = getCurrentUser(call) ?: return@get
+                val packages = PermitService.getPermitPackagesByUserId(user.id!!)
+                call.respond(
+                    HttpStatusCode.OK,
+                    ApiResponse(
+                        success = true,
+                        data = packages,
+                        message = "Permit packages retrieved successfully"
+                    )
+                )
+            } catch (e: Exception) {
+                call.respond(
+                    HttpStatusCode.InternalServerError,
+                    ApiResponse<Nothing>(
+                        success = false,
+                        error = "Failed to retrieve permit packages"
+                    )
+                )
+            }
+        }
+        
+        post {
+            try {
+                val user = getCurrentUser(call) ?: return@post
+                val request = call.receive<CreatePackageRequest>()
+                
+                // Validate input
+                if (request.name.isBlank()) {
+                    call.respond(
+                        HttpStatusCode.BadRequest,
+                        ApiResponse<Nothing>(
+                            success = false,
+                            error = "Package name is required"
+                        )
+                    )
+                    return@post
+                }
+                
+                val permitPackage = PermitService.createPermitPackage(
+                    userId = user.id!!,
+                    countyId = request.countyId,
+                    name = request.name,
+                    description = request.description
+                )
+                
+                call.respond(
+                    HttpStatusCode.Created,
+                    ApiResponse(
+                        success = true,
+                        data = permitPackage,
+                        message = "Permit package created successfully"
+                    )
+                )
+            } catch (e: Exception) {
+                call.respond(
+                    HttpStatusCode.InternalServerError,
+                    ApiResponse<Nothing>(
+                        success = false,
+                        error = "Failed to create permit package"
+                    )
+                )
+            }
+        }
+        
+        get("/{id}") {
+            try {
+                val user = getCurrentUser(call) ?: return@get
+                val packageId = call.parameters["id"]?.toIntOrNull()
+                
+                if (packageId == null) {
+                    call.respond(
+                        HttpStatusCode.BadRequest,
+                        ApiResponse<Nothing>(
+                            success = false,
+                            error = "Invalid package ID"
+                        )
+                    )
+                    return@get
+                }
+                
+                val permitPackage = PermitService.getPermitPackageById(packageId, user.id!!)
+                if (permitPackage == null) {
+                    call.respond(
+                        HttpStatusCode.NotFound,
+                        ApiResponse<Nothing>(
+                            success = false,
+                            error = "Permit package not found"
+                        )
+                    )
+                    return@get
+                }
+                
+                call.respond(
+                    HttpStatusCode.OK,
+                    ApiResponse(
+                        success = true,
+                        data = permitPackage,
+                        message = "Permit package retrieved successfully"
+                    )
+                )
+            } catch (e: Exception) {
+                call.respond(
+                    HttpStatusCode.InternalServerError,
+                    ApiResponse<Nothing>(
+                        success = false,
+                        error = "Failed to retrieve permit package"
+                    )
+                )
+            }
+        }
+        
+        put("/{id}/status") {
+            try {
+                val user = getCurrentUser(call) ?: return@put
+                val packageId = call.parameters["id"]?.toIntOrNull()
+                
+                if (packageId == null) {
+                    call.respond(
+                        HttpStatusCode.BadRequest,
+                        ApiResponse<Nothing>(
+                            success = false,
+                            error = "Invalid package ID"
+                        )
+                    )
+                    return@put
+                }
+                
+                val request = call.receive<Map<String, String>>()
+                val status = request["status"]
+                
+                if (status.isNullOrBlank()) {
+                    call.respond(
+                        HttpStatusCode.BadRequest,
+                        ApiResponse<Nothing>(
+                            success = false,
+                            error = "Status is required"
+                        )
+                    )
+                    return@put
+                }
+                
+                val validStatuses = listOf("draft", "in_progress", "completed", "submitted")
+                if (status !in validStatuses) {
+                    call.respond(
+                        HttpStatusCode.BadRequest,
+                        ApiResponse<Nothing>(
+                            success = false,
+                            error = "Invalid status. Must be one of: ${validStatuses.joinToString(", ")}"
+                        )
+                    )
+                    return@put
+                }
+                
+                val updatedPackage = PermitService.updatePermitPackageStatus(packageId, user.id!!, status)
+                if (updatedPackage == null) {
+                    call.respond(
+                        HttpStatusCode.NotFound,
+                        ApiResponse<Nothing>(
+                            success = false,
+                            error = "Permit package not found"
+                        )
+                    )
+                    return@put
+                }
+                
+                call.respond(
+                    HttpStatusCode.OK,
+                    ApiResponse(
+                        success = true,
+                        data = updatedPackage,
+                        message = "Permit package status updated successfully"
+                    )
+                )
+            } catch (e: Exception) {
+                call.respond(
+                    HttpStatusCode.InternalServerError,
+                    ApiResponse<Nothing>(
+                        success = false,
+                        error = "Failed to update permit package status"
+                    )
+                )
+            }
+        }
+        
+        route("/{id}/documents") {
+            get {
+                try {
+                    val user = getCurrentUser(call) ?: return@get
+                    val packageId = call.parameters["id"]?.toIntOrNull()
+                    
+                    if (packageId == null) {
+                        call.respond(
+                            HttpStatusCode.BadRequest,
+                            ApiResponse<Nothing>(
+                                success = false,
+                                error = "Invalid package ID"
+                            )
+                        )
+                        return@get
+                    }
+                    
+                    // Verify package belongs to user
+                    val permitPackage = PermitService.getPermitPackageById(packageId, user.id!!)
+                    if (permitPackage == null) {
+                        call.respond(
+                            HttpStatusCode.NotFound,
+                            ApiResponse<Nothing>(
+                                success = false,
+                                error = "Permit package not found"
+                            )
+                        )
+                        return@get
+                    }
+                    
+                    val documents = PermitService.getDocumentsByPackageId(packageId)
+                    call.respond(
+                        HttpStatusCode.OK,
+                        ApiResponse(
+                            success = true,
+                            data = documents,
+                            message = "Documents retrieved successfully"
+                        )
+                    )
+                } catch (e: Exception) {
+                    call.respond(
+                        HttpStatusCode.InternalServerError,
+                        ApiResponse<Nothing>(
+                            success = false,
+                            error = "Failed to retrieve documents"
+                        )
+                    )
+                }
+            }
+            
+            post {
+                try {
+                    val user = getCurrentUser(call) ?: return@post
+                    val packageId = call.parameters["id"]?.toIntOrNull()
+                    
+                    if (packageId == null) {
+                        call.respond(
+                            HttpStatusCode.BadRequest,
+                            ApiResponse<Nothing>(
+                                success = false,
+                                error = "Invalid package ID"
+                            )
+                        )
+                        return@post
+                    }
+                    
+                    // Verify the package belongs to the user
+                    val permitPackage = PermitService.getPermitPackageById(packageId, user.id)
+                    if (permitPackage == null) {
+                        call.respond(
+                            HttpStatusCode.NotFound,
+                            ApiResponse<Nothing>(
+                                success = false,
+                                error = "Permit package not found"
+                            )
+                        )
+                        return@post
+                    }
+                    
+                    val multipart = call.receiveMultipart()
+                    var checklistItemId: Int? = null
+                    var fileName: String? = null
+                    var fileBytes: ByteArray? = null
+                    var mimeType: String? = null
+                    
+                    multipart.forEachPart { part ->
+                        when (part) {
+                            is PartData.FormItem -> {
+                                if (part.name == "checklistItemId") {
+                                    checklistItemId = part.value.toIntOrNull()
+                                }
+                            }
+                            is PartData.FileItem -> {
+                                if (part.name == "file") {
+                                    fileName = part.originalFileName
+                                    mimeType = part.contentType?.toString()
+                                    fileBytes = part.streamProvider().readBytes()
+                                }
+                            }
+                            else -> {}
+                        }
+                        part.dispose()
+                    }
+                    
+                    if (checklistItemId == null || fileName == null || fileBytes == null) {
+                        call.respond(
+                            HttpStatusCode.BadRequest,
+                            ApiResponse<Nothing>(
+                                success = false,
+                                error = "Missing required fields: checklistItemId and file"
+                            )
+                        )
+                        return@post
+                    }
+                    
+                    // Create uploads directory if it doesn't exist
+                    val uploadsDir = File("uploads")
+                    if (!uploadsDir.exists()) {
+                        uploadsDir.mkdirs()
+                    }
+                    
+                    // Generate unique filename
+                    val timestamp = System.currentTimeMillis()
+                    val fileExtension = fileName!!.substringAfterLast(".", "")
+                    val uniqueFileName = "${timestamp}_${fileName!!.substringBeforeLast(".")}.${fileExtension}"
+                    val filePath = "uploads/$uniqueFileName"
+                    
+                    // Save file to disk
+                    val file = File(filePath)
+                    file.writeBytes(fileBytes!!)
+                    
+                    // Save document record to database
+                    val document = PermitService.createDocument(
+                        packageId = packageId,
+                        checklistItemId = checklistItemId!!,
+                        fileName = fileName!!,
+                        filePath = filePath,
+                        mimeType = mimeType ?: "application/octet-stream"
+                    )
+                    
+                    call.respond(
+                        HttpStatusCode.Created,
+                        ApiResponse(
+                            success = true,
+                            data = document
+                        )
+                    )
+                } catch (e: Exception) {
+                    call.respond(
+                        HttpStatusCode.InternalServerError,
+                        ApiResponse<Nothing>(
+                            success = false,
+                            error = "Failed to upload document"
+                        )
+                    )
+                }
+            }
+                try {
+                    val user = getCurrentUser(call) ?: return@post
+                    val packageId = call.parameters["id"]?.toIntOrNull()
+                    
+                    if (packageId == null) {
+                        call.respond(
+                            HttpStatusCode.BadRequest,
+                            ApiResponse<Nothing>(
+                                success = false,
+                                error = "Invalid package ID"
+                            )
+                        )
+                        return@post
+                    }
+                    
+                    // Verify package belongs to user
+                    val permitPackage = PermitService.getPermitPackageById(packageId, user.id!!)
+                    if (permitPackage == null) {
+                        call.respond(
+                            HttpStatusCode.NotFound,
+                            ApiResponse<Nothing>(
+                                success = false,
+                                error = "Permit package not found"
+                            )
+                        )
+                        return@post
+                    }
+                    
+                    val multipart = call.receiveMultipart()
+                    var checklistItemId: Int? = null
+                    var fileName: String? = null
+                    var fileBytes: ByteArray? = null
+                    var mimeType: String? = null
+                    
+                    multipart.forEachPart { part ->
+                        when (part.name) {
+                            "checklistItemId" -> {
+                                checklistItemId = part.bodyAsChannel().readRemaining().readText().toIntOrNull()
+                            }
+                            "file" -> {
+                                fileName = part.originalFileName
+                                fileBytes = part.bodyAsChannel().readRemaining().readBytes()
+                                mimeType = part.contentType?.toString()
+                            }
+                        }
+                        part.dispose()
+                    }
+                    
+                    if (checklistItemId == null || fileName == null || fileBytes == null) {
+                        call.respond(
+                            HttpStatusCode.BadRequest,
+                            ApiResponse<Nothing>(
+                                success = false,
+                                error = "Missing required fields: checklistItemId and file"
+                            )
+                        )
+                        return@post
+                    }
+                    
+                    // Create uploads directory if it doesn't exist
+                    val uploadsDir = File("uploads")
+                    if (!uploadsDir.exists()) {
+                        uploadsDir.mkdirs()
+                    }
+                    
+                    // Generate unique filename
+                    val uniqueFileName = "${System.currentTimeMillis()}_$fileName"
+                    val filePath = "uploads/$uniqueFileName"
+                    val file = File(filePath)
+                    file.writeBytes(fileBytes)
+                    
+                    val document = PermitService.uploadDocument(
+                        packageId = packageId,
+                        checklistItemId = checklistItemId!!,
+                        fileName = fileName!!,
+                        fileUrl = "/uploads/$uniqueFileName",
+                        fileSize = fileBytes!!.size.toLong(),
+                        mimeType = mimeType ?: "application/octet-stream"
+                    )
+                    
+                    call.respond(
+                        HttpStatusCode.Created,
+                        ApiResponse(
+                            success = true,
+                            data = document,
+                            message = "Document uploaded successfully"
+                        )
+                    )
+                } catch (e: Exception) {
+                    call.respond(
+                        HttpStatusCode.InternalServerError,
+                        ApiResponse<Nothing>(
+                            success = false,
+                            error = "Failed to upload document"
+                        )
+                    )
+                }
+            }
+            */
+            
+            delete("/{documentId}") {
+                try {
+                    val user = getCurrentUser(call) ?: return@delete
+                    val packageId = call.parameters["id"]?.toIntOrNull()
+                    val documentId = call.parameters["documentId"]?.toIntOrNull()
+                    
+                    if (packageId == null || documentId == null) {
+                        call.respond(
+                            HttpStatusCode.BadRequest,
+                            ApiResponse<Nothing>(
+                                success = false,
+                                error = "Invalid package ID or document ID"
+                            )
+                        )
+                        return@delete
+                    }
+                    
+                    // Verify package belongs to user
+                    val permitPackage = PermitService.getPermitPackageById(packageId, user.id!!)
+                    if (permitPackage == null) {
+                        call.respond(
+                            HttpStatusCode.NotFound,
+                            ApiResponse<Nothing>(
+                                success = false,
+                                error = "Permit package not found"
+                            )
+                        )
+                        return@delete
+                    }
+                    
+                    val document = PermitService.getDocumentById(documentId)
+                    if (document == null || document.packageId != packageId) {
+                        call.respond(
+                            HttpStatusCode.NotFound,
+                            ApiResponse<Nothing>(
+                                success = false,
+                                error = "Document not found"
+                            )
+                        )
+                        return@delete
+                    }
+                    
+                    // Delete file from filesystem
+                    val file = File(document.fileUrl.removePrefix("/"))
+                    if (file.exists()) {
+                        file.delete()
+                    }
+                    
+                    val deleted = PermitService.deleteDocument(documentId, packageId)
+                    if (deleted) {
+                        call.respond(
+                            HttpStatusCode.OK,
+                            ApiResponse<Nothing>(
+                                success = true,
+                                message = "Document deleted successfully"
+                            )
+                        )
+                    } else {
+                        call.respond(
+                            HttpStatusCode.InternalServerError,
+                            ApiResponse<Nothing>(
+                                success = false,
+                                error = "Failed to delete document"
+                            )
+                        )
+                    }
+                } catch (e: Exception) {
+                    call.respond(
+                        HttpStatusCode.InternalServerError,
+                        ApiResponse<Nothing>(
+                            success = false,
+                            error = "Failed to delete document"
+                        )
+                    )
+                }
+            }
+        }
+    }
+}
+
+private suspend fun getCurrentUser(call: ApplicationCall): User? {
+    val authHeader = call.request.header("Authorization")
+    if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+        call.respond(
+            HttpStatusCode.Unauthorized,
+            ApiResponse<Nothing>(
+                success = false,
+                error = "Authorization header required"
+            )
+        )
+        return null
+    }
+    
+    val token = authHeader.substring(7)
+    val user = AuthService.validateToken(token)
+    if (user == null) {
+        call.respond(
+            HttpStatusCode.Unauthorized,
+            ApiResponse<Nothing>(
+                success = false,
+                error = "Invalid or expired token"
+            )
+        )
+        return null
+    }
+    
+    return user
+} 

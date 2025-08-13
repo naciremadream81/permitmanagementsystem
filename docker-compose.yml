@@ -1,0 +1,39 @@
+services:
+  postgres:
+    image: postgres:15
+    container_name: permit_management_db
+    environment:
+      POSTGRES_DB: permit_management
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  server:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: permit_management_server
+    environment:
+      DATABASE_URL: jdbc:postgresql://postgres:5432/permit_management
+      DB_USER: postgres
+      DB_PASSWORD: password
+      JWT_SECRET: your-secret-key-change-in-production
+    ports:
+      - "8080:8080"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    volumes:
+      - ./uploads:/app/uploads
+    restart: unless-stopped
+
+volumes:
+  postgres_data: 

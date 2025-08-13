@@ -1,0 +1,24 @@
+2025-07-08 19:51:03.762 [main] DEBUG Exposed - SELECT COUNT(*) FROM counties
+2025-07-08 19:51:03.852 [main] INFO  io.ktor.server.Application - Autoreload is disabled because the development mode is off.
+2025-07-08 19:51:04.094 [main] INFO  io.ktor.server.Application - Application started in 0.264 seconds.
+WARNING: A restricted method in java.lang.System has been called
+WARNING: java.lang.System::loadLibrary has been called by io.netty.util.internal.NativeLibraryUtil in an unnamed module (file:/Users/seans/AndroidStudioProjects/permitmanagementsystem/server/build/libs/server-all.jar)
+WARNING: Use --enable-native-access=ALL-UNNAMED to avoid a warning for callers in this module
+WARNING: Restricted methods will be blocked in a future release unless native access is enabled
+
+2025-07-08 19:51:04.415 [DefaultDispatcher-worker-1] INFO  io.ktor.server.Application - Responding at http://0.0.0.0:8080
+2025-07-08 19:51:19.103 [eventLoopGroupProxy-4-1] TRACE io.ktor.server.routing.Routing - Trace for [counties]
+/, segment:0 -> SUCCESS @ /
+  /, segment:0 -> SUCCESS @ /
+    /(method:GET), segment:0 -> FAILURE "Not all segments matched" @ /(method:GET)
+  /auth, segment:0 -> FAILURE "Selector didn't match" @ /auth
+  /counties, segment:1 -> SUCCESS @ /counties
+    /counties/(method:GET), segment:1 -> SUCCESS @ /counties/(method:GET)
+    /counties/{id}, segment:1 -> FAILURE "Selector didn't match" @ /counties/{id}
+  /packages, segment:0 -> FAILURE "Selector didn't match" @ /packages
+  /uploads, segment:0 -> FAILURE "Selector didn't match" @ /uploads
+Matched routes:
+  "" -> "counties" -> "(method:GET)"
+Routing resolve result:
+  SUCCESS @ /counties/(method:GET)
+2025-07-08 19:51:19.157 [eventLoopGroupProxy-4-1] DEBUG Exposed - SELECT counties.id, counties."name", counties."state", counties.created_at, counties.updated_at FROM counties

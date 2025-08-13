@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Florida Permit Management System - Working Version</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: #f5f5f5;
+            color: #333;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            border-radius: 12px;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .status {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+        }
+        .county-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+        }
+        .county-card {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .btn {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+        .btn:hover {
+            background: #5a6fd8;
+        }
+        .alert {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 15px 20px;
+            border-radius: 6px;
+            color: white;
+            font-weight: 500;
+            z-index: 1000;
+        }
+        .alert-success { background: #28a745; }
+        .alert-error { background: #dc3545; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🏛️ Florida Permit Management System</h1>
+            <p>✅ WORKING VERSION - No JavaScript Errors</p>
+        </div>
+        
+        <div class="status">
+            <div>
+                <h3>Server Status</h3>
+                <p id="server-status">Checking...</p>
+            </div>
+            <div>
+                <h3>Counties</h3>
+                <p id="county-count">Loading...</p>
+            </div>
+            <div>
+                <h3>Last Updated</h3>
+                <p id="last-updated">-</p>
+            </div>
+        </div>
+        
+        <div style="background: white; padding: 20px; border-radius: 8px; margin-bottom: 20px;">
+            <h2>Available Counties</h2>
+            <div id="counties-container">Loading counties...</div>
+        </div>
+    </div>
+    
+    <div id="alert-container"></div>
+    
+    <script>
+        console.log('🚀 Starting Florida Permit Management System');
+        
+        // Global variables
+        const API_BASE = window.location.origin;
+        let counties = [];
+        
+        // Initialize when page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('✅ DOM loaded, initializing...');
+            checkServerStatus();
+            loadCounties();
+            updateTimestamp();
+        });
+        
+        // Check if server is responding
+        async function checkServerStatus() {
+            try {
+                console.log('Checking server status...');
+                const response = await fetch(API_BASE + '/counties');
+                
+                if (response.ok) {
+                    document.getElementById('server-status').textContent = '✅ Online';
+                    document.getElementById('server-status').style.color = '#28a745';
+                    showAlert('Server connected successfully!', 'success');
+                } else {
+                    throw new Error('Server responded with error: ' + response.status);
+                }
+            } catch (error) {
+                console.error('❌ Server status check failed:', error);
+                document.getElementById('server-status').textContent = '❌ Offline';
+                document.getElementById('server-status').style.color = '#dc3545';
+                showAlert('Server connection failed: ' + error.message, 'error');
+            }
+        }
+        
+        // Load counties from API
+        async function loadCounties() {
+            try {
+                console.log('Loading counties from API...');
+                const response = await fetch(API_BASE + '/counties');
+                
+                if (!response.ok) {
+                    throw new Error('HTTP ' + response.status + ': ' + response.statusText);
+                }
+                
+                counties = await response.json();
+                console.log('✅ Loaded ' + counties.length + ' counties:', counties);
+                
+                document.getElementById('county-count').textContent = counties.length + ' counties';
+                displayCounties();
+                
+            } catch (error) {
+                console.error('❌ Failed to load counties:', error);
+                document.getElementById('county-count').textContent = 'Error loading';
+                document.getElementById('counties-container').innerHTML = 
+                    '<p style="color: #dc3545;">Failed to load counties: ' + error.message + '</p>';
+                showAlert('Failed to load counties: ' + error.message, 'error');
+            }
+        }
+        
+        // Display counties in the UI
+        function displayCounties() {
+            const container = document.getElementById('counties-container');
+            
+            if (counties.length === 0) {
+                container.innerHTML = '<p>No counties found.</p>';
+                return;
+            }
+            
+            const grid = document.createElement('div');
+            grid.className = 'county-grid';
+            
+            counties.forEach(function(county) {
+                const card = document.createElement('div');
+                card.className = 'county-card';
+                card.innerHTML = 
+                    '<h3>' + county.name + '</h3>' +
+                    '<p><strong>State:</strong> ' + county.state + '</p>' +
+                    '<p><strong>ID:</strong> ' + county.id + '</p>' +
+                    '<button class="btn" onclick="viewCountyDetails(' + county.id + ', \'' + 
+                    county.name.replace(/'/g, "\\'") + '\')">View Checklist</button>';
+                grid.appendChild(card);
+            });
+            
+            container.innerHTML = '';
+            container.appendChild(grid);
+            
+            console.log('✅ Counties displayed successfully');
+        }
+        
+        // View county checklist details
+        async function viewCountyDetails(countyId, countyName) {
+            try {
+                console.log('Loading checklist for county:', countyName, '(ID:', countyId, ')');
+                
+                const response = await fetch(API_BASE + '/counties/' + countyId + '/checklist');
+                
+                if (!response.ok) {
+                    throw new Error('HTTP ' + response.status + ': ' + response.statusText);
+                }
+                
+                const checklist = await response.json();
+                console.log('✅ Loaded checklist:', checklist);
+                
+                let message = 'County: ' + countyName + '\\n';
+                message += 'ID: ' + countyId + '\\n\\n';
+                message += 'Checklist Items (' + checklist.length + '):\\n\\n';
+                
+                checklist.forEach(function(item, index) {
+                    message += (index + 1) + '. ' + item.title + '\\n';
+                    message += '   Description: ' + item.description + '\\n';
+                    message += '   Required: ' + (item.required ? 'Yes' : 'No') + '\\n\\n';
+                });
+                
+                alert(message);
+                showAlert('Loaded checklist for ' + countyName, 'success');
+                
+            } catch (error) {
+                console.error('❌ Failed to load county details:', error);
+                alert('Failed to load details for ' + countyName + ':\\n' + error.message);
+                showAlert('Failed to load county details: ' + error.message, 'error');
+            }
+        }
+        
+        // Show alert notification
+        function showAlert(message, type) {
+            console.log(type.toUpperCase() + ':', message);
+            
+            const alertContainer = document.getElementById('alert-container');
+            const alert = document.createElement('div');
+            alert.className = 'alert alert-' + type;
+            alert.textContent = message;
+            
+            alertContainer.appendChild(alert);
+            
+            // Remove alert after 5 seconds
+            setTimeout(function() {
+                if (alert.parentNode) {
+                    alert.parentNode.removeChild(alert);
+                }
+            }, 5000);
+        }
+        
+        // Update timestamp
+        function updateTimestamp() {
+            const now = new Date();
+            document.getElementById('last-updated').textContent = now.toLocaleTimeString();
+        }
+        
+        // Handle any JavaScript errors
+        window.addEventListener('error', function(e) {
+            console.error('❌ JavaScript Error:', e.error);
+            showAlert('JavaScript error occurred. Check console for details.', 'error');
+        });
+        
+        // Handle unhandled promise rejections
+        window.addEventListener('unhandledrejection', function(e) {
+            console.error('❌ Unhandled Promise Rejection:', e.reason);
+            showAlert('Async operation failed. Check console for details.', 'error');
+        });
+        
+        console.log('✅ JavaScript initialization complete');
+    </script>
+</body>
+</html>

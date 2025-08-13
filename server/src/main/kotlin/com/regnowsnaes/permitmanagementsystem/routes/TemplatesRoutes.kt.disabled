@@ -1,0 +1,321 @@
+package com.regnowsnaes.permitmanagementsystem.routes
+
+import com.regnowsnaes.permitmanagementsystem.database.ChecklistItems
+import com.regnowsnaes.permitmanagementsystem.database.Counties
+import io.ktor.http.*
+import io.ktor.server.application.*
+import io.ktor.server.request.*
+import io.ktor.server.response.*
+import io.ktor.server.routing.*
+import kotlinx.serialization.Serializable
+import org.jetbrains.exposed.sql.*
+import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
+import org.jetbrains.exposed.sql.transactions.transaction
+import java.time.LocalDateTime
+
+@Serializable
+data class ChecklistTemplate(
+    val id: String,
+    val name: String,
+    val description: String,
+    val category: String,
+    val items: List<TemplateItem>
+)
+
+@Serializable
+data class TemplateItem(
+    val title: String,
+    val description: String,
+    val required: Boolean,
+    val orderIndex: Int
+)
+
+@Serializable
+data class ApplyTemplateRequest(
+    val templateId: String,
+    val countyIds: List<Int>,
+    val replaceExisting: Boolean = false
+)
+
+@Serializable
+data class CreateTemplateRequest(
+    val name: String,
+    val description: String,
+    val category: String,
+    val sourceCountyId: Int? = null,
+    val items: List<TemplateItem>? = null
+)
+
+fun Application.configureTemplatesRoutes() {
+    routing {
+        
+        // Get all available templates
+        get("/admin/templates") {
+            try {
+                val templates = getBuiltInTemplates()
+                call.respond(HttpStatusCode.OK, mapOf("success" to true, "data" to templates))
+                
+            } catch (e: Exception) {
+                call.application.log.error("Error getting templates", e)
+                call.respond(HttpStatusCode.InternalServerError, mapOf("error" to "Failed to get templates"))
+            }
+        }
+        
+        // Get template by ID
+        get("/admin/templates/{id}") {
+            try {
+                val templateId = call.parameters["id"] ?: return@get call.respond(
+                    HttpStatusCode.BadRequest, 
+                    mapOf("error" to "Template ID is required")
+                )
+                
+                val template = getBuiltInTemplates().find { it.id == templateId }
+                    ?: return@get call.respond(
+                        HttpStatusCode.NotFound, 
+                        mapOf("error" to "Template not found")
+                    )
+                
+                call.respond(HttpStatusCode.OK, mapOf("success" to true, "data" to template))
+                
+            } catch (e: Exception) {
+                call.application.log.error("Error getting template", e)
+                call.respond(HttpStatusCode.InternalServerError, mapOf("error" to "Failed to get template"))
+            }
+        }
+        
+        // Create template from existing county
+        post("/admin/templates/create-from-county") {
+            try {
+                val request = call.receive<CreateTemplateRequest>()
+                val sourceCountyId = request.sourceCountyId ?: return@post call.respond(
+                    HttpStatusCode.BadRequest,
+                    mapOf("error" to "Source county ID is required")
+                )
+                
+                val template = transaction {
+                    // Get county name
+                    val county = Counties.select { Counties.id eq sourceCountyId }.singleOrNull()
+                        ?: return@transaction null
+                    
+                    val countyName = county[Counties.name]
+                    
+                    // Get checklist items
+                    val items = ChecklistItems.select { ChecklistItems.countyId eq sourceCountyId }
+                        .orderBy(ChecklistItems.orderIndex to SortOrder.ASC)
+                        .map { row ->
+                            TemplateItem(
+                                title = row[ChecklistItems.title],
+                                description = row[ChecklistItems.description],
+                                required = row[ChecklistItems.required],
+                                orderIndex = row[ChecklistItems.orderIndex]
+                            )
+                        }
+                    
+                    ChecklistTemplate(
+                        id = "custom_${sourceCountyId}_${System.currentTimeMillis()}",
+                        name = request.name.ifEmpty { "$countyName Template" },
+                        description = request.description.ifEmpty { "Template created from $countyName checklist" },
+                        category = request.category.ifEmpty { "Custom" },
+                        items = items
+                    )
+                }
+                
+                if (template == null) {
+                    call.respond(HttpStatusCode.NotFound, mapOf("error" to "Source county not found"))
+                } else {
+                    call.respond(HttpStatusCode.OK, mapOf("success" to true, "data" to template))
+                }
+                
+            } catch (e: Exception) {
+                call.application.log.error("Error creating template from county", e)
+                call.respond(HttpStatusCode.InternalServerError, mapOf("error" to "Failed to create template"))
+            }
+        }
+        
+        // Apply template to counties
+        post("/admin/templates/apply") {
+            try {
+                val request = call.receive<ApplyTemplateRequest>()
+                
+                val template = getBuiltInTemplates().find { it.id == request.templateId }
+                    ?: return@post call.respond(
+                        HttpStatusCode.NotFound,
+                        mapOf("error" to "Template not found")
+                    )
+                
+                val result = transaction {
+                    var successCount = 0
+                    var itemCount = 0
+                    val errors = mutableListOf<String>()
+                    
+                    request.countyIds.forEach { countyId ->
+                        try {
+                            // Verify county exists
+                            val countyExists = Counties.select { Counties.id eq countyId }.count() > 0
+                            if (!countyExists) {
+                                errors.add("County ID $countyId not found")
+                                return@forEach
+                            }
+                            
+                            // Clear existing items if requested
+                            if (request.replaceExisting) {
+                                ChecklistItems.deleteWhere { ChecklistItems.countyId eq countyId }
+                            }
+                            
+                            // Get current max order index
+                            val maxOrder = if (request.replaceExisting) 0 else {
+                                ChecklistItems.select { ChecklistItems.countyId eq countyId }
+                                    .maxByOrNull { it[ChecklistItems.orderIndex] }
+                                    ?.get(ChecklistItems.orderIndex) ?: 0
+                            }
+                            
+                            // Add template items
+                            template.items.forEach { templateItem ->
+                                ChecklistItems.insertAndGetId {
+                                    it[ChecklistItems.countyId] = countyId
+                                    it[title] = templateItem.title
+                                    it[description] = templateItem.description
+                                    it[required] = templateItem.required
+                                    it[orderIndex] = if (request.replaceExisting) templateItem.orderIndex else maxOrder + templateItem.orderIndex
+                                    it[createdAt] = LocalDateTime.now()
+                                    it[updatedAt] = LocalDateTime.now()
+                                }
+                                itemCount++
+                            }
+                            
+                            successCount++
+                            
+                        } catch (e: Exception) {
+                            errors.add("County ID $countyId: ${e.message}")
+                        }
+                    }
+                    
+                    mapOf(
+                        "success" to (successCount > 0),
+                        "message" to "Applied template '${template.name}' to $successCount counties",
+                        "affectedCounties" to successCount,
+                        "affectedItems" to itemCount,
+                        "errors" to errors
+                    )
+                }
+                
+                call.respond(HttpStatusCode.OK, result)
+                
+            } catch (e: Exception) {
+                call.application.log.error("Error applying template", e)
+                call.respond(HttpStatusCode.InternalServerError, mapOf("error" to "Failed to apply template"))
+            }
+        }
+    }
+}
+
+private fun getBuiltInTemplates(): List<ChecklistTemplate> {
+    return listOf(
+        ChecklistTemplate(
+            id = "basic_residential",
+            name = "Basic Residential Permit",
+            description = "Standard checklist for basic residential building permits",
+            category = "Residential",
+            items = listOf(
+                TemplateItem("Building Permit Application", "Complete and signed building permit application form", true, 1),
+                TemplateItem("Site Plan", "Detailed site plan showing property boundaries and proposed construction", true, 2),
+                TemplateItem("Construction Plans", "Architectural drawings and construction details", true, 3),
+                TemplateItem("Structural Plans", "Structural engineering plans if required", true, 4),
+                TemplateItem("Electrical Plans", "Electrical system layout and specifications", true, 5),
+                TemplateItem("Plumbing Plans", "Plumbing system layout and specifications", true, 6),
+                TemplateItem("HVAC Plans", "Heating, ventilation, and air conditioning plans", true, 7),
+                TemplateItem("Energy Code Compliance", "Energy efficiency compliance documentation", true, 8),
+                TemplateItem("Flood Zone Documentation", "Flood zone determination and compliance if applicable", false, 9),
+                TemplateItem("HOA Approval", "Homeowners association approval if applicable", false, 10)
+            )
+        ),
+        ChecklistTemplate(
+            id = "commercial_basic",
+            name = "Basic Commercial Permit",
+            description = "Standard checklist for basic commercial building permits",
+            category = "Commercial",
+            items = listOf(
+                TemplateItem("Commercial Permit Application", "Complete commercial building permit application", true, 1),
+                TemplateItem("Site Development Plan", "Comprehensive site development and landscaping plan", true, 2),
+                TemplateItem("Architectural Plans", "Complete architectural drawings and specifications", true, 3),
+                TemplateItem("Structural Engineering", "Structural engineering plans and calculations", true, 4),
+                TemplateItem("MEP Plans", "Mechanical, electrical, and plumbing system plans", true, 5),
+                TemplateItem("Fire Safety Plan", "Fire protection and life safety systems plan", true, 6),
+                TemplateItem("ADA Compliance", "Americans with Disabilities Act compliance documentation", true, 7),
+                TemplateItem("Parking Plan", "Parking layout and traffic flow plan", true, 8),
+                TemplateItem("Stormwater Management", "Stormwater management and drainage plan", true, 9),
+                TemplateItem("Environmental Impact", "Environmental impact assessment if required", false, 10),
+                TemplateItem("Traffic Impact Study", "Traffic impact analysis for larger projects", false, 11),
+                TemplateItem("Utility Coordination", "Utility company coordination and approvals", true, 12)
+            )
+        ),
+        ChecklistTemplate(
+            id = "renovation_minor",
+            name = "Minor Renovation",
+            description = "Checklist for minor renovation and remodeling projects",
+            category = "Renovation",
+            items = listOf(
+                TemplateItem("Renovation Permit Application", "Minor renovation permit application form", true, 1),
+                TemplateItem("Scope of Work", "Detailed description of renovation work to be performed", true, 2),
+                TemplateItem("Existing Conditions Plan", "Plan showing existing conditions and proposed changes", true, 3),
+                TemplateItem("Structural Assessment", "Structural assessment if load-bearing elements affected", false, 4),
+                TemplateItem("Electrical Updates", "Electrical system modifications if applicable", false, 5),
+                TemplateItem("Plumbing Updates", "Plumbing system modifications if applicable", false, 6),
+                TemplateItem("Code Compliance", "Demonstration of compliance with current building codes", true, 7),
+                TemplateItem("Contractor License", "Licensed contractor information and insurance", true, 8)
+            )
+        ),
+        ChecklistTemplate(
+            id = "pool_spa",
+            name = "Pool and Spa Installation",
+            description = "Checklist for swimming pool and spa installation permits",
+            category = "Specialty",
+            items = listOf(
+                TemplateItem("Pool Permit Application", "Swimming pool installation permit application", true, 1),
+                TemplateItem("Pool Design Plans", "Detailed pool design and construction plans", true, 2),
+                TemplateItem("Equipment Specifications", "Pool equipment specifications and installation details", true, 3),
+                TemplateItem("Electrical Plans", "Electrical system for pool equipment and lighting", true, 4),
+                TemplateItem("Plumbing Plans", "Pool plumbing and filtration system plans", true, 5),
+                TemplateItem("Safety Features", "Pool safety features including barriers and alarms", true, 6),
+                TemplateItem("Setback Compliance", "Property setback requirements compliance", true, 7),
+                TemplateItem("Drainage Plan", "Site drainage and water management plan", true, 8),
+                TemplateItem("Contractor License", "Licensed pool contractor information", true, 9),
+                TemplateItem("HOA Approval", "Homeowners association approval if required", false, 10)
+            )
+        ),
+        ChecklistTemplate(
+            id = "solar_installation",
+            name = "Solar Panel Installation",
+            description = "Checklist for residential and commercial solar panel installations",
+            category = "Renewable Energy",
+            items = listOf(
+                TemplateItem("Solar Permit Application", "Solar panel installation permit application", true, 1),
+                TemplateItem("System Design Plans", "Solar panel system design and layout plans", true, 2),
+                TemplateItem("Electrical Single Line Diagram", "Electrical system integration diagram", true, 3),
+                TemplateItem("Structural Analysis", "Roof structural analysis for panel mounting", true, 4),
+                TemplateItem("Equipment Specifications", "Solar panel and inverter specifications", true, 5),
+                TemplateItem("Utility Interconnection", "Utility company interconnection agreement", true, 6),
+                TemplateItem("Code Compliance", "National Electrical Code and local code compliance", true, 7),
+                TemplateItem("Installer Certification", "Certified solar installer license and insurance", true, 8),
+                TemplateItem("HOA Approval", "Homeowners association approval if applicable", false, 9)
+            )
+        ),
+        ChecklistTemplate(
+            id = "accessory_dwelling",
+            name = "Accessory Dwelling Unit (ADU)",
+            description = "Checklist for accessory dwelling unit construction permits",
+            category = "Residential",
+            items = listOf(
+                TemplateItem("ADU Permit Application", "Accessory dwelling unit permit application", true, 1),
+                TemplateItem("Site Plan", "Site plan showing ADU location and setbacks", true, 2),
+                TemplateItem("Architectural Plans", "Complete architectural plans for ADU", true, 3),
+                TemplateItem("Utility Connections", "Utility connection plans (water, sewer, electric)", true, 4),
+                TemplateItem("Parking Requirements", "Parking space allocation for ADU", true, 5),
+                TemplateItem("Zoning Compliance", "Zoning ordinance compliance documentation", true, 6),
+                TemplateItem("Fire Safety", "Fire safety and egress requirements", true, 7),
+                TemplateItem("Structural Plans", "Structural engineering if required", false, 8),
+                TemplateItem("Landscape Plan", "Landscaping and screening plan", false, 9)
+            )
+        )
+    )
+}
