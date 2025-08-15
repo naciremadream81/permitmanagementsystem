@@ -53,7 +53,7 @@ services:
   server:
     build:
       context: .
-      dockerfile: Dockerfile.production
+      dockerfile: Dockerfile.production.simple
       args:
         - BUILD_ENV=production
     container_name: permit-server-prod

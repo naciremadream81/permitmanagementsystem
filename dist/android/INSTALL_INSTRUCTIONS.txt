@@ -1,0 +1,54 @@
+Permit Management System - Android App Installation
+==================================================
+
+Files in this package:
+- composeApp-debug.apk: Debug version for testing
+- composeApp-release.apk: Release version for production
+- composeApp-release.aab: App Bundle for Google Play Store
+
+Installation Methods:
+--------------------
+
+Method 1: Direct APK Installation
+1. Enable "Unknown Sources" in Android Settings:
+   Settings > Security > Unknown Sources (or Install unknown apps)
+2. Transfer the APK file to your Android device
+3. Tap the APK file to install
+4. Follow the installation prompts
+
+Method 2: ADB Installation (Developer)
+1. Enable Developer Options and USB Debugging
+2. Connect device to computer
+3. Run: adb install composeApp-debug.apk
+
+Method 3: Google Play Store (App Bundle)
+1. Upload composeApp-release.aab to Google Play Console
+2. Follow Google Play Store publishing guidelines
+3. Users can install from Play Store once published
+
+System Requirements:
+-------------------
+- Android 7.0 (API level 24) or higher
+- 100MB free storage space
+- Internet connection for server communication
+
+Configuration:
+--------------
+The app will connect to your Permit Management System server.
+Default server: http://localhost:8081
+
+To change the server URL:
+1. Open the app
+2. Go to Settings
+3. Enter your server URL (e.g., https://your-server.com)
+
+Troubleshooting:
+---------------
+- If installation fails, ensure "Unknown Sources" is enabled
+- If app crashes, check server connectivity
+- For development issues, check Android Studio logs
+
+Support:
+--------
+For support and documentation, visit:
+https://github.com/yourusername/permitmanagementsystem

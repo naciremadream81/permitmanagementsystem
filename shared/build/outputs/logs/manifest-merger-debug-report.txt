@@ -1,0 +1,16 @@
+-- Merging decision tree log ---
+manifest
+ADDED from /home/archie/codebase/permitmanagementsystem/shared/build/intermediates/tmp/ProcessLibraryManifest/debug/tempAndroidManifest13038218615208589376.xml:2:13-83
+INJECTED from /home/archie/codebase/permitmanagementsystem/shared/build/intermediates/tmp/ProcessLibraryManifest/debug/tempAndroidManifest13038218615208589376.xml:2:13-83
+	package
+		INJECTED from /home/archie/codebase/permitmanagementsystem/shared/build/intermediates/tmp/ProcessLibraryManifest/debug/tempAndroidManifest13038218615208589376.xml
+	xmlns:android
+		ADDED from /home/archie/codebase/permitmanagementsystem/shared/build/intermediates/tmp/ProcessLibraryManifest/debug/tempAndroidManifest13038218615208589376.xml:2:23-81
+uses-sdk
+INJECTED from /home/archie/codebase/permitmanagementsystem/shared/build/intermediates/tmp/ProcessLibraryManifest/debug/tempAndroidManifest13038218615208589376.xml reason: use-sdk injection requested
+INJECTED from /home/archie/codebase/permitmanagementsystem/shared/build/intermediates/tmp/ProcessLibraryManifest/debug/tempAndroidManifest13038218615208589376.xml
+INJECTED from /home/archie/codebase/permitmanagementsystem/shared/build/intermediates/tmp/ProcessLibraryManifest/debug/tempAndroidManifest13038218615208589376.xml
+	android:targetSdkVersion
+		INJECTED from /home/archie/codebase/permitmanagementsystem/shared/build/intermediates/tmp/ProcessLibraryManifest/debug/tempAndroidManifest13038218615208589376.xml
+	android:minSdkVersion
+		INJECTED from /home/archie/codebase/permitmanagementsystem/shared/build/intermediates/tmp/ProcessLibraryManifest/debug/tempAndroidManifest13038218615208589376.xml

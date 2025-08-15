@@ -2,9 +2,9 @@
 
 ## Deployment Status
 
-**Date**: Sat Aug  9 22:53:06 EDT 2025
-**System**: Darwin Seans-MacBook-Air.local 23.6.0 Darwin Kernel Version 23.6.0: Wed May 14 13:52:32 PDT 2025; root:xnu-10063.141.1.705.2~2/RELEASE_X86_64 x86_64
-**User**: seans
+**Date**: Thu Aug 14 05:14:12 AM EDT 2025
+**System**: Linux kalify 6.12.25-amd64 #1 SMP PREEMPT_DYNAMIC Kali 6.12.25-1kali1 (2025-04-30) x86_64 GNU/Linux
+**User**: archie
 
 ### Components Deployed
 
@@ -13,8 +13,12 @@
   - Web Application: http://localhost:8081
   - Admin Panel: http://localhost:8081/admin
   - Database: PostgreSQL on port 5433
-- ⏭️ **Desktop Application**: Skipped
-- ⏭️ **Android Application**: Skipped
+- ✅ **Desktop Application**: Successfully built
+  - Distribution: dist/desktop/
+  - Executable: Available for current OS
+- ✅ **Android Application**: Successfully built
+  - Debug APK: dist/android/composeApp-debug.apk
+  - Release APK: dist/android/composeApp-release.apk
 
 ## Quick Start Guide
 
