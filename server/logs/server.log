@@ -4,3 +4,40 @@
 2025-08-12 15:39:32.355 [main] INFO  ktor.application - Autoreload is disabled because the development mode is off.
 2025-08-12 15:39:33.328 [main] INFO  ktor.application - Application started in 1.055 seconds.
 2025-08-12 15:39:34.078 [DefaultDispatcher-worker-1] INFO  ktor.application - Responding at http://0.0.0.0:8081
+2025-09-01 15:49:14.383 [main] INFO  com.zaxxer.hikari.HikariDataSource - PermitManagementPool - Starting...
+2025-09-01 15:49:15.510 [main] ERROR com.zaxxer.hikari.pool.HikariPool - PermitManagementPool - Exception during pool initialization.
+org.postgresql.util.PSQLException: FATAL: database "permit_management_dev" does not exist
+	at org.postgresql.core.v3.QueryExecutorImpl.receiveErrorResponse(QueryExecutorImpl.java:2725)
+	at org.postgresql.core.v3.QueryExecutorImpl.readStartupMessages(QueryExecutorImpl.java:2837)
+	at org.postgresql.core.v3.QueryExecutorImpl.<init>(QueryExecutorImpl.java:175)
+	at org.postgresql.core.v3.ConnectionFactoryImpl.openConnectionImpl(ConnectionFactoryImpl.java:317)
+	at org.postgresql.core.ConnectionFactory.openConnection(ConnectionFactory.java:54)
+	at org.postgresql.jdbc.PgConnection.<init>(PgConnection.java:273)
+	at org.postgresql.Driver.makeConnection(Driver.java:446)
+	at org.postgresql.Driver.connect(Driver.java:298)
+	at com.zaxxer.hikari.util.DriverDataSource.getConnection(DriverDataSource.java:138)
+	at com.zaxxer.hikari.pool.PoolBase.newConnection(PoolBase.java:359)
+	at com.zaxxer.hikari.pool.PoolBase.newPoolEntry(PoolBase.java:201)
+	at com.zaxxer.hikari.pool.HikariPool.createPoolEntry(HikariPool.java:470)
+	at com.zaxxer.hikari.pool.HikariPool.checkFailFast(HikariPool.java:561)
+	at com.zaxxer.hikari.pool.HikariPool.<init>(HikariPool.java:100)
+	at com.zaxxer.hikari.HikariDataSource.<init>(HikariDataSource.java:81)
+	at com.regnowsnaes.permitmanagementsystem.database.DatabaseConfig.init(DatabaseConfig.kt:58)
+	at com.regnowsnaes.permitmanagementsystem.ApplicationKt.main(Application.kt:54)
+	at com.regnowsnaes.permitmanagementsystem.ApplicationKt.main(Application.kt)
+2025-09-01 15:49:47.539 [main] INFO  com.zaxxer.hikari.HikariDataSource - PermitManagementPool - Starting...
+2025-09-01 15:49:47.704 [main] INFO  com.zaxxer.hikari.pool.HikariPool - PermitManagementPool - Added connection org.postgresql.jdbc.PgConnection@1ed6388a
+2025-09-01 15:49:47.707 [main] INFO  com.zaxxer.hikari.HikariDataSource - PermitManagementPool - Start completed.
+2025-09-01 15:49:49.465 [main] INFO  ktor.application - Autoreload is disabled because the development mode is off.
+2025-09-01 15:49:49.937 [main] INFO  ktor.application - Application started in 0.542 seconds.
+2025-09-01 15:49:50.128 [DefaultDispatcher-worker-1] INFO  ktor.application - Responding at http://0.0.0.0:8080
+2025-09-01 15:49:53.059 [eventLoopGroupProxy-4-1] ERROR PermitManagementSystem - timestamp=2025-09-01T19:49:53.058274789Z level=ERROR message="Unhandled exception: com/regnowsnaes/permitmanagementsystem/models/ApiResponse has been compiled by a more recent version of the Java Runtime (class file version 68.0), this version of the Java Runtime only recognizes class file versions up to 65.0" endpoint=/health error="com/regnowsnaes/permitmanagementsystem/models/ApiResponse has been compiled by a more recent version of the Java Runtime (class file version 68.0), this version of the Java Runtime only recognizes class file versions up to 65.0" exception_type="UnsupportedClassVersionError" error_type="unhandled_exception"
+2025-09-01 15:51:25.546 [eventLoopGroupProxy-4-2] ERROR PermitManagementSystem - timestamp=2025-09-01T19:51:25.546756366Z level=ERROR message="Unhandled exception: com/regnowsnaes/permitmanagementsystem/models/ApiResponse has been compiled by a more recent version of the Java Runtime (class file version 68.0), this version of the Java Runtime only recognizes class file versions up to 65.0" endpoint=/health error="com/regnowsnaes/permitmanagementsystem/models/ApiResponse has been compiled by a more recent version of the Java Runtime (class file version 68.0), this version of the Java Runtime only recognizes class file versions up to 65.0" exception_type="UnsupportedClassVersionError" error_type="unhandled_exception"
+2025-09-01 15:51:28.303 [main] INFO  com.zaxxer.hikari.HikariDataSource - PermitManagementPool - Starting...
+2025-09-01 15:51:28.533 [main] INFO  com.zaxxer.hikari.pool.HikariPool - PermitManagementPool - Added connection org.postgresql.jdbc.PgConnection@1ed6388a
+2025-09-01 15:51:28.537 [main] INFO  com.zaxxer.hikari.HikariDataSource - PermitManagementPool - Start completed.
+2025-09-01 15:51:29.754 [main] INFO  ktor.application - Autoreload is disabled because the development mode is off.
+2025-09-01 15:51:30.193 [main] INFO  ktor.application - Application started in 0.483 seconds.
+2025-09-01 15:59:37.407 [eventLoopGroupProxy-4-3] ERROR PermitManagementSystem - timestamp=2025-09-01T19:59:37.407755154Z level=ERROR message="Unhandled exception: com/regnowsnaes/permitmanagementsystem/models/ApiResponse has been compiled by a more recent version of the Java Runtime (class file version 68.0), this version of the Java Runtime only recognizes class file versions up to 65.0" endpoint=/health error="com/regnowsnaes/permitmanagementsystem/models/ApiResponse has been compiled by a more recent version of the Java Runtime (class file version 68.0), this version of the Java Runtime only recognizes class file versions up to 65.0" exception_type="UnsupportedClassVersionError" error_type="unhandled_exception"
+2025-09-01 16:01:50.035 [eventLoopGroupProxy-4-4] ERROR PermitManagementSystem - timestamp=2025-09-01T20:01:50.035634382Z level=ERROR message="Unhandled exception: com/regnowsnaes/permitmanagementsystem/models/ApiResponse has been compiled by a more recent version of the Java Runtime (class file version 68.0), this version of the Java Runtime only recognizes class file versions up to 65.0" endpoint=/health error="com/regnowsnaes/permitmanagementsystem/models/ApiResponse has been compiled by a more recent version of the Java Runtime (class file version 68.0), this version of the Java Runtime only recognizes class file versions up to 65.0" exception_type="UnsupportedClassVersionError" error_type="unhandled_exception"
+2025-09-01 16:04:27.195 [eventLoopGroupProxy-4-1] ERROR PermitManagementSystem - timestamp=2025-09-01T20:04:27.194875819Z level=ERROR message="Unhandled exception: com/regnowsnaes/permitmanagementsystem/models/ApiResponse has been compiled by a more recent version of the Java Runtime (class file version 68.0), this version of the Java Runtime only recognizes class file versions up to 65.0" endpoint=/health error="com/regnowsnaes/permitmanagementsystem/models/ApiResponse has been compiled by a more recent version of the Java Runtime (class file version 68.0), this version of the Java Runtime only recognizes class file versions up to 65.0" exception_type="UnsupportedClassVersionError" error_type="unhandled_exception"

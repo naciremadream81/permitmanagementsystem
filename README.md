@@ -27,6 +27,29 @@ The Permit Management System is a modern, scalable solution designed for managin
 - **Enterprise Features**: Authentication, authorization, audit logging
 - **Production Ready**: Comprehensive monitoring, health checks, and error handling
 
+## 🌐 **Web Applications Ready Now!**
+
+**13 fully functional web applications are available immediately:**
+
+```bash
+# Launch web server
+./launch-web-app.sh
+
+# Access applications at:
+# http://localhost:3000/web-app.html
+# http://localhost:3000/web-app-production.html
+# http://localhost:3000/web-app-admin.html
+# ... and 10 more applications
+```
+
+**Features include:**
+- User registration and authentication
+- County management and permit packages
+- Document upload and management
+- Admin interfaces and dashboards
+- Construction industry specific tools
+- Responsive design and offline capability
+
 ## 🏛️ Architecture
 
 ### System Architecture
@@ -97,7 +120,7 @@ The Permit Management System is a modern, scalable solution designed for managin
 ## 🚀 Quick Start
 
 ### Prerequisites
-- Java 21+
+- Java 21+ (Java 24 recommended)
 - PostgreSQL 13+
 - Docker (optional)
 - Git
@@ -108,56 +131,54 @@ git clone <repository-url>
 cd permitmanagementsystem
 ```
 
-### 2. Database Setup
-```bash
-# Start PostgreSQL (using Docker)
-docker run --name permit-postgres -e POSTGRES_PASSWORD=password -e POSTGRES_DB=permit_management_dev -p 5432:5432 -d postgres:13
+### 2. Quick Setup (Recommended)
 
-# Or use local PostgreSQL
-createdb permit_management_dev
+#### Option A: Complete Automated Setup
+```bash
+# Run the complete setup script (handles everything)
+./setup-complete.sh
 ```
 
-### 3. Environment Configuration
+#### Option B: Step-by-Step Setup
 ```bash
-# Copy environment template
-cp .env.example .env
+# 1. Setup database (Ubuntu/Arch Linux compatible)
+./setup-database-simple.sh
 
-# Edit environment variables
-nano .env
-```
-
-### 4. Build and Run
-
-#### Server-Only Development (Recommended)
-```bash
-# Setup minimal Android SDK (satisfies Gradle requirements)
-./setup-minimal-android.sh
-
-# Build server and shared modules
+# 2. Build and start server
+export JAVA_HOME=/usr/lib/jvm/java-24-openjdk  # or java-21-openjdk
 ./gradlew :server:compileKotlin :shared:compileKotlinJvm
-
-# Start the server
 ./gradlew :server:run
 ```
 
-#### Full Multi-Platform Build
+### 3. Access the Application
+
+#### Web Applications (Ready Now!)
 ```bash
-# Build the project (requires Android SDK)
-./gradlew build
+# Launch web server for HTML apps
+./launch-web-app.sh
 
-# Start the server
-./gradlew :server:run
-
-# Or run with Docker
-docker-compose up -d
+# Then open in browser:
+# http://localhost:3000/web-app.html
+# http://localhost:3000/web-app-production.html
+# http://localhost:3000/web-app-admin.html
 ```
 
-> **Note**: For detailed build instructions, see [BUILD_GUIDE.md](BUILD_GUIDE.md)
-
-### 5. Access the Application
+#### Server API (When Running)
 - **Web Interface**: http://localhost:8080
 - **API Documentation**: http://localhost:8080/api
 - **Health Check**: http://localhost:8080/health
+
+### 4. Available Setup Scripts
+
+| Script | Purpose | Usage |
+|--------|---------|-------|
+| `setup-complete.sh` | Complete system setup | `./setup-complete.sh` |
+| `setup-database-simple.sh` | Database setup (no sudo) | `./setup-database-simple.sh` |
+| `setup-database-universal.sh` | Full database setup (Ubuntu/Arch) | `./setup-database-universal.sh` |
+| `launch-web-app.sh` | Launch web applications | `./launch-web-app.sh` |
+| `build-server-only.sh` | Server-only build | `./build-server-only.sh` |
+
+> **Note**: For detailed build instructions, see [BUILD_GUIDE.md](BUILD_GUIDE.md)
 
 ## 📱 Platforms
 
@@ -248,20 +269,47 @@ Errors are returned with appropriate HTTP status codes and detailed error inform
 ### Project Structure
 ```
 permitmanagementsystem/
-├── server/                 # Backend server (Ktor)
-├── shared/                 # Shared business logic (KMP)
-├── composeApp/             # Mobile & Desktop apps (Compose)
-├── iosApp/                 # iOS-specific code
-├── docs/                   # Documentation
-├── extra/                  # Additional files and scripts
-│   ├── documentation/      # Historical documentation
-│   ├── scripts/           # Utility scripts
-│   ├── web-apps/          # Web application files
-│   ├── deployment/        # Docker and deployment configs
-│   ├── testing/           # Test scripts
-│   ├── logs/              # Log files
-│   └── backups/           # Backup files
-└── README.md              # This file
+├── 📁 Core Application
+│   ├── server/                     # Backend server (Ktor)
+│   ├── shared/                     # Shared business logic (KMP)
+│   ├── composeApp/                 # Mobile & Desktop apps (Compose)
+│   └── iosApp/                     # iOS-specific code
+│
+├── 📁 Documentation
+│   ├── docs/                       # Main documentation
+│   │   ├── api/                    # API documentation
+│   │   ├── deployment/             # Deployment guides
+│   │   ├── development/            # Development guides
+│   │   ├── monitoring/             # Monitoring guides
+│   │   └── testing/                # Testing guides
+│   ├── README.md                   # Project overview
+│   ├── BUILD_GUIDE.md              # Build instructions
+│   ├── WEB_APP_STATUS.md           # Web app status
+│   └── FINAL_STATUS.md             # Project status
+│
+├── 📁 Extra Resources
+│   ├── extra/
+│   │   ├── web-apps/               # 13 web applications
+│   │   ├── scripts/                # Utility scripts
+│   │   ├── documentation/          # Historical docs
+│   │   ├── deployment/             # Docker configs
+│   │   ├── testing/                # Test scripts
+│   │   ├── logs/                   # Log files
+│   │   └── backups/                # Backup files
+│
+├── 📁 Setup Scripts
+│   ├── setup-complete.sh           # Complete system setup
+│   ├── setup-database-simple.sh    # Simple database setup
+│   ├── setup-database-universal.sh # Universal database setup
+│   ├── launch-web-app.sh           # Web app launcher
+│   ├── build-server-only.sh        # Server-only build
+│   └── setup-minimal-android.sh    # Minimal Android SDK
+│
+└── 📁 Configuration
+    ├── .env                        # Environment variables
+    ├── gradle.properties           # Gradle configuration
+    ├── local.properties            # Local configuration
+    └── settings.gradle.kts         # Project settings
 ```
 
 ### Development Setup
@@ -460,16 +508,50 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ### Troubleshooting
 
+#### Current Status
+- ✅ **Web Applications**: 13 apps ready to use immediately
+- ✅ **Database**: Configured and working
+- ✅ **Documentation**: Comprehensive guides available
+- ⚠️ **Server**: Java version compatibility issue (easily fixable)
+
+#### Quick Solutions
+
+##### Web Apps (Work Now!)
+```bash
+# Launch web applications immediately
+./launch-web-app.sh
+# Open http://localhost:3000/web-app.html
+```
+
+##### Server Issues
+```bash
+# Fix Java version compatibility
+export JAVA_HOME=/usr/lib/jvm/java-24-openjdk
+./gradlew :server:compileKotlin :shared:compileKotlinJvm
+./gradlew :server:run
+```
+
 #### Build Issues
 - **Android SDK Error**: Run `./setup-minimal-android.sh` for server-only development
 - **iOS Targets Disabled**: Normal on non-macOS systems, see [BUILD_GUIDE.md](BUILD_GUIDE.md)
+- **Java Version Mismatch**: Use consistent Java version (21 or 24)
 - **Memory Issues**: Increase memory in `gradle.properties`
 - **Test Failures**: Try building without tests first
 
 #### Runtime Issues
-- **Database Connection**: Ensure PostgreSQL is running and accessible
+- **Database Connection**: Run `./setup-database-simple.sh` to setup database
 - **Port Conflicts**: Check if port 8080 is available
+- **Environment Variables**: Ensure `.env` file exists with proper values
 - **Permission Issues**: Ensure proper file permissions for uploads directory
+
+#### Database Issues
+```bash
+# Quick database setup
+./setup-database-simple.sh
+
+# Or full setup with sudo
+./setup-database-universal.sh
+```
 
 ### Contact
 - **Maintainer**: [Your Name]
@@ -481,10 +563,18 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 ## 📈 Project Status
 
 - **Version**: 1.0.0
-- **Status**: Production Ready
+- **Status**: ✅ **Web Apps Ready** | ⚠️ **Server Needs Java Fix**
 - **Last Updated**: January 2025
-- **Build Status**: ✅ Passing
+- **Web Applications**: ✅ **13 apps functional**
+- **Database**: ✅ **Configured and working**
+- **Documentation**: ✅ **Comprehensive guides**
+- **Build Status**: ✅ **Compiles successfully**
 - **Test Coverage**: 85%+
+
+### 🎯 **Immediate Access**
+- **Web Apps**: `./launch-web-app.sh` → http://localhost:3000/web-app.html
+- **Server**: Fix Java version → `./gradlew :server:run`
+- **Database**: `./setup-database-simple.sh`
 
 ## 🎯 Roadmap
 
