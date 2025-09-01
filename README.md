@@ -127,8 +127,22 @@ nano .env
 ```
 
 ### 4. Build and Run
+
+#### Server-Only Development (Recommended)
 ```bash
-# Build the project
+# Setup minimal Android SDK (satisfies Gradle requirements)
+./setup-minimal-android.sh
+
+# Build server and shared modules
+./gradlew :server:compileKotlin :shared:compileKotlinJvm
+
+# Start the server
+./gradlew :server:run
+```
+
+#### Full Multi-Platform Build
+```bash
+# Build the project (requires Android SDK)
 ./gradlew build
 
 # Start the server
@@ -137,6 +151,8 @@ nano .env
 # Or run with Docker
 docker-compose up -d
 ```
+
+> **Note**: For detailed build instructions, see [BUILD_GUIDE.md](BUILD_GUIDE.md)
 
 ### 5. Access the Application
 - **Web Interface**: http://localhost:8080
@@ -434,12 +450,26 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 - [Development Guide](docs/development/)
 - [Monitoring Guide](docs/monitoring/)
 - [Testing Guide](docs/testing/)
+- [Build Guide](BUILD_GUIDE.md)
 
 ### Getting Help
 - **Issues**: Report bugs and request features on GitHub
 - **Discussions**: Ask questions and share ideas
 - **Documentation**: Check the docs/ directory for detailed guides
 - **Examples**: See extra/web-apps/ for usage examples
+
+### Troubleshooting
+
+#### Build Issues
+- **Android SDK Error**: Run `./setup-minimal-android.sh` for server-only development
+- **iOS Targets Disabled**: Normal on non-macOS systems, see [BUILD_GUIDE.md](BUILD_GUIDE.md)
+- **Memory Issues**: Increase memory in `gradle.properties`
+- **Test Failures**: Try building without tests first
+
+#### Runtime Issues
+- **Database Connection**: Ensure PostgreSQL is running and accessible
+- **Port Conflicts**: Check if port 8080 is available
+- **Permission Issues**: Ensure proper file permissions for uploads directory
 
 ### Contact
 - **Maintainer**: [Your Name]
