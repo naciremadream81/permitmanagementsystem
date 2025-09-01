@@ -1,6 +1,7 @@
 package com.regnowsnaes.permitmanagementsystem.routes
 
 import com.regnowsnaes.permitmanagementsystem.models.*
+import kotlinx.serialization.Serializable
 import com.regnowsnaes.permitmanagementsystem.services.PermitService
 import com.regnowsnaes.permitmanagementsystem.services.AuthService
 import io.ktor.http.*

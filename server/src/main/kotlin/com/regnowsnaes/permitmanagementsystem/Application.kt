@@ -11,6 +11,9 @@ import com.regnowsnaes.permitmanagementsystem.routes.configureChecklistRoutes
 import com.regnowsnaes.permitmanagementsystem.services.PermitService
 import com.regnowsnaes.permitmanagementsystem.services.AuthService
 import com.regnowsnaes.permitmanagementsystem.models.ApiResponse
+import com.regnowsnaes.permitmanagementsystem.error.SimpleErrorHandler
+import com.regnowsnaes.permitmanagementsystem.health.SimpleHealthChecker
+import com.regnowsnaes.permitmanagementsystem.logging.SimpleLogger
 // Advanced features temporarily disabled for compilation
 // import com.regnowsnaes.permitmanagementsystem.routes.configureBulkOperationsRoutes
 // import com.regnowsnaes.permitmanagementsystem.routes.configureTemplatesRoutes
@@ -68,76 +71,25 @@ fun main() {
 }
 
 fun Application.module() {
-                // Install content negotiation
-            install(ContentNegotiation) {
-                json(Json {
-                    prettyPrint = true
-                    isLenient = true
-                    ignoreUnknownKeys = true
-                })
-            }
-            
-
+    // Install content negotiation
+    install(ContentNegotiation) {
+        json(Json {
+            prettyPrint = true
+            isLenient = true
+            ignoreUnknownKeys = true
+        })
+    }
+    
+    // Install enhanced error handling
+    SimpleErrorHandler.install(this)
+    
+    // Install comprehensive health checks
+    SimpleHealthChecker.install(this)
     
     // Configure security (CORS, etc.)
     SecurityConfig.run { configureSecurity() }
     
-    // Install Status Pages for error handling
-    install(StatusPages) {
-        exception<Throwable> { call, cause ->
-            val environment = System.getenv("ENVIRONMENT") ?: "development"
-            
-            // Log the error
-            call.application.log.error("Unhandled exception", cause)
-            
-            // Return appropriate error response
-            val errorResponse = if (environment == "production") {
-                mapOf(
-                    "error" to "Internal server error",
-                    "timestamp" to System.currentTimeMillis(),
-                    "path" to call.request.uri
-                )
-            } else {
-                mapOf(
-                    "error" to (cause.message ?: "Unknown error"),
-                    "type" to cause.javaClass.simpleName,
-                    "timestamp" to System.currentTimeMillis(),
-                    "path" to call.request.uri,
-                    "stackTrace" to cause.stackTrace.take(5).map { it.toString() }
-                )
-            }
-            
-            // Add security headers
-            SecurityConfig.getSecurityHeaders().forEach { (key, value) ->
-                call.response.header(key, value)
-            }
-            
-            call.respond(HttpStatusCode.InternalServerError, errorResponse)
-        }
-        
-        status(HttpStatusCode.NotFound) { call, status ->
-            call.respond(
-                status,
-                mapOf(
-                    "error" to "Endpoint not found",
-                    "path" to call.request.uri,
-                    "method" to call.request.httpMethod.value,
-                    "timestamp" to System.currentTimeMillis()
-                )
-            )
-        }
-        
-        status(HttpStatusCode.Unauthorized) { call, status ->
-            call.respond(
-                status,
-                mapOf(
-                    "error" to "Authentication required",
-                    "message" to "Please provide a valid JWT token",
-                    "timestamp" to System.currentTimeMillis()
-                )
-            )
-        }
-    }
+    // Enhanced error handling is now handled by ErrorHandler.install()
     
     // Install JWT Authentication
     val jwtSecret = System.getenv("JWT_SECRET") ?: "your-secret-key-change-in-production"
@@ -263,9 +215,7 @@ fun Application.module() {
                 // adminRoutes() // Temporarily disabled due to compilation issues
         
         // Static file serving for uploaded documents
-        static("/uploads") {
-            files("uploads")
-        }
+        staticFiles("/uploads", File("uploads"))
     }
     
     // Configure checklist management routes

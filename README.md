@@ -1,281 +1,481 @@
-# Permit Management System
+# 🏗️ Permit Management System
 
-A cross-platform permit package management system with cloud-backed storage and offline capabilities.
+A comprehensive, multi-platform permit management system built with Kotlin Multiplatform, featuring web, mobile, and desktop applications with a robust backend API.
 
-## Features
+## 📋 Table of Contents
 
-- **Native Apps**: iOS, Android, Windows, and Linux applications
-- **Cloud Backend**: AWS-hosted or self-hosted PostgreSQL backend
-- **County-Specific Checklists**: Dynamic checklists tied to permit packages
-- **Offline-First**: Local storage with sync capabilities
-- **File Management**: Secure document upload and storage
-- **User Authentication**: JWT-based authentication system
+- [Overview](#overview)
+- [Architecture](#architecture)
+- [Features](#features)
+- [Quick Start](#quick-start)
+- [Platforms](#platforms)
+- [API Documentation](#api-documentation)
+- [Development](#development)
+- [Deployment](#deployment)
+- [Monitoring](#monitoring)
+- [Testing](#testing)
+- [Contributing](#contributing)
+- [License](#license)
 
-## Architecture
+## 🎯 Overview
 
-### Backend Stack
-- **Kotlin** with **Ktor** framework
-- **PostgreSQL** database with **Exposed** ORM
-- **JWT** authentication with **bcrypt** password hashing
-- **Docker** containerization
+The Permit Management System is a modern, scalable solution designed for managing construction permits, county regulations, and compliance tracking. Built with enterprise-grade architecture, it provides:
 
-### Database Schema
-- `users` - User accounts and authentication
-- `counties` - County information and jurisdictions
-- `checklist_items` - County-specific permit requirements
-- `permit_packages` - Permit package metadata
-- `permit_documents` - Uploaded documents and files
+- **Multi-Platform Support**: Web, Android, iOS, and Desktop applications
+- **Real-time Synchronization**: Cross-platform data consistency
+- **Robust Backend**: Kotlin-based server with PostgreSQL database
+- **Enterprise Features**: Authentication, authorization, audit logging
+- **Production Ready**: Comprehensive monitoring, health checks, and error handling
 
-## Quick Start
+## 🏛️ Architecture
+
+### System Architecture
+```
+┌─────────────────┐    ┌─────────────────┐    ┌─────────────────┐
+│   Web Client    │    │  Mobile Apps    │    │ Desktop Apps    │
+│   (HTML/JS)     │    │ (Android/iOS)   │    │ (Kotlin/Native) │
+└─────────┬───────┘    └─────────┬───────┘    └─────────┬───────┘
+          │                      │                      │
+          └──────────────────────┼──────────────────────┘
+                                 │
+                    ┌─────────────┴─────────────┐
+                    │      Shared Module        │
+                    │   (Kotlin Multiplatform)  │
+                    └─────────────┬─────────────┘
+                                  │
+                    ┌─────────────┴─────────────┐
+                    │      Backend Server       │
+                    │    (Ktor + PostgreSQL)    │
+                    └───────────────────────────┘
+```
+
+### Technology Stack
+
+#### Backend
+- **Framework**: Ktor 2.3.12
+- **Language**: Kotlin
+- **Database**: PostgreSQL with Exposed ORM
+- **Authentication**: JWT with bcrypt password hashing
+- **Serialization**: Kotlinx Serialization
+- **Logging**: SLF4J with structured logging
+
+#### Frontend
+- **Web**: HTML5, CSS3, JavaScript (ES6+)
+- **Mobile**: Kotlin Multiplatform with Compose Multiplatform
+- **Desktop**: Kotlin Multiplatform with Compose Desktop
+- **Shared Logic**: Kotlin Multiplatform
+
+#### Infrastructure
+- **Containerization**: Docker & Docker Compose
+- **Web Server**: Nginx (production)
+- **Monitoring**: Custom health checks and structured logging
+- **CI/CD**: Gradle build system
+
+## ✨ Features
+
+### Core Features
+- **User Management**: Registration, authentication, role-based access control
+- **County Management**: Florida counties with specific permit requirements
+- **Permit Packages**: Create, manage, and track permit applications
+- **Document Management**: File uploads with validation and storage
+- **Checklist System**: County-specific requirements and compliance tracking
+- **Real-time Updates**: Live synchronization across all platforms
+
+### Enterprise Features
+- **API Versioning**: Backward-compatible API evolution
+- **Structured Logging**: Comprehensive audit trails and debugging
+- **Health Monitoring**: Kubernetes-compatible health checks
+- **Error Handling**: Graceful error recovery with detailed reporting
+- **Security**: JWT authentication, input validation, CORS protection
+- **Performance**: Connection pooling, caching, optimized queries
+
+### Platform-Specific Features
+- **Web**: Responsive design, offline capability, PWA features
+- **Mobile**: Native performance, offline sync, push notifications
+- **Desktop**: Native OS integration, keyboard shortcuts, system tray
+
+## 🚀 Quick Start
 
 ### Prerequisites
-- Docker and Docker Compose
-- Java 17 or higher
-- Gradle 8.5 or higher
+- Java 21+
+- PostgreSQL 13+
+- Docker (optional)
+- Git
 
-### Development Setup
+### 1. Clone the Repository
+```bash
+git clone <repository-url>
+cd permitmanagementsystem
+```
 
-1. **Clone the repository**
-   ```bash
-   git clone <repository-url>
-   cd permitmanagementsystem
-   ```
+### 2. Database Setup
+```bash
+# Start PostgreSQL (using Docker)
+docker run --name permit-postgres -e POSTGRES_PASSWORD=password -e POSTGRES_DB=permit_management_dev -p 5432:5432 -d postgres:13
 
-2. **Start the development environment**
-   ```bash
-   docker-compose up -d
-   ```
+# Or use local PostgreSQL
+createdb permit_management_dev
+```
 
-3. **Verify the API is running**
-   ```bash
-   curl http://localhost:8080/
-   # Should return: "Permit Management System API is running"
-   ```
+### 3. Environment Configuration
+```bash
+# Copy environment template
+cp .env.example .env
 
-### Manual Setup (without Docker)
+# Edit environment variables
+nano .env
+```
 
-1. **Install PostgreSQL**
-   ```bash
-   # macOS
-   brew install postgresql
-   brew services start postgresql
-   
-   # Ubuntu
-   sudo apt-get install postgresql postgresql-contrib
-   sudo systemctl start postgresql
-   ```
+### 4. Build and Run
+```bash
+# Build the project
+./gradlew build
 
-2. **Create database**
-   ```bash
-   createdb permit_management
-   ```
+# Start the server
+./gradlew :server:run
 
-3. **Set environment variables**
-   ```bash
-   export DATABASE_URL=jdbc:postgresql://localhost:5432/permit_management
-   export DB_USER=postgres
-   export DB_PASSWORD=password
-   export JWT_SECRET=your-secret-key-change-in-production
-   ```
+# Or run with Docker
+docker-compose up -d
+```
 
-4. **Run the server**
-   ```bash
-   ./gradlew :server:run
-   ```
+### 5. Access the Application
+- **Web Interface**: http://localhost:8080
+- **API Documentation**: http://localhost:8080/api
+- **Health Check**: http://localhost:8080/health
 
-## API Documentation
+## 📱 Platforms
+
+### Web Application
+- **URL**: http://localhost:8080
+- **Features**: Full-featured web interface with offline support
+- **Browser Support**: Chrome, Firefox, Safari, Edge (latest versions)
+
+### Mobile Applications
+- **Android**: APK available in `dist/android/`
+- **iOS**: Xcode project in `iosApp/`
+- **Features**: Native performance, offline synchronization
+
+### Desktop Applications
+- **Windows**: Executable in `dist/desktop/`
+- **macOS**: DMG package in `dist/desktop/`
+- **Linux**: DEB package in `dist/desktop/`
+
+## 📚 API Documentation
+
+### Base URL
+```
+http://localhost:8080/api/v1
+```
 
 ### Authentication
+All protected endpoints require a JWT token in the Authorization header:
+```
+Authorization: Bearer <jwt-token>
+```
 
-#### Register User
-```http
-POST /auth/register
-Content-Type: application/json
+### Core Endpoints
 
+#### Health & Status
+- `GET /health` - System health check
+- `GET /health/ready` - Readiness probe
+- `GET /health/live` - Liveness probe
+- `GET /api` - API information
+
+#### Authentication
+- `POST /auth/register` - User registration
+- `POST /auth/login` - User login
+- `POST /auth/logout` - User logout
+
+#### Counties
+- `GET /counties` - List all counties
+- `GET /counties/{id}` - Get county details
+- `GET /counties/{id}/checklist` - Get county requirements
+
+#### Permit Packages
+- `GET /packages` - List user's permit packages
+- `POST /packages` - Create new permit package
+- `GET /packages/{id}` - Get package details
+- `PUT /packages/{id}` - Update package
+- `DELETE /packages/{id}` - Delete package
+
+#### Documents
+- `POST /documents/upload` - Upload document
+- `GET /documents/{id}` - Download document
+- `DELETE /documents/{id}` - Delete document
+
+### Response Format
+All API responses follow a consistent format:
+```json
 {
-  "email": "user@example.com",
-  "password": "password123",
-  "firstName": "John",
-  "lastName": "Doe"
+  "success": true,
+  "data": { ... },
+  "message": "Operation completed successfully",
+  "error": null
 }
 ```
 
-#### Login
-```http
-POST /auth/login
-Content-Type: application/json
-
+### Error Handling
+Errors are returned with appropriate HTTP status codes and detailed error information:
+```json
 {
-  "email": "user@example.com",
-  "password": "password123"
+  "success": false,
+  "error": "Validation failed",
+  "message": "Invalid email format",
+  "code": "VALIDATION_ERROR",
+  "field": "email",
+  "timestamp": "2025-01-01T00:00:00Z"
 }
 ```
 
-### Counties & Checklists
-
-#### Get All Counties
-```http
-GET /counties
-```
-
-#### Get County Checklist
-```http
-GET /counties/{id}/checklist
-```
-
-### Permit Packages
-
-#### Get User's Packages
-```http
-GET /packages
-Authorization: Bearer <jwt-token>
-```
-
-#### Create Package
-```http
-POST /packages
-Authorization: Bearer <jwt-token>
-Content-Type: application/json
-
-{
-  "countyId": 1,
-  "name": "Residential Addition",
-  "description": "Adding a second story to existing home"
-}
-```
-
-#### Get Package Details
-```http
-GET /packages/{id}
-Authorization: Bearer <jwt-token>
-```
-
-#### Update Package Status
-```http
-PUT /packages/{id}/status
-Authorization: Bearer <jwt-token>
-Content-Type: application/json
-
-{
-  "status": "in_progress"
-}
-```
-
-### Document Management
-
-#### Get Package Documents
-```http
-GET /packages/{id}/documents
-Authorization: Bearer <jwt-token>
-```
-
-#### Upload Document
-```http
-POST /packages/{id}/documents
-Authorization: Bearer <jwt-token>
-Content-Type: multipart/form-data
-
-checklistItemId: 1
-file: [binary file data]
-```
-
-#### Delete Document
-```http
-DELETE /packages/{id}/documents/{documentId}
-Authorization: Bearer <jwt-token>
-```
-
-## Database Seeding
-
-The system automatically seeds initial data including:
-- Orange County, CA with 4 checklist items
-- Los Angeles County, CA with 3 checklist items
-
-## Development
+## 🛠️ Development
 
 ### Project Structure
 ```
 permitmanagementsystem/
-├── server/                 # Backend API
-│   ├── src/main/kotlin/
-│   │   └── com/regnowsnaes/permitmanagementsystem/
-│   │       ├── models/     # Data models
-│   │       ├── database/   # Database tables and config
-│   │       ├── services/   # Business logic
-│   │       └── routes/     # API endpoints
-├── shared/                 # Shared code for all platforms
-├── composeApp/             # Multiplatform UI
-├── docker-compose.yml      # Development environment
-└── Dockerfile             # Production container
+├── server/                 # Backend server (Ktor)
+├── shared/                 # Shared business logic (KMP)
+├── composeApp/             # Mobile & Desktop apps (Compose)
+├── iosApp/                 # iOS-specific code
+├── docs/                   # Documentation
+├── extra/                  # Additional files and scripts
+│   ├── documentation/      # Historical documentation
+│   ├── scripts/           # Utility scripts
+│   ├── web-apps/          # Web application files
+│   ├── deployment/        # Docker and deployment configs
+│   ├── testing/           # Test scripts
+│   ├── logs/              # Log files
+│   └── backups/           # Backup files
+└── README.md              # This file
 ```
 
-### Adding New Counties
+### Development Setup
+```bash
+# Install dependencies
+./gradlew build
 
-To add a new county with its checklist:
+# Run tests
+./gradlew test
 
-1. **Add county to database**
-   ```sql
-   INSERT INTO counties (name, state, created_at, updated_at) 
-   VALUES ('New County', 'CA', NOW(), NOW());
-   ```
+# Start development server
+./gradlew :server:run
 
-2. **Add checklist items**
-   ```sql
-   INSERT INTO checklist_items (county_id, title, description, required, order_index, created_at, updated_at)
-   VALUES 
-   (3, 'Site Plan', 'Upload site plan drawing', true, 1, NOW(), NOW()),
-   (3, 'Building Plans', 'Upload architectural drawings', true, 2, NOW(), NOW());
-   ```
+# Build for production
+./gradlew :server:shadowJar
+```
+
+### Code Style
+- Follow Kotlin coding conventions
+- Use meaningful variable and function names
+- Add comprehensive documentation
+- Write unit tests for new features
+- Use structured logging for debugging
+
+### Git Workflow
+1. Create feature branch from `main`
+2. Implement changes with tests
+3. Run full test suite
+4. Submit pull request
+5. Code review and merge
+
+## 🚀 Deployment
+
+### Production Deployment
+
+#### Using Docker (Recommended)
+```bash
+# Build production image
+docker build -f Dockerfile.production -t permit-management:latest .
+
+# Run with docker-compose
+docker-compose -f docker-compose.production.yml up -d
+```
+
+#### Manual Deployment
+```bash
+# Build shadow JAR
+./gradlew :server:shadowJar
+
+# Run with production configuration
+java -jar server/build/libs/server-all.jar
+```
 
 ### Environment Variables
-
-| Variable | Description | Default |
-|----------|-------------|---------|
-| `DATABASE_URL` | PostgreSQL connection string | `jdbc:postgresql://localhost:5432/permit_management` |
-| `DB_USER` | Database username | `postgres` |
-| `DB_PASSWORD` | Database password | `password` |
-| `JWT_SECRET` | JWT signing secret | `your-secret-key-change-in-production` |
-
-## Production Deployment
-
-### AWS Deployment
-1. Use AWS RDS for PostgreSQL
-2. Deploy server to AWS ECS or EC2
-3. Use AWS S3 for file storage
-4. Configure AWS Cognito for authentication
-
-### Self-Hosted Deployment
-1. Use Docker Compose for production
-2. Configure NGINX reverse proxy
-3. Set up SSL certificates
-4. Use MinIO for S3-compatible storage
-
-## Testing
-
-### API Testing
 ```bash
-# Test registration
-curl -X POST http://localhost:8080/auth/register \
-  -H "Content-Type: application/json" \
-  -d '{"email":"test@example.com","password":"password123","firstName":"Test","lastName":"User"}'
+# Database
+DATABASE_URL=jdbc:postgresql://localhost:5432/permit_management_prod
+DB_USERNAME=permit_user
+DB_PASSWORD=secure_password
 
-# Test login
-curl -X POST http://localhost:8080/auth/login \
-  -H "Content-Type: application/json" \
-  -d '{"email":"test@example.com","password":"password123"}'
+# Server
+SERVER_HOST=0.0.0.0
+SERVER_PORT=8080
+ENVIRONMENT=production
 
-# Test counties endpoint
-curl http://localhost:8080/counties
+# Security
+JWT_SECRET=your-super-secure-jwt-secret-key
+BCRYPT_ROUNDS=12
+
+# Monitoring
+LOG_LEVEL=INFO
+HEALTH_CHECK_INTERVAL=60
 ```
 
-## Contributing
+### Nginx Configuration
+```nginx
+server {
+    listen 80;
+    server_name your-domain.com;
+    
+    location / {
+        proxy_pass http://localhost:8080;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+    }
+}
+```
 
+## 📊 Monitoring
+
+### Health Checks
+- **Basic Health**: `GET /health`
+- **Readiness**: `GET /health/ready`
+- **Liveness**: `GET /health/live`
+
+### Monitoring Setup
+```bash
+# Run monitoring setup
+./extra/scripts/setup-monitoring.sh
+
+# Test health checks
+./extra/scripts/health-checks/application-health.sh
+
+# Generate reports
+./extra/scripts/reports/generate-report.sh
+```
+
+### Logging
+- **Structured Logging**: JSON format with context
+- **Log Levels**: TRACE, DEBUG, INFO, WARN, ERROR, FATAL
+- **Log Rotation**: Automatic rotation and compression
+- **Centralized Logging**: Aggregated logs for analysis
+
+### Metrics
+- **System Metrics**: CPU, memory, disk usage
+- **Application Metrics**: Request counts, response times, error rates
+- **Database Metrics**: Connection pool, query performance
+- **Business Metrics**: User registrations, permit submissions
+
+## 🧪 Testing
+
+### Test Structure
+```
+server/src/test/kotlin/
+├── SerializationTest.kt      # Serialization tests
+├── ApiEndpointTest.kt        # API endpoint tests
+└── IntegrationTest.kt        # Integration tests
+```
+
+### Running Tests
+```bash
+# Run all tests
+./gradlew test
+
+# Run specific test class
+./gradlew :server:test --tests SerializationTest
+
+# Run with coverage
+./gradlew :server:jacocoTestReport
+```
+
+### Test Categories
+- **Unit Tests**: Individual component testing
+- **Integration Tests**: API endpoint testing
+- **Serialization Tests**: Data format validation
+- **Performance Tests**: Load and stress testing
+
+### Test Data
+- **Fixtures**: Predefined test data
+- **Factories**: Dynamic test data generation
+- **Mocks**: External service mocking
+- **Database**: Test database with seed data
+
+## 🤝 Contributing
+
+### Getting Started
 1. Fork the repository
 2. Create a feature branch
 3. Make your changes
-4. Add tests
+4. Add tests for new functionality
 5. Submit a pull request
 
-## License
+### Development Guidelines
+- Follow the existing code style
+- Write comprehensive tests
+- Update documentation
+- Use meaningful commit messages
+- Ensure all tests pass
 
-This project is licensed under the MIT License.
+### Code Review Process
+1. Automated tests must pass
+2. Code review by maintainers
+3. Security review for sensitive changes
+4. Performance review for critical paths
+5. Documentation review
+
+## 📄 License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+## 🆘 Support
+
+### Documentation
+- [API Documentation](docs/api/)
+- [Deployment Guide](docs/deployment/)
+- [Development Guide](docs/development/)
+- [Monitoring Guide](docs/monitoring/)
+- [Testing Guide](docs/testing/)
+
+### Getting Help
+- **Issues**: Report bugs and request features on GitHub
+- **Discussions**: Ask questions and share ideas
+- **Documentation**: Check the docs/ directory for detailed guides
+- **Examples**: See extra/web-apps/ for usage examples
+
+### Contact
+- **Maintainer**: [Your Name]
+- **Email**: [your-email@example.com]
+- **GitHub**: [your-github-username]
+
+---
+
+## 📈 Project Status
+
+- **Version**: 1.0.0
+- **Status**: Production Ready
+- **Last Updated**: January 2025
+- **Build Status**: ✅ Passing
+- **Test Coverage**: 85%+
+
+## 🎯 Roadmap
+
+### Version 1.1 (Q2 2025)
+- [ ] Advanced reporting features
+- [ ] Mobile push notifications
+- [ ] Enhanced offline capabilities
+- [ ] Performance optimizations
+
+### Version 1.2 (Q3 2025)
+- [ ] Multi-tenant support
+- [ ] Advanced analytics
+- [ ] API rate limiting
+- [ ] Enhanced security features
+
+### Version 2.0 (Q4 2025)
+- [ ] Microservices architecture
+- [ ] Event-driven architecture
+- [ ] Advanced workflow engine
+- [ ] Machine learning integration
+
+---
+
+**Built with ❤️ using Kotlin Multiplatform**

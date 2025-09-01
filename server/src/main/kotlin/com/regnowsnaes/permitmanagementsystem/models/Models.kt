@@ -154,10 +154,4 @@ data class AuthResponse(
     val user: User
 )
 
-@Serializable
-data class ApiResponse<T>(
-    val success: Boolean,
-    val data: T? = null,
-    val message: String? = null,
-    val error: String? = null
-) 
+// ApiResponse moved to shared module to avoid serialization conflicts 

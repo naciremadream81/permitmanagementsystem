@@ -53,4 +53,7 @@ dependencies {
     
     testImplementation(libs.ktor.serverTestHost)
     testImplementation(libs.kotlin.testJunit)
+    testImplementation("org.junit.jupiter:junit-jupiter:5.9.2")
+    testImplementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.8.1")
+    testImplementation("io.ktor:ktor-client-mock:2.3.12")
 }
