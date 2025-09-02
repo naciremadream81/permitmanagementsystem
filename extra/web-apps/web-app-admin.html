@@ -504,7 +504,7 @@
         
         async function checkServerStatus() {
             try {
-                const response = await fetch('http://localhost:8080/counties');
+                const response = await fetch('http://localhost:3001/counties');
                 if (response.ok) {
                     document.getElementById('server-status').textContent = 'Connected';
                     document.getElementById('server-status').style.color = '#28a745';
@@ -520,7 +520,7 @@
         
         async function loadCounties() {
             try {
-                const response = await fetch('http://localhost:8080/counties');
+                const response = await fetch('http://localhost:3001/counties');
                 if (!response.ok) {
                     throw new Error(`HTTP error! status: ${response.status}`);
                 }
@@ -545,7 +545,7 @@
             let totalItems = 0;
             for (let county of counties) {
                 try {
-                    const response = await fetch(`http://localhost:8080/counties/${county.id}/checklist`);
+                    const response = await fetch(`http://localhost:3001/counties/${county.id}/checklist`);
                     if (response.ok) {
                         const data = await response.json();
                         const items = data.success ? data.data : data;
@@ -592,7 +592,7 @@
             document.getElementById('modal-title').textContent = `Manage ${countyName} Checklist`;
             
             try {
-                const response = await fetch(`http://localhost:8080/counties/${countyId}/checklist`);
+                const response = await fetch(`http://localhost:3001/counties/${countyId}/checklist`);
                 if (!response.ok) {
                     throw new Error(`HTTP error! status: ${response.status}`);
                 }
@@ -683,7 +683,7 @@
                 let response;
                 if (editingItemId) {
                     // Update existing item
-                    response = await fetch(`http://localhost:8080/counties/${currentCountyId}/checklist/${editingItemId}`, {
+                    response = await fetch(`http://localhost:3001/counties/${currentCountyId}/checklist/${editingItemId}`, {
                         method: 'PUT',
                         headers: {
                             'Content-Type': 'application/json',
@@ -692,7 +692,7 @@
                     });
                 } else {
                     // Create new item
-                    response = await fetch(`http://localhost:8080/counties/${currentCountyId}/checklist`, {
+                    response = await fetch(`http://localhost:3001/counties/${currentCountyId}/checklist`, {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json',
@@ -729,7 +729,7 @@
             }
             
             try {
-                const response = await fetch(`http://localhost:8080/counties/${currentCountyId}/checklist/${itemId}`, {
+                const response = await fetch(`http://localhost:3001/counties/${currentCountyId}/checklist/${itemId}`, {
                     method: 'DELETE'
                 });
                 

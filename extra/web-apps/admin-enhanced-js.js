@@ -5,7 +5,7 @@ async function checkExistingSession() {
     const token = localStorage.getItem('adminSessionToken');
     if (token) {
         try {
-            const response = await fetch('http://localhost:8080/admin/auth/me', {
+            const response = await fetch('http://localhost:3001/admin/auth/me', {
                 headers: {
                     'Authorization': `Bearer ${token}`
                 }
@@ -32,7 +32,7 @@ async function checkExistingSession() {
 
 async function login(email, password) {
     try {
-        const response = await fetch('http://localhost:8080/admin/auth/login', {
+        const response = await fetch('http://localhost:3001/admin/auth/login', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -61,7 +61,7 @@ async function login(email, password) {
 async function logout() {
     try {
         if (sessionToken) {
-            await fetch('http://localhost:8080/admin/auth/logout', {
+            await fetch('http://localhost:3001/admin/auth/logout', {
                 method: 'POST',
                 headers: {
                     'Authorization': `Bearer ${sessionToken}`
@@ -156,7 +156,7 @@ function showNotification(message, type = 'success') {
 async function loadDashboardData() {
     try {
         // Load counties count
-        const countiesResponse = await fetch('http://localhost:8080/counties');
+        const countiesResponse = await fetch('http://localhost:3001/counties');
         if (countiesResponse.ok) {
             const countiesData = await countiesResponse.json();
             document.getElementById('total-counties').textContent = countiesData.length;
@@ -164,7 +164,7 @@ async function loadDashboardData() {
             // Calculate total items
             let totalItems = 0;
             for (const county of countiesData) {
-                const checklistResponse = await fetch(`http://localhost:8080/counties/${county.id}/checklist`);
+                const checklistResponse = await fetch(`http://localhost:3001/counties/${county.id}/checklist`);
                 if (checklistResponse.ok) {
                     const checklistData = await checklistResponse.json();
                     const items = checklistData.success ? checklistData.data : checklistData;
@@ -175,7 +175,7 @@ async function loadDashboardData() {
         }
         
         // Load templates count
-        const templatesResponse = await fetch('http://localhost:8080/admin/templates', {
+        const templatesResponse = await fetch('http://localhost:3001/admin/templates', {
             headers: { 'Authorization': `Bearer ${sessionToken}` }
         });
         if (templatesResponse.ok) {
@@ -184,7 +184,7 @@ async function loadDashboardData() {
         }
         
         // Load documents count
-        const documentsResponse = await fetch('http://localhost:8080/admin/documents', {
+        const documentsResponse = await fetch('http://localhost:3001/admin/documents', {
             headers: { 'Authorization': `Bearer ${sessionToken}` }
         });
         if (documentsResponse.ok) {
@@ -200,7 +200,7 @@ async function loadDashboardData() {
 // Counties Management
 async function loadCounties() {
     try {
-        const response = await fetch('http://localhost:8080/counties');
+        const response = await fetch('http://localhost:3001/counties');
         if (response.ok) {
             counties = await response.json();
             displayCountiesGrid();
@@ -234,7 +234,7 @@ function displayCountiesGrid() {
 // Bulk Operations
 async function loadCountiesForBulkOps() {
     try {
-        const response = await fetch('http://localhost:8080/admin/bulk/counties-by-type', {
+        const response = await fetch('http://localhost:3001/admin/bulk/counties-by-type', {
             headers: { 'Authorization': `Bearer ${sessionToken}` }
         });
         
@@ -296,7 +296,7 @@ async function performBulkAdd(formData) {
     }
     
     try {
-        const response = await fetch('http://localhost:8080/admin/bulk/add-item', {
+        const response = await fetch('http://localhost:3001/admin/bulk/add-item', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -328,7 +328,7 @@ async function performBulkAdd(formData) {
 // Templates Management
 async function loadTemplates() {
     try {
-        const response = await fetch('http://localhost:8080/admin/templates', {
+        const response = await fetch('http://localhost:3001/admin/templates', {
             headers: { 'Authorization': `Bearer ${sessionToken}` }
         });
         
@@ -378,7 +378,7 @@ function selectTemplate(template) {
 
 async function loadCountiesForTemplateApplication() {
     try {
-        const response = await fetch('http://localhost:8080/counties');
+        const response = await fetch('http://localhost:3001/counties');
         if (response.ok) {
             const counties = await response.json();
             displayTemplateCountyCheckboxes(counties);
@@ -420,7 +420,7 @@ async function applySelectedTemplate() {
     const replaceExisting = document.getElementById('replace-existing').checked;
     
     try {
-        const response = await fetch('http://localhost:8080/admin/templates/apply', {
+        const response = await fetch('http://localhost:3001/admin/templates/apply', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',

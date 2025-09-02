@@ -324,7 +324,7 @@
     </div>
     
     <script>
-        const API_BASE = 'http://localhost:8080';
+        const API_BASE = 'http://localhost:3001';
         let counties = [];
         
         // Initialize the application
@@ -346,7 +346,7 @@
             } catch (error) {
                 document.getElementById('server-status').textContent = 'Offline';
                 document.getElementById('server-status').style.color = '#dc3545';
-                showError('counties-error', 'Unable to connect to the API server. Make sure the server is running on http://localhost:8080');
+                showError('counties-error', 'Unable to connect to the API server. Make sure the server is running on http://localhost:3001');
             }
         }
         

@@ -1,43 +1,342 @@
-2025-08-12 15:39:29.127 [main] INFO  com.zaxxer.hikari.HikariDataSource - PermitManagementPool - Starting...
-2025-08-12 15:39:30.077 [main] INFO  com.zaxxer.hikari.pool.HikariPool - PermitManagementPool - Added connection org.postgresql.jdbc.PgConnection@51133c06
-2025-08-12 15:39:30.083 [main] INFO  com.zaxxer.hikari.HikariDataSource - PermitManagementPool - Start completed.
-2025-08-12 15:39:32.355 [main] INFO  ktor.application - Autoreload is disabled because the development mode is off.
-2025-08-12 15:39:33.328 [main] INFO  ktor.application - Application started in 1.055 seconds.
-2025-08-12 15:39:34.078 [DefaultDispatcher-worker-1] INFO  ktor.application - Responding at http://0.0.0.0:8081
-2025-09-01 15:49:14.383 [main] INFO  com.zaxxer.hikari.HikariDataSource - PermitManagementPool - Starting...
-2025-09-01 15:49:15.510 [main] ERROR com.zaxxer.hikari.pool.HikariPool - PermitManagementPool - Exception during pool initialization.
-org.postgresql.util.PSQLException: FATAL: database "permit_management_dev" does not exist
-	at org.postgresql.core.v3.QueryExecutorImpl.receiveErrorResponse(QueryExecutorImpl.java:2725)
-	at org.postgresql.core.v3.QueryExecutorImpl.readStartupMessages(QueryExecutorImpl.java:2837)
-	at org.postgresql.core.v3.QueryExecutorImpl.<init>(QueryExecutorImpl.java:175)
-	at org.postgresql.core.v3.ConnectionFactoryImpl.openConnectionImpl(ConnectionFactoryImpl.java:317)
-	at org.postgresql.core.ConnectionFactory.openConnection(ConnectionFactory.java:54)
-	at org.postgresql.jdbc.PgConnection.<init>(PgConnection.java:273)
-	at org.postgresql.Driver.makeConnection(Driver.java:446)
-	at org.postgresql.Driver.connect(Driver.java:298)
-	at com.zaxxer.hikari.util.DriverDataSource.getConnection(DriverDataSource.java:138)
-	at com.zaxxer.hikari.pool.PoolBase.newConnection(PoolBase.java:359)
-	at com.zaxxer.hikari.pool.PoolBase.newPoolEntry(PoolBase.java:201)
-	at com.zaxxer.hikari.pool.HikariPool.createPoolEntry(HikariPool.java:470)
-	at com.zaxxer.hikari.pool.HikariPool.checkFailFast(HikariPool.java:561)
-	at com.zaxxer.hikari.pool.HikariPool.<init>(HikariPool.java:100)
-	at com.zaxxer.hikari.HikariDataSource.<init>(HikariDataSource.java:81)
-	at com.regnowsnaes.permitmanagementsystem.database.DatabaseConfig.init(DatabaseConfig.kt:58)
+2025-09-02 17:04:39.030 [eventLoopGroupProxy-4-2] ERROR PermitManagementSystem - timestamp=2025-09-02T21:04:39.030527959Z level=ERROR message="Unhandled exception: com/regnowsnaes/permitmanagementsystem/models/ApiResponse has been compiled by a more recent version of the Java Runtime (class file version 68.0), this version of the Java Runtime only recognizes class file versions up to 65.0" endpoint=/health error="com/regnowsnaes/permitmanagementsystem/models/ApiResponse has been compiled by a more recent version of the Java Runtime (class file version 68.0), this version of the Java Runtime only recognizes class file versions up to 65.0" exception_type="UnsupportedClassVersionError" error_type="unhandled_exception"
+2025-09-02 17:05:49.171 [eventLoopGroupProxy-4-3] ERROR PermitManagementSystem - timestamp=2025-09-02T21:05:49.171298156Z level=ERROR message="Unhandled exception: com/regnowsnaes/permitmanagementsystem/models/ApiResponse has been compiled by a more recent version of the Java Runtime (class file version 68.0), this version of the Java Runtime only recognizes class file versions up to 65.0" endpoint=/health error="com/regnowsnaes/permitmanagementsystem/models/ApiResponse has been compiled by a more recent version of the Java Runtime (class file version 68.0), this version of the Java Runtime only recognizes class file versions up to 65.0" exception_type="UnsupportedClassVersionError" error_type="unhandled_exception"
+2025-09-02 17:44:08.297 [main] INFO  com.zaxxer.hikari.HikariDataSource - PermitManagementPool - Starting...
+2025-09-02 17:44:08.856 [main] INFO  com.zaxxer.hikari.pool.HikariPool - PermitManagementPool - Added connection org.postgresql.jdbc.PgConnection@1ed6388a
+2025-09-02 17:44:08.859 [main] INFO  com.zaxxer.hikari.HikariDataSource - PermitManagementPool - Start completed.
+2025-09-02 17:44:09.997 [main] WARN  Exposed - Transaction attempt #0 failed: org.postgresql.util.PSQLException: ERROR: permission denied for table counties. Statement(s): SELECT counties.id, counties."name", counties."state", counties.created_at, counties.updated_at FROM counties
+org.jetbrains.exposed.exceptions.ExposedSQLException: org.postgresql.util.PSQLException: ERROR: permission denied for table counties
+	at org.jetbrains.exposed.sql.statements.Statement.executeIn$exposed_core(Statement.kt:99)
+	at org.jetbrains.exposed.sql.Transaction.exec(Transaction.kt:292)
+	at org.jetbrains.exposed.sql.Query.count(Query.kt:324)
+	at com.regnowsnaes.permitmanagementsystem.database.DatabaseConfig.seedInitialData$lambda$24(DatabaseConfig.kt:132)
+	at org.jetbrains.exposed.sql.transactions.ThreadLocalTransactionManagerKt.inTopLevelTransaction$run(ThreadLocalTransactionManager.kt:324)
+	at org.jetbrains.exposed.sql.transactions.ThreadLocalTransactionManagerKt.access$inTopLevelTransaction$run(ThreadLocalTransactionManager.kt:1)
+	at org.jetbrains.exposed.sql.transactions.ThreadLocalTransactionManagerKt$inTopLevelTransaction$1.invoke(ThreadLocalTransactionManager.kt:371)
+	at org.jetbrains.exposed.sql.transactions.ThreadLocalTransactionManagerKt.keepAndRestoreTransactionRefAfterRun(ThreadLocalTransactionManager.kt:379)
+	at org.jetbrains.exposed.sql.transactions.ThreadLocalTransactionManagerKt.inTopLevelTransaction(ThreadLocalTransactionManager.kt:370)
+	at org.jetbrains.exposed.sql.transactions.ThreadLocalTransactionManagerKt$transaction$1.invoke(ThreadLocalTransactionManager.kt:279)
+	at org.jetbrains.exposed.sql.transactions.ThreadLocalTransactionManagerKt.keepAndRestoreTransactionRefAfterRun(ThreadLocalTransactionManager.kt:379)
+	at org.jetbrains.exposed.sql.transactions.ThreadLocalTransactionManagerKt.transaction(ThreadLocalTransactionManager.kt:249)
+	at org.jetbrains.exposed.sql.transactions.ThreadLocalTransactionManagerKt.transaction(ThreadLocalTransactionManager.kt:227)
+	at org.jetbrains.exposed.sql.transactions.ThreadLocalTransactionManagerKt.transaction$default(ThreadLocalTransactionManager.kt:226)
+	at com.regnowsnaes.permitmanagementsystem.database.DatabaseConfig.seedInitialData(DatabaseConfig.kt:130)
+	at com.regnowsnaes.permitmanagementsystem.database.DatabaseConfig.init(DatabaseConfig.kt:90)
 	at com.regnowsnaes.permitmanagementsystem.ApplicationKt.main(Application.kt:54)
 	at com.regnowsnaes.permitmanagementsystem.ApplicationKt.main(Application.kt)
-2025-09-01 15:49:47.539 [main] INFO  com.zaxxer.hikari.HikariDataSource - PermitManagementPool - Starting...
-2025-09-01 15:49:47.704 [main] INFO  com.zaxxer.hikari.pool.HikariPool - PermitManagementPool - Added connection org.postgresql.jdbc.PgConnection@1ed6388a
-2025-09-01 15:49:47.707 [main] INFO  com.zaxxer.hikari.HikariDataSource - PermitManagementPool - Start completed.
-2025-09-01 15:49:49.465 [main] INFO  ktor.application - Autoreload is disabled because the development mode is off.
-2025-09-01 15:49:49.937 [main] INFO  ktor.application - Application started in 0.542 seconds.
-2025-09-01 15:49:50.128 [DefaultDispatcher-worker-1] INFO  ktor.application - Responding at http://0.0.0.0:8080
-2025-09-01 15:49:53.059 [eventLoopGroupProxy-4-1] ERROR PermitManagementSystem - timestamp=2025-09-01T19:49:53.058274789Z level=ERROR message="Unhandled exception: com/regnowsnaes/permitmanagementsystem/models/ApiResponse has been compiled by a more recent version of the Java Runtime (class file version 68.0), this version of the Java Runtime only recognizes class file versions up to 65.0" endpoint=/health error="com/regnowsnaes/permitmanagementsystem/models/ApiResponse has been compiled by a more recent version of the Java Runtime (class file version 68.0), this version of the Java Runtime only recognizes class file versions up to 65.0" exception_type="UnsupportedClassVersionError" error_type="unhandled_exception"
-2025-09-01 15:51:25.546 [eventLoopGroupProxy-4-2] ERROR PermitManagementSystem - timestamp=2025-09-01T19:51:25.546756366Z level=ERROR message="Unhandled exception: com/regnowsnaes/permitmanagementsystem/models/ApiResponse has been compiled by a more recent version of the Java Runtime (class file version 68.0), this version of the Java Runtime only recognizes class file versions up to 65.0" endpoint=/health error="com/regnowsnaes/permitmanagementsystem/models/ApiResponse has been compiled by a more recent version of the Java Runtime (class file version 68.0), this version of the Java Runtime only recognizes class file versions up to 65.0" exception_type="UnsupportedClassVersionError" error_type="unhandled_exception"
-2025-09-01 15:51:28.303 [main] INFO  com.zaxxer.hikari.HikariDataSource - PermitManagementPool - Starting...
-2025-09-01 15:51:28.533 [main] INFO  com.zaxxer.hikari.pool.HikariPool - PermitManagementPool - Added connection org.postgresql.jdbc.PgConnection@1ed6388a
-2025-09-01 15:51:28.537 [main] INFO  com.zaxxer.hikari.HikariDataSource - PermitManagementPool - Start completed.
-2025-09-01 15:51:29.754 [main] INFO  ktor.application - Autoreload is disabled because the development mode is off.
-2025-09-01 15:51:30.193 [main] INFO  ktor.application - Application started in 0.483 seconds.
-2025-09-01 15:59:37.407 [eventLoopGroupProxy-4-3] ERROR PermitManagementSystem - timestamp=2025-09-01T19:59:37.407755154Z level=ERROR message="Unhandled exception: com/regnowsnaes/permitmanagementsystem/models/ApiResponse has been compiled by a more recent version of the Java Runtime (class file version 68.0), this version of the Java Runtime only recognizes class file versions up to 65.0" endpoint=/health error="com/regnowsnaes/permitmanagementsystem/models/ApiResponse has been compiled by a more recent version of the Java Runtime (class file version 68.0), this version of the Java Runtime only recognizes class file versions up to 65.0" exception_type="UnsupportedClassVersionError" error_type="unhandled_exception"
-2025-09-01 16:01:50.035 [eventLoopGroupProxy-4-4] ERROR PermitManagementSystem - timestamp=2025-09-01T20:01:50.035634382Z level=ERROR message="Unhandled exception: com/regnowsnaes/permitmanagementsystem/models/ApiResponse has been compiled by a more recent version of the Java Runtime (class file version 68.0), this version of the Java Runtime only recognizes class file versions up to 65.0" endpoint=/health error="com/regnowsnaes/permitmanagementsystem/models/ApiResponse has been compiled by a more recent version of the Java Runtime (class file version 68.0), this version of the Java Runtime only recognizes class file versions up to 65.0" exception_type="UnsupportedClassVersionError" error_type="unhandled_exception"
-2025-09-01 16:04:27.195 [eventLoopGroupProxy-4-1] ERROR PermitManagementSystem - timestamp=2025-09-01T20:04:27.194875819Z level=ERROR message="Unhandled exception: com/regnowsnaes/permitmanagementsystem/models/ApiResponse has been compiled by a more recent version of the Java Runtime (class file version 68.0), this version of the Java Runtime only recognizes class file versions up to 65.0" endpoint=/health error="com/regnowsnaes/permitmanagementsystem/models/ApiResponse has been compiled by a more recent version of the Java Runtime (class file version 68.0), this version of the Java Runtime only recognizes class file versions up to 65.0" exception_type="UnsupportedClassVersionError" error_type="unhandled_exception"
+Caused by: org.postgresql.util.PSQLException: ERROR: permission denied for table counties
+	at org.postgresql.core.v3.QueryExecutorImpl.receiveErrorResponse(QueryExecutorImpl.java:2725)
+	at org.postgresql.core.v3.QueryExecutorImpl.processResults(QueryExecutorImpl.java:2412)
+	at org.postgresql.core.v3.QueryExecutorImpl.execute(QueryExecutorImpl.java:371)
+	at org.postgresql.jdbc.PgStatement.executeInternal(PgStatement.java:502)
+	at org.postgresql.jdbc.PgStatement.execute(PgStatement.java:419)
+	at org.postgresql.jdbc.PgPreparedStatement.executeWithFlags(PgPreparedStatement.java:194)
+	at org.postgresql.jdbc.PgPreparedStatement.executeQuery(PgPreparedStatement.java:137)
+	at com.zaxxer.hikari.pool.ProxyPreparedStatement.executeQuery(ProxyPreparedStatement.java:52)
+	at com.zaxxer.hikari.pool.HikariProxyPreparedStatement.executeQuery(HikariProxyPreparedStatement.java)
+	at org.jetbrains.exposed.sql.statements.jdbc.JdbcPreparedStatementImpl.executeQuery(JdbcPreparedStatementImpl.kt:51)
+	at org.jetbrains.exposed.sql.Query.executeInternal(Query.kt:132)
+	at org.jetbrains.exposed.sql.Query.executeInternal(Query.kt:22)
+	at org.jetbrains.exposed.sql.statements.Statement.executeIn$exposed_core(Statement.kt:97)
+	... 17 common frames omitted
+2025-09-02 17:44:10.002 [main] WARN  Exposed - Wait 0 milliseconds before retrying
+2025-09-02 17:44:10.007 [main] WARN  Exposed - Transaction attempt #1 failed: org.postgresql.util.PSQLException: ERROR: permission denied for table counties. Statement(s): SELECT counties.id, counties."name", counties."state", counties.created_at, counties.updated_at FROM counties
+org.jetbrains.exposed.exceptions.ExposedSQLException: org.postgresql.util.PSQLException: ERROR: permission denied for table counties
+	at org.jetbrains.exposed.sql.statements.Statement.executeIn$exposed_core(Statement.kt:99)
+	at org.jetbrains.exposed.sql.Transaction.exec(Transaction.kt:292)
+	at org.jetbrains.exposed.sql.Query.count(Query.kt:324)
+	at com.regnowsnaes.permitmanagementsystem.database.DatabaseConfig.seedInitialData$lambda$24(DatabaseConfig.kt:132)
+	at org.jetbrains.exposed.sql.transactions.ThreadLocalTransactionManagerKt.inTopLevelTransaction$run(ThreadLocalTransactionManager.kt:324)
+	at org.jetbrains.exposed.sql.transactions.ThreadLocalTransactionManagerKt.access$inTopLevelTransaction$run(ThreadLocalTransactionManager.kt:1)
+	at org.jetbrains.exposed.sql.transactions.ThreadLocalTransactionManagerKt$inTopLevelTransaction$1.invoke(ThreadLocalTransactionManager.kt:371)
+	at org.jetbrains.exposed.sql.transactions.ThreadLocalTransactionManagerKt.keepAndRestoreTransactionRefAfterRun(ThreadLocalTransactionManager.kt:379)
+	at org.jetbrains.exposed.sql.transactions.ThreadLocalTransactionManagerKt.inTopLevelTransaction(ThreadLocalTransactionManager.kt:370)
+	at org.jetbrains.exposed.sql.transactions.ThreadLocalTransactionManagerKt$transaction$1.invoke(ThreadLocalTransactionManager.kt:279)
+	at org.jetbrains.exposed.sql.transactions.ThreadLocalTransactionManagerKt.keepAndRestoreTransactionRefAfterRun(ThreadLocalTransactionManager.kt:379)
+	at org.jetbrains.exposed.sql.transactions.ThreadLocalTransactionManagerKt.transaction(ThreadLocalTransactionManager.kt:249)
+	at org.jetbrains.exposed.sql.transactions.ThreadLocalTransactionManagerKt.transaction(ThreadLocalTransactionManager.kt:227)
+	at org.jetbrains.exposed.sql.transactions.ThreadLocalTransactionManagerKt.transaction$default(ThreadLocalTransactionManager.kt:226)
+	at com.regnowsnaes.permitmanagementsystem.database.DatabaseConfig.seedInitialData(DatabaseConfig.kt:130)
+	at com.regnowsnaes.permitmanagementsystem.database.DatabaseConfig.init(DatabaseConfig.kt:90)
+	at com.regnowsnaes.permitmanagementsystem.ApplicationKt.main(Application.kt:54)
+	at com.regnowsnaes.permitmanagementsystem.ApplicationKt.main(Application.kt)
+Caused by: org.postgresql.util.PSQLException: ERROR: permission denied for table counties
+	at org.postgresql.core.v3.QueryExecutorImpl.receiveErrorResponse(QueryExecutorImpl.java:2725)
+	at org.postgresql.core.v3.QueryExecutorImpl.processResults(QueryExecutorImpl.java:2412)
+	at org.postgresql.core.v3.QueryExecutorImpl.execute(QueryExecutorImpl.java:371)
+	at org.postgresql.jdbc.PgStatement.executeInternal(PgStatement.java:502)
+	at org.postgresql.jdbc.PgStatement.execute(PgStatement.java:419)
+	at org.postgresql.jdbc.PgPreparedStatement.executeWithFlags(PgPreparedStatement.java:194)
+	at org.postgresql.jdbc.PgPreparedStatement.executeQuery(PgPreparedStatement.java:137)
+	at com.zaxxer.hikari.pool.ProxyPreparedStatement.executeQuery(ProxyPreparedStatement.java:52)
+	at com.zaxxer.hikari.pool.HikariProxyPreparedStatement.executeQuery(HikariProxyPreparedStatement.java)
+	at org.jetbrains.exposed.sql.statements.jdbc.JdbcPreparedStatementImpl.executeQuery(JdbcPreparedStatementImpl.kt:51)
+	at org.jetbrains.exposed.sql.Query.executeInternal(Query.kt:132)
+	at org.jetbrains.exposed.sql.Query.executeInternal(Query.kt:22)
+	at org.jetbrains.exposed.sql.statements.Statement.executeIn$exposed_core(Statement.kt:97)
+	... 17 common frames omitted
+2025-09-02 17:44:10.009 [main] WARN  Exposed - Wait 0 milliseconds before retrying
+2025-09-02 17:44:10.012 [main] WARN  Exposed - Transaction attempt #2 failed: org.postgresql.util.PSQLException: ERROR: permission denied for table counties. Statement(s): SELECT counties.id, counties."name", counties."state", counties.created_at, counties.updated_at FROM counties
+org.jetbrains.exposed.exceptions.ExposedSQLException: org.postgresql.util.PSQLException: ERROR: permission denied for table counties
+	at org.jetbrains.exposed.sql.statements.Statement.executeIn$exposed_core(Statement.kt:99)
+	at org.jetbrains.exposed.sql.Transaction.exec(Transaction.kt:292)
+	at org.jetbrains.exposed.sql.Query.count(Query.kt:324)
+	at com.regnowsnaes.permitmanagementsystem.database.DatabaseConfig.seedInitialData$lambda$24(DatabaseConfig.kt:132)
+	at org.jetbrains.exposed.sql.transactions.ThreadLocalTransactionManagerKt.inTopLevelTransaction$run(ThreadLocalTransactionManager.kt:324)
+	at org.jetbrains.exposed.sql.transactions.ThreadLocalTransactionManagerKt.access$inTopLevelTransaction$run(ThreadLocalTransactionManager.kt:1)
+	at org.jetbrains.exposed.sql.transactions.ThreadLocalTransactionManagerKt$inTopLevelTransaction$1.invoke(ThreadLocalTransactionManager.kt:371)
+	at org.jetbrains.exposed.sql.transactions.ThreadLocalTransactionManagerKt.keepAndRestoreTransactionRefAfterRun(ThreadLocalTransactionManager.kt:379)
+	at org.jetbrains.exposed.sql.transactions.ThreadLocalTransactionManagerKt.inTopLevelTransaction(ThreadLocalTransactionManager.kt:370)
+	at org.jetbrains.exposed.sql.transactions.ThreadLocalTransactionManagerKt$transaction$1.invoke(ThreadLocalTransactionManager.kt:279)
+	at org.jetbrains.exposed.sql.transactions.ThreadLocalTransactionManagerKt.keepAndRestoreTransactionRefAfterRun(ThreadLocalTransactionManager.kt:379)
+	at org.jetbrains.exposed.sql.transactions.ThreadLocalTransactionManagerKt.transaction(ThreadLocalTransactionManager.kt:249)
+	at org.jetbrains.exposed.sql.transactions.ThreadLocalTransactionManagerKt.transaction(ThreadLocalTransactionManager.kt:227)
+	at org.jetbrains.exposed.sql.transactions.ThreadLocalTransactionManagerKt.transaction$default(ThreadLocalTransactionManager.kt:226)
+	at com.regnowsnaes.permitmanagementsystem.database.DatabaseConfig.seedInitialData(DatabaseConfig.kt:130)
+	at com.regnowsnaes.permitmanagementsystem.database.DatabaseConfig.init(DatabaseConfig.kt:90)
+	at com.regnowsnaes.permitmanagementsystem.ApplicationKt.main(Application.kt:54)
+	at com.regnowsnaes.permitmanagementsystem.ApplicationKt.main(Application.kt)
+Caused by: org.postgresql.util.PSQLException: ERROR: permission denied for table counties
+	at org.postgresql.core.v3.QueryExecutorImpl.receiveErrorResponse(QueryExecutorImpl.java:2725)
+	at org.postgresql.core.v3.QueryExecutorImpl.processResults(QueryExecutorImpl.java:2412)
+	at org.postgresql.core.v3.QueryExecutorImpl.execute(QueryExecutorImpl.java:371)
+	at org.postgresql.jdbc.PgStatement.executeInternal(PgStatement.java:502)
+	at org.postgresql.jdbc.PgStatement.execute(PgStatement.java:419)
+	at org.postgresql.jdbc.PgPreparedStatement.executeWithFlags(PgPreparedStatement.java:194)
+	at org.postgresql.jdbc.PgPreparedStatement.executeQuery(PgPreparedStatement.java:137)
+	at com.zaxxer.hikari.pool.ProxyPreparedStatement.executeQuery(ProxyPreparedStatement.java:52)
+	at com.zaxxer.hikari.pool.HikariProxyPreparedStatement.executeQuery(HikariProxyPreparedStatement.java)
+	at org.jetbrains.exposed.sql.statements.jdbc.JdbcPreparedStatementImpl.executeQuery(JdbcPreparedStatementImpl.kt:51)
+	at org.jetbrains.exposed.sql.Query.executeInternal(Query.kt:132)
+	at org.jetbrains.exposed.sql.Query.executeInternal(Query.kt:22)
+	at org.jetbrains.exposed.sql.statements.Statement.executeIn$exposed_core(Statement.kt:97)
+	... 17 common frames omitted
+2025-09-02 17:44:48.931 [main] INFO  com.zaxxer.hikari.HikariDataSource - PermitManagementPool - Starting...
+2025-09-02 17:44:49.148 [main] INFO  com.zaxxer.hikari.pool.HikariPool - PermitManagementPool - Added connection org.postgresql.jdbc.PgConnection@1ed6388a
+2025-09-02 17:44:49.151 [main] INFO  com.zaxxer.hikari.HikariDataSource - PermitManagementPool - Start completed.
+2025-09-02 17:44:50.200 [main] WARN  Exposed - Transaction attempt #0 failed: org.postgresql.util.PSQLException: ERROR: permission denied for table counties. Statement(s): SELECT counties.id, counties."name", counties."state", counties.created_at, counties.updated_at FROM counties
+org.jetbrains.exposed.exceptions.ExposedSQLException: org.postgresql.util.PSQLException: ERROR: permission denied for table counties
+	at org.jetbrains.exposed.sql.statements.Statement.executeIn$exposed_core(Statement.kt:99)
+	at org.jetbrains.exposed.sql.Transaction.exec(Transaction.kt:292)
+	at org.jetbrains.exposed.sql.Query.count(Query.kt:324)
+	at com.regnowsnaes.permitmanagementsystem.database.DatabaseConfig.seedInitialData$lambda$24(DatabaseConfig.kt:132)
+	at org.jetbrains.exposed.sql.transactions.ThreadLocalTransactionManagerKt.inTopLevelTransaction$run(ThreadLocalTransactionManager.kt:324)
+	at org.jetbrains.exposed.sql.transactions.ThreadLocalTransactionManagerKt.access$inTopLevelTransaction$run(ThreadLocalTransactionManager.kt:1)
+	at org.jetbrains.exposed.sql.transactions.ThreadLocalTransactionManagerKt$inTopLevelTransaction$1.invoke(ThreadLocalTransactionManager.kt:371)
+	at org.jetbrains.exposed.sql.transactions.ThreadLocalTransactionManagerKt.keepAndRestoreTransactionRefAfterRun(ThreadLocalTransactionManager.kt:379)
+	at org.jetbrains.exposed.sql.transactions.ThreadLocalTransactionManagerKt.inTopLevelTransaction(ThreadLocalTransactionManager.kt:370)
+	at org.jetbrains.exposed.sql.transactions.ThreadLocalTransactionManagerKt$transaction$1.invoke(ThreadLocalTransactionManager.kt:279)
+	at org.jetbrains.exposed.sql.transactions.ThreadLocalTransactionManagerKt.keepAndRestoreTransactionRefAfterRun(ThreadLocalTransactionManager.kt:379)
+	at org.jetbrains.exposed.sql.transactions.ThreadLocalTransactionManagerKt.transaction(ThreadLocalTransactionManager.kt:249)
+	at org.jetbrains.exposed.sql.transactions.ThreadLocalTransactionManagerKt.transaction(ThreadLocalTransactionManager.kt:227)
+	at org.jetbrains.exposed.sql.transactions.ThreadLocalTransactionManagerKt.transaction$default(ThreadLocalTransactionManager.kt:226)
+	at com.regnowsnaes.permitmanagementsystem.database.DatabaseConfig.seedInitialData(DatabaseConfig.kt:130)
+	at com.regnowsnaes.permitmanagementsystem.database.DatabaseConfig.init(DatabaseConfig.kt:90)
+	at com.regnowsnaes.permitmanagementsystem.ApplicationKt.main(Application.kt:54)
+	at com.regnowsnaes.permitmanagementsystem.ApplicationKt.main(Application.kt)
+Caused by: org.postgresql.util.PSQLException: ERROR: permission denied for table counties
+	at org.postgresql.core.v3.QueryExecutorImpl.receiveErrorResponse(QueryExecutorImpl.java:2725)
+	at org.postgresql.core.v3.QueryExecutorImpl.processResults(QueryExecutorImpl.java:2412)
+	at org.postgresql.core.v3.QueryExecutorImpl.execute(QueryExecutorImpl.java:371)
+	at org.postgresql.jdbc.PgStatement.executeInternal(PgStatement.java:502)
+	at org.postgresql.jdbc.PgStatement.execute(PgStatement.java:419)
+	at org.postgresql.jdbc.PgPreparedStatement.executeWithFlags(PgPreparedStatement.java:194)
+	at org.postgresql.jdbc.PgPreparedStatement.executeQuery(PgPreparedStatement.java:137)
+	at com.zaxxer.hikari.pool.ProxyPreparedStatement.executeQuery(ProxyPreparedStatement.java:52)
+	at com.zaxxer.hikari.pool.HikariProxyPreparedStatement.executeQuery(HikariProxyPreparedStatement.java)
+	at org.jetbrains.exposed.sql.statements.jdbc.JdbcPreparedStatementImpl.executeQuery(JdbcPreparedStatementImpl.kt:51)
+	at org.jetbrains.exposed.sql.Query.executeInternal(Query.kt:132)
+	at org.jetbrains.exposed.sql.Query.executeInternal(Query.kt:22)
+	at org.jetbrains.exposed.sql.statements.Statement.executeIn$exposed_core(Statement.kt:97)
+	... 17 common frames omitted
+2025-09-02 17:44:50.205 [main] WARN  Exposed - Wait 0 milliseconds before retrying
+2025-09-02 17:44:50.212 [main] WARN  Exposed - Transaction attempt #1 failed: org.postgresql.util.PSQLException: ERROR: permission denied for table counties. Statement(s): SELECT counties.id, counties."name", counties."state", counties.created_at, counties.updated_at FROM counties
+org.jetbrains.exposed.exceptions.ExposedSQLException: org.postgresql.util.PSQLException: ERROR: permission denied for table counties
+	at org.jetbrains.exposed.sql.statements.Statement.executeIn$exposed_core(Statement.kt:99)
+	at org.jetbrains.exposed.sql.Transaction.exec(Transaction.kt:292)
+	at org.jetbrains.exposed.sql.Query.count(Query.kt:324)
+	at com.regnowsnaes.permitmanagementsystem.database.DatabaseConfig.seedInitialData$lambda$24(DatabaseConfig.kt:132)
+	at org.jetbrains.exposed.sql.transactions.ThreadLocalTransactionManagerKt.inTopLevelTransaction$run(ThreadLocalTransactionManager.kt:324)
+	at org.jetbrains.exposed.sql.transactions.ThreadLocalTransactionManagerKt.access$inTopLevelTransaction$run(ThreadLocalTransactionManager.kt:1)
+	at org.jetbrains.exposed.sql.transactions.ThreadLocalTransactionManagerKt$inTopLevelTransaction$1.invoke(ThreadLocalTransactionManager.kt:371)
+	at org.jetbrains.exposed.sql.transactions.ThreadLocalTransactionManagerKt.keepAndRestoreTransactionRefAfterRun(ThreadLocalTransactionManager.kt:379)
+	at org.jetbrains.exposed.sql.transactions.ThreadLocalTransactionManagerKt.inTopLevelTransaction(ThreadLocalTransactionManager.kt:370)
+	at org.jetbrains.exposed.sql.transactions.ThreadLocalTransactionManagerKt$transaction$1.invoke(ThreadLocalTransactionManager.kt:279)
+	at org.jetbrains.exposed.sql.transactions.ThreadLocalTransactionManagerKt.keepAndRestoreTransactionRefAfterRun(ThreadLocalTransactionManager.kt:379)
+	at org.jetbrains.exposed.sql.transactions.ThreadLocalTransactionManagerKt.transaction(ThreadLocalTransactionManager.kt:249)
+	at org.jetbrains.exposed.sql.transactions.ThreadLocalTransactionManagerKt.transaction(ThreadLocalTransactionManager.kt:227)
+	at org.jetbrains.exposed.sql.transactions.ThreadLocalTransactionManagerKt.transaction$default(ThreadLocalTransactionManager.kt:226)
+	at com.regnowsnaes.permitmanagementsystem.database.DatabaseConfig.seedInitialData(DatabaseConfig.kt:130)
+	at com.regnowsnaes.permitmanagementsystem.database.DatabaseConfig.init(DatabaseConfig.kt:90)
+	at com.regnowsnaes.permitmanagementsystem.ApplicationKt.main(Application.kt:54)
+	at com.regnowsnaes.permitmanagementsystem.ApplicationKt.main(Application.kt)
+Caused by: org.postgresql.util.PSQLException: ERROR: permission denied for table counties
+	at org.postgresql.core.v3.QueryExecutorImpl.receiveErrorResponse(QueryExecutorImpl.java:2725)
+	at org.postgresql.core.v3.QueryExecutorImpl.processResults(QueryExecutorImpl.java:2412)
+	at org.postgresql.core.v3.QueryExecutorImpl.execute(QueryExecutorImpl.java:371)
+	at org.postgresql.jdbc.PgStatement.executeInternal(PgStatement.java:502)
+	at org.postgresql.jdbc.PgStatement.execute(PgStatement.java:419)
+	at org.postgresql.jdbc.PgPreparedStatement.executeWithFlags(PgPreparedStatement.java:194)
+	at org.postgresql.jdbc.PgPreparedStatement.executeQuery(PgPreparedStatement.java:137)
+	at com.zaxxer.hikari.pool.ProxyPreparedStatement.executeQuery(ProxyPreparedStatement.java:52)
+	at com.zaxxer.hikari.pool.HikariProxyPreparedStatement.executeQuery(HikariProxyPreparedStatement.java)
+	at org.jetbrains.exposed.sql.statements.jdbc.JdbcPreparedStatementImpl.executeQuery(JdbcPreparedStatementImpl.kt:51)
+	at org.jetbrains.exposed.sql.Query.executeInternal(Query.kt:132)
+	at org.jetbrains.exposed.sql.Query.executeInternal(Query.kt:22)
+	at org.jetbrains.exposed.sql.statements.Statement.executeIn$exposed_core(Statement.kt:97)
+	... 17 common frames omitted
+2025-09-02 17:44:50.217 [main] WARN  Exposed - Wait 0 milliseconds before retrying
+2025-09-02 17:44:50.220 [main] WARN  Exposed - Transaction attempt #2 failed: org.postgresql.util.PSQLException: ERROR: permission denied for table counties. Statement(s): SELECT counties.id, counties."name", counties."state", counties.created_at, counties.updated_at FROM counties
+org.jetbrains.exposed.exceptions.ExposedSQLException: org.postgresql.util.PSQLException: ERROR: permission denied for table counties
+	at org.jetbrains.exposed.sql.statements.Statement.executeIn$exposed_core(Statement.kt:99)
+	at org.jetbrains.exposed.sql.Transaction.exec(Transaction.kt:292)
+	at org.jetbrains.exposed.sql.Query.count(Query.kt:324)
+	at com.regnowsnaes.permitmanagementsystem.database.DatabaseConfig.seedInitialData$lambda$24(DatabaseConfig.kt:132)
+	at org.jetbrains.exposed.sql.transactions.ThreadLocalTransactionManagerKt.inTopLevelTransaction$run(ThreadLocalTransactionManager.kt:324)
+	at org.jetbrains.exposed.sql.transactions.ThreadLocalTransactionManagerKt.access$inTopLevelTransaction$run(ThreadLocalTransactionManager.kt:1)
+	at org.jetbrains.exposed.sql.transactions.ThreadLocalTransactionManagerKt$inTopLevelTransaction$1.invoke(ThreadLocalTransactionManager.kt:371)
+	at org.jetbrains.exposed.sql.transactions.ThreadLocalTransactionManagerKt.keepAndRestoreTransactionRefAfterRun(ThreadLocalTransactionManager.kt:379)
+	at org.jetbrains.exposed.sql.transactions.ThreadLocalTransactionManagerKt.inTopLevelTransaction(ThreadLocalTransactionManager.kt:370)
+	at org.jetbrains.exposed.sql.transactions.ThreadLocalTransactionManagerKt$transaction$1.invoke(ThreadLocalTransactionManager.kt:279)
+	at org.jetbrains.exposed.sql.transactions.ThreadLocalTransactionManagerKt.keepAndRestoreTransactionRefAfterRun(ThreadLocalTransactionManager.kt:379)
+	at org.jetbrains.exposed.sql.transactions.ThreadLocalTransactionManagerKt.transaction(ThreadLocalTransactionManager.kt:249)
+	at org.jetbrains.exposed.sql.transactions.ThreadLocalTransactionManagerKt.transaction(ThreadLocalTransactionManager.kt:227)
+	at org.jetbrains.exposed.sql.transactions.ThreadLocalTransactionManagerKt.transaction$default(ThreadLocalTransactionManager.kt:226)
+	at com.regnowsnaes.permitmanagementsystem.database.DatabaseConfig.seedInitialData(DatabaseConfig.kt:130)
+	at com.regnowsnaes.permitmanagementsystem.database.DatabaseConfig.init(DatabaseConfig.kt:90)
+	at com.regnowsnaes.permitmanagementsystem.ApplicationKt.main(Application.kt:54)
+	at com.regnowsnaes.permitmanagementsystem.ApplicationKt.main(Application.kt)
+Caused by: org.postgresql.util.PSQLException: ERROR: permission denied for table counties
+	at org.postgresql.core.v3.QueryExecutorImpl.receiveErrorResponse(QueryExecutorImpl.java:2725)
+	at org.postgresql.core.v3.QueryExecutorImpl.processResults(QueryExecutorImpl.java:2412)
+	at org.postgresql.core.v3.QueryExecutorImpl.execute(QueryExecutorImpl.java:371)
+	at org.postgresql.jdbc.PgStatement.executeInternal(PgStatement.java:502)
+	at org.postgresql.jdbc.PgStatement.execute(PgStatement.java:419)
+	at org.postgresql.jdbc.PgPreparedStatement.executeWithFlags(PgPreparedStatement.java:194)
+	at org.postgresql.jdbc.PgPreparedStatement.executeQuery(PgPreparedStatement.java:137)
+	at com.zaxxer.hikari.pool.ProxyPreparedStatement.executeQuery(ProxyPreparedStatement.java:52)
+	at com.zaxxer.hikari.pool.HikariProxyPreparedStatement.executeQuery(HikariProxyPreparedStatement.java)
+	at org.jetbrains.exposed.sql.statements.jdbc.JdbcPreparedStatementImpl.executeQuery(JdbcPreparedStatementImpl.kt:51)
+	at org.jetbrains.exposed.sql.Query.executeInternal(Query.kt:132)
+	at org.jetbrains.exposed.sql.Query.executeInternal(Query.kt:22)
+	at org.jetbrains.exposed.sql.statements.Statement.executeIn$exposed_core(Statement.kt:97)
+	... 17 common frames omitted
+2025-09-02 17:46:11.055 [main] INFO  com.zaxxer.hikari.HikariDataSource - PermitManagementPool - Starting...
+2025-09-02 17:46:11.286 [main] INFO  com.zaxxer.hikari.pool.HikariPool - PermitManagementPool - Added connection org.postgresql.jdbc.PgConnection@1ed6388a
+2025-09-02 17:46:11.291 [main] INFO  com.zaxxer.hikari.HikariDataSource - PermitManagementPool - Start completed.
+2025-09-02 17:46:12.298 [main] WARN  Exposed - Transaction attempt #0 failed: org.postgresql.util.PSQLException: ERROR: permission denied for table counties. Statement(s): SELECT counties.id, counties."name", counties."state", counties.created_at, counties.updated_at FROM counties
+org.jetbrains.exposed.exceptions.ExposedSQLException: org.postgresql.util.PSQLException: ERROR: permission denied for table counties
+	at org.jetbrains.exposed.sql.statements.Statement.executeIn$exposed_core(Statement.kt:99)
+	at org.jetbrains.exposed.sql.Transaction.exec(Transaction.kt:292)
+	at org.jetbrains.exposed.sql.Query.count(Query.kt:324)
+	at com.regnowsnaes.permitmanagementsystem.database.DatabaseConfig.seedInitialData$lambda$24(DatabaseConfig.kt:132)
+	at org.jetbrains.exposed.sql.transactions.ThreadLocalTransactionManagerKt.inTopLevelTransaction$run(ThreadLocalTransactionManager.kt:324)
+	at org.jetbrains.exposed.sql.transactions.ThreadLocalTransactionManagerKt.access$inTopLevelTransaction$run(ThreadLocalTransactionManager.kt:1)
+	at org.jetbrains.exposed.sql.transactions.ThreadLocalTransactionManagerKt$inTopLevelTransaction$1.invoke(ThreadLocalTransactionManager.kt:371)
+	at org.jetbrains.exposed.sql.transactions.ThreadLocalTransactionManagerKt.keepAndRestoreTransactionRefAfterRun(ThreadLocalTransactionManager.kt:379)
+	at org.jetbrains.exposed.sql.transactions.ThreadLocalTransactionManagerKt.inTopLevelTransaction(ThreadLocalTransactionManager.kt:370)
+	at org.jetbrains.exposed.sql.transactions.ThreadLocalTransactionManagerKt$transaction$1.invoke(ThreadLocalTransactionManager.kt:279)
+	at org.jetbrains.exposed.sql.transactions.ThreadLocalTransactionManagerKt.keepAndRestoreTransactionRefAfterRun(ThreadLocalTransactionManager.kt:379)
+	at org.jetbrains.exposed.sql.transactions.ThreadLocalTransactionManagerKt.transaction(ThreadLocalTransactionManager.kt:249)
+	at org.jetbrains.exposed.sql.transactions.ThreadLocalTransactionManagerKt.transaction(ThreadLocalTransactionManager.kt:227)
+	at org.jetbrains.exposed.sql.transactions.ThreadLocalTransactionManagerKt.transaction$default(ThreadLocalTransactionManager.kt:226)
+	at com.regnowsnaes.permitmanagementsystem.database.DatabaseConfig.seedInitialData(DatabaseConfig.kt:130)
+	at com.regnowsnaes.permitmanagementsystem.database.DatabaseConfig.init(DatabaseConfig.kt:90)
+	at com.regnowsnaes.permitmanagementsystem.ApplicationKt.main(Application.kt:54)
+	at com.regnowsnaes.permitmanagementsystem.ApplicationKt.main(Application.kt)
+Caused by: org.postgresql.util.PSQLException: ERROR: permission denied for table counties
+	at org.postgresql.core.v3.QueryExecutorImpl.receiveErrorResponse(QueryExecutorImpl.java:2725)
+	at org.postgresql.core.v3.QueryExecutorImpl.processResults(QueryExecutorImpl.java:2412)
+	at org.postgresql.core.v3.QueryExecutorImpl.execute(QueryExecutorImpl.java:371)
+	at org.postgresql.jdbc.PgStatement.executeInternal(PgStatement.java:502)
+	at org.postgresql.jdbc.PgStatement.execute(PgStatement.java:419)
+	at org.postgresql.jdbc.PgPreparedStatement.executeWithFlags(PgPreparedStatement.java:194)
+	at org.postgresql.jdbc.PgPreparedStatement.executeQuery(PgPreparedStatement.java:137)
+	at com.zaxxer.hikari.pool.ProxyPreparedStatement.executeQuery(ProxyPreparedStatement.java:52)
+	at com.zaxxer.hikari.pool.HikariProxyPreparedStatement.executeQuery(HikariProxyPreparedStatement.java)
+	at org.jetbrains.exposed.sql.statements.jdbc.JdbcPreparedStatementImpl.executeQuery(JdbcPreparedStatementImpl.kt:51)
+	at org.jetbrains.exposed.sql.Query.executeInternal(Query.kt:132)
+	at org.jetbrains.exposed.sql.Query.executeInternal(Query.kt:22)
+	at org.jetbrains.exposed.sql.statements.Statement.executeIn$exposed_core(Statement.kt:97)
+	... 17 common frames omitted
+2025-09-02 17:46:12.301 [main] WARN  Exposed - Wait 0 milliseconds before retrying
+2025-09-02 17:46:12.304 [main] WARN  Exposed - Transaction attempt #1 failed: org.postgresql.util.PSQLException: ERROR: permission denied for table counties. Statement(s): SELECT counties.id, counties."name", counties."state", counties.created_at, counties.updated_at FROM counties
+org.jetbrains.exposed.exceptions.ExposedSQLException: org.postgresql.util.PSQLException: ERROR: permission denied for table counties
+	at org.jetbrains.exposed.sql.statements.Statement.executeIn$exposed_core(Statement.kt:99)
+	at org.jetbrains.exposed.sql.Transaction.exec(Transaction.kt:292)
+	at org.jetbrains.exposed.sql.Query.count(Query.kt:324)
+	at com.regnowsnaes.permitmanagementsystem.database.DatabaseConfig.seedInitialData$lambda$24(DatabaseConfig.kt:132)
+	at org.jetbrains.exposed.sql.transactions.ThreadLocalTransactionManagerKt.inTopLevelTransaction$run(ThreadLocalTransactionManager.kt:324)
+	at org.jetbrains.exposed.sql.transactions.ThreadLocalTransactionManagerKt.access$inTopLevelTransaction$run(ThreadLocalTransactionManager.kt:1)
+	at org.jetbrains.exposed.sql.transactions.ThreadLocalTransactionManagerKt$inTopLevelTransaction$1.invoke(ThreadLocalTransactionManager.kt:371)
+	at org.jetbrains.exposed.sql.transactions.ThreadLocalTransactionManagerKt.keepAndRestoreTransactionRefAfterRun(ThreadLocalTransactionManager.kt:379)
+	at org.jetbrains.exposed.sql.transactions.ThreadLocalTransactionManagerKt.inTopLevelTransaction(ThreadLocalTransactionManager.kt:370)
+	at org.jetbrains.exposed.sql.transactions.ThreadLocalTransactionManagerKt$transaction$1.invoke(ThreadLocalTransactionManager.kt:279)
+	at org.jetbrains.exposed.sql.transactions.ThreadLocalTransactionManagerKt.keepAndRestoreTransactionRefAfterRun(ThreadLocalTransactionManager.kt:379)
+	at org.jetbrains.exposed.sql.transactions.ThreadLocalTransactionManagerKt.transaction(ThreadLocalTransactionManager.kt:249)
+	at org.jetbrains.exposed.sql.transactions.ThreadLocalTransactionManagerKt.transaction(ThreadLocalTransactionManager.kt:227)
+	at org.jetbrains.exposed.sql.transactions.ThreadLocalTransactionManagerKt.transaction$default(ThreadLocalTransactionManager.kt:226)
+	at com.regnowsnaes.permitmanagementsystem.database.DatabaseConfig.seedInitialData(DatabaseConfig.kt:130)
+	at com.regnowsnaes.permitmanagementsystem.database.DatabaseConfig.init(DatabaseConfig.kt:90)
+	at com.regnowsnaes.permitmanagementsystem.ApplicationKt.main(Application.kt:54)
+	at com.regnowsnaes.permitmanagementsystem.ApplicationKt.main(Application.kt)
+Caused by: org.postgresql.util.PSQLException: ERROR: permission denied for table counties
+	at org.postgresql.core.v3.QueryExecutorImpl.receiveErrorResponse(QueryExecutorImpl.java:2725)
+	at org.postgresql.core.v3.QueryExecutorImpl.processResults(QueryExecutorImpl.java:2412)
+	at org.postgresql.core.v3.QueryExecutorImpl.execute(QueryExecutorImpl.java:371)
+	at org.postgresql.jdbc.PgStatement.executeInternal(PgStatement.java:502)
+	at org.postgresql.jdbc.PgStatement.execute(PgStatement.java:419)
+	at org.postgresql.jdbc.PgPreparedStatement.executeWithFlags(PgPreparedStatement.java:194)
+	at org.postgresql.jdbc.PgPreparedStatement.executeQuery(PgPreparedStatement.java:137)
+	at com.zaxxer.hikari.pool.ProxyPreparedStatement.executeQuery(ProxyPreparedStatement.java:52)
+	at com.zaxxer.hikari.pool.HikariProxyPreparedStatement.executeQuery(HikariProxyPreparedStatement.java)
+	at org.jetbrains.exposed.sql.statements.jdbc.JdbcPreparedStatementImpl.executeQuery(JdbcPreparedStatementImpl.kt:51)
+	at org.jetbrains.exposed.sql.Query.executeInternal(Query.kt:132)
+	at org.jetbrains.exposed.sql.Query.executeInternal(Query.kt:22)
+	at org.jetbrains.exposed.sql.statements.Statement.executeIn$exposed_core(Statement.kt:97)
+	... 17 common frames omitted
+2025-09-02 17:46:12.306 [main] WARN  Exposed - Wait 0 milliseconds before retrying
+2025-09-02 17:46:12.309 [main] WARN  Exposed - Transaction attempt #2 failed: org.postgresql.util.PSQLException: ERROR: permission denied for table counties. Statement(s): SELECT counties.id, counties."name", counties."state", counties.created_at, counties.updated_at FROM counties
+org.jetbrains.exposed.exceptions.ExposedSQLException: org.postgresql.util.PSQLException: ERROR: permission denied for table counties
+	at org.jetbrains.exposed.sql.statements.Statement.executeIn$exposed_core(Statement.kt:99)
+	at org.jetbrains.exposed.sql.Transaction.exec(Transaction.kt:292)
+	at org.jetbrains.exposed.sql.Query.count(Query.kt:324)
+	at com.regnowsnaes.permitmanagementsystem.database.DatabaseConfig.seedInitialData$lambda$24(DatabaseConfig.kt:132)
+	at org.jetbrains.exposed.sql.transactions.ThreadLocalTransactionManagerKt.inTopLevelTransaction$run(ThreadLocalTransactionManager.kt:324)
+	at org.jetbrains.exposed.sql.transactions.ThreadLocalTransactionManagerKt.access$inTopLevelTransaction$run(ThreadLocalTransactionManager.kt:1)
+	at org.jetbrains.exposed.sql.transactions.ThreadLocalTransactionManagerKt$inTopLevelTransaction$1.invoke(ThreadLocalTransactionManager.kt:371)
+	at org.jetbrains.exposed.sql.transactions.ThreadLocalTransactionManagerKt.keepAndRestoreTransactionRefAfterRun(ThreadLocalTransactionManager.kt:379)
+	at org.jetbrains.exposed.sql.transactions.ThreadLocalTransactionManagerKt.inTopLevelTransaction(ThreadLocalTransactionManager.kt:370)
+	at org.jetbrains.exposed.sql.transactions.ThreadLocalTransactionManagerKt$transaction$1.invoke(ThreadLocalTransactionManager.kt:279)
+	at org.jetbrains.exposed.sql.transactions.ThreadLocalTransactionManagerKt.keepAndRestoreTransactionRefAfterRun(ThreadLocalTransactionManager.kt:379)
+	at org.jetbrains.exposed.sql.transactions.ThreadLocalTransactionManagerKt.transaction(ThreadLocalTransactionManager.kt:249)
+	at org.jetbrains.exposed.sql.transactions.ThreadLocalTransactionManagerKt.transaction(ThreadLocalTransactionManager.kt:227)
+	at org.jetbrains.exposed.sql.transactions.ThreadLocalTransactionManagerKt.transaction$default(ThreadLocalTransactionManager.kt:226)
+	at com.regnowsnaes.permitmanagementsystem.database.DatabaseConfig.seedInitialData(DatabaseConfig.kt:130)
+	at com.regnowsnaes.permitmanagementsystem.database.DatabaseConfig.init(DatabaseConfig.kt:90)
+	at com.regnowsnaes.permitmanagementsystem.ApplicationKt.main(Application.kt:54)
+	at com.regnowsnaes.permitmanagementsystem.ApplicationKt.main(Application.kt)
+Caused by: org.postgresql.util.PSQLException: ERROR: permission denied for table counties
+	at org.postgresql.core.v3.QueryExecutorImpl.receiveErrorResponse(QueryExecutorImpl.java:2725)
+	at org.postgresql.core.v3.QueryExecutorImpl.processResults(QueryExecutorImpl.java:2412)
+	at org.postgresql.core.v3.QueryExecutorImpl.execute(QueryExecutorImpl.java:371)
+	at org.postgresql.jdbc.PgStatement.executeInternal(PgStatement.java:502)
+	at org.postgresql.jdbc.PgStatement.execute(PgStatement.java:419)
+	at org.postgresql.jdbc.PgPreparedStatement.executeWithFlags(PgPreparedStatement.java:194)
+	at org.postgresql.jdbc.PgPreparedStatement.executeQuery(PgPreparedStatement.java:137)
+	at com.zaxxer.hikari.pool.ProxyPreparedStatement.executeQuery(ProxyPreparedStatement.java:52)
+	at com.zaxxer.hikari.pool.HikariProxyPreparedStatement.executeQuery(HikariProxyPreparedStatement.java)
+	at org.jetbrains.exposed.sql.statements.jdbc.JdbcPreparedStatementImpl.executeQuery(JdbcPreparedStatementImpl.kt:51)
+	at org.jetbrains.exposed.sql.Query.executeInternal(Query.kt:132)
+	at org.jetbrains.exposed.sql.Query.executeInternal(Query.kt:22)
+	at org.jetbrains.exposed.sql.statements.Statement.executeIn$exposed_core(Statement.kt:97)
+	... 17 common frames omitted
+2025-09-02 17:52:51.938 [main] INFO  com.zaxxer.hikari.HikariDataSource - PermitManagementPool - Starting...
+2025-09-02 17:52:52.157 [main] INFO  com.zaxxer.hikari.pool.HikariPool - PermitManagementPool - Added connection org.postgresql.jdbc.PgConnection@1ed6388a
+2025-09-02 17:52:52.160 [main] INFO  com.zaxxer.hikari.HikariDataSource - PermitManagementPool - Start completed.
+2025-09-02 17:52:53.331 [main] INFO  ktor.application - Autoreload is disabled because the development mode is off.
+2025-09-02 17:52:54.022 [main] INFO  ktor.application - Application started in 0.768 seconds.
+2025-09-02 17:52:54.623 [DefaultDispatcher-worker-1] INFO  ktor.application - Responding at http://0.0.0.0:8080
+2025-09-02 17:53:05.987 [eventLoopGroupProxy-4-2] ERROR PermitManagementSystem - timestamp=2025-09-02T21:53:05.986467324Z level=ERROR message="Unhandled exception: com/regnowsnaes/permitmanagementsystem/models/ApiResponse has been compiled by a more recent version of the Java Runtime (class file version 68.0), this version of the Java Runtime only recognizes class file versions up to 65.0" endpoint=/health error="com/regnowsnaes/permitmanagementsystem/models/ApiResponse has been compiled by a more recent version of the Java Runtime (class file version 68.0), this version of the Java Runtime only recognizes class file versions up to 65.0" exception_type="UnsupportedClassVersionError" error_type="unhandled_exception"
+2025-09-02 17:53:17.648 [eventLoopGroupProxy-4-4] ERROR PermitManagementSystem - timestamp=2025-09-02T21:53:17.648501172Z level=ERROR message="Unhandled exception: com/regnowsnaes/permitmanagementsystem/models/ApiResponse has been compiled by a more recent version of the Java Runtime (class file version 68.0), this version of the Java Runtime only recognizes class file versions up to 65.0" endpoint=/auth/login error="com/regnowsnaes/permitmanagementsystem/models/ApiResponse has been compiled by a more recent version of the Java Runtime (class file version 68.0), this version of the Java Runtime only recognizes class file versions up to 65.0" exception_type="UnsupportedClassVersionError" error_type="unhandled_exception"
+2025-09-02 17:54:38.318 [eventLoopGroupProxy-4-1] ERROR PermitManagementSystem - timestamp=2025-09-02T21:54:38.318073617Z level=ERROR message="Unhandled exception: com/regnowsnaes/permitmanagementsystem/models/ApiResponse has been compiled by a more recent version of the Java Runtime (class file version 68.0), this version of the Java Runtime only recognizes class file versions up to 65.0" endpoint=/health error="com/regnowsnaes/permitmanagementsystem/models/ApiResponse has been compiled by a more recent version of the Java Runtime (class file version 68.0), this version of the Java Runtime only recognizes class file versions up to 65.0" exception_type="UnsupportedClassVersionError" error_type="unhandled_exception"
+2025-09-02 17:55:02.025 [eventLoopGroupProxy-4-2] ERROR PermitManagementSystem - timestamp=2025-09-02T21:55:02.025918904Z level=ERROR message="Unhandled exception: com/regnowsnaes/permitmanagementsystem/models/ApiResponse has been compiled by a more recent version of the Java Runtime (class file version 68.0), this version of the Java Runtime only recognizes class file versions up to 65.0" endpoint=/health error="com/regnowsnaes/permitmanagementsystem/models/ApiResponse has been compiled by a more recent version of the Java Runtime (class file version 68.0), this version of the Java Runtime only recognizes class file versions up to 65.0" exception_type="UnsupportedClassVersionError" error_type="unhandled_exception"
