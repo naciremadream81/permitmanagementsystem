@@ -80,12 +80,25 @@ export const Badge = ({ children, variant = 'default', className = '' }) => {
     draft: 'bg-yellow-100 text-yellow-800',
     submitted: 'bg-blue-100 text-blue-800',
     completed: 'bg-green-100 text-green-800',
+    required: 'bg-red-100 text-red-800',
+    optional: 'bg-gray-100 text-gray-600',
   };
 
   return (
     <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${variants[variant]} ${className}`}>
       {children}
     </span>
+  );
+};
+
+export const Progress = ({ value = 0, className = '', ...props }) => {
+  return (
+    <div className={`w-full bg-gray-200 rounded-full overflow-hidden ${className}`} {...props}>
+      <div 
+        className="h-full bg-primary-600 transition-all duration-300 ease-in-out"
+        style={{ width: `${Math.min(100, Math.max(0, value))}%` }}
+      />
+    </div>
   );
 };
 
